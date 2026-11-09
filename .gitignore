@@ -1,0 +1,88 @@
+# ─────────────────────────────────────────────
+# 비밀값 — 절대 커밋 금지
+# ─────────────────────────────────────────────
+# Supabase URL/키 (.env.example만 커밋)
+.env
+.env.*
+!.env.example
+*.env
+!*.env.example
+# 서비스 계정·인증서·서명 키
+*service-account*.json
+*.pem
+*.p12
+*.p8
+*.keystore
+*.jks
+key.properties
+# Firebase 설정 (FCM 도입 시 커밋 여부를 따로 결정)
+google-services.json
+GoogleService-Info.plist
+
+# ─────────────────────────────────────────────
+# OS / 에디터
+# ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+.history
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code: 공유 설정(settings.json)만 커밋
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# ─────────────────────────────────────────────
+# Flutter / Dart
+# ─────────────────────────────────────────────
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+coverage/
+*.g.dart.tmp
+
+# Symbolication / Obfuscation
+app.*.symbols
+app.*.map.json
+
+# Android Studio 빌드 산출물
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# 기타 빌드 도구
+*.class
+*.log
+*.pyc
+.atom/
+.build/
+.buildlog/
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# ─────────────────────────────────────────────
+# Supabase / Node / Deno
+# ─────────────────────────────────────────────
+# (supabase/.gitignore에서 .branches, .temp, .env도 제외)
+supabase/.branches/
+supabase/.temp/
+node_modules/
+.deno/
+npm-debug.log*

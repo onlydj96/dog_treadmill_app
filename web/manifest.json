@@ -1,0 +1,35 @@
+{
+    "name": "반려견 AI 헬스장",
+    "short_name": "AI 헬스장",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#FFF8F4",
+    "theme_color": "#890121",
+    "description": "반려견 AI 헬스장 - 트레드밀 예약 및 AI 보행 분석 앱",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

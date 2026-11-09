@@ -1,0 +1,7 @@
+{
+  "dart.lineLength": 120,
+  "[dart]": {
+    "editor.rulers": [120]
+  },
+  "deno.enablePaths": ["supabase/functions"]
+}
