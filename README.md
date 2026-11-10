@@ -51,7 +51,7 @@ supabase/
   migrations/  스키마 · RLS · 예약/운동 RPC · 알림 트리거 · Storage · Realtime
   functions/   delete-account (회원 탈퇴)
   tests/       pgTAP 테스트
-  seed.sql     로컬 개발용 샘플 데이터 (트레드밀·이용권 상품·FAQ·공지)
+  seed.sql     로컬 개발용 샘플 데이터 (이용권 상품·FAQ·공지)
 docs/          AI 서버 결과 저장 규격
 test/          단위·위젯 테스트, 로컬 Supabase 통합 테스트
 ```
@@ -66,8 +66,8 @@ npx supabase db push                          # supabase/migrations 적용
 npx supabase functions deploy delete-account  # 회원 탈퇴 함수
 ```
 
-- 지점 3곳과 운동 프로그램 6개는 마이그레이션(`20261110000200_branches_and_programs.sql`)으로 함께 들어갑니다.
-- `seed.sql`은 샘플 데이터라 원격에는 자동 적용되지 않습니다. 트레드밀 기기와 이용권 상품은 실제 값으로 넣어 주세요. 트레드밀이 없는 지점은 모든 시간이 마감으로 보입니다.
+- 지점 3곳, 운동 프로그램 6개, 트레드밀 30대(용산 8 · 고양 12 · 영등포 10)는 마이그레이션으로 함께 들어갑니다.
+- `seed.sql`은 샘플 데이터라 원격에는 자동 적용되지 않습니다. 이용권 상품은 실제 값으로 넣어 주세요.
 - 운영자 계정은 `public.users.role = 'admin'`으로 지정하고, 담당 지점이 있으면 `managed_branch_id`를 넣습니다(NULL이면 전 지점).
 
 ### 2. 앱 실행

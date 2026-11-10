@@ -270,7 +270,7 @@ void main() {
       );
       // 10:30~20:30, 25분 프로그램 → 10:30부터 20:00까지 30분 간격 20칸
       expect(slots, hasLength(20));
-      expect(slots.first.totalCount, 3);
+      expect(slots.first.totalCount, 8);
 
       await service.from('memberships').insert({
         'user_id': ownerId,
