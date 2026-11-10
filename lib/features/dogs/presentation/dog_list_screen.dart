@@ -21,7 +21,7 @@ class DogListScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('반려견 관리')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push(AppRoutes.dogNew),
-        backgroundColor: AppColors.vermilion,
+        backgroundColor: AppColors.mintDeep,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add_rounded),
         label: const Text('반려견 등록', style: TextStyle(fontWeight: FontWeight.w700)),

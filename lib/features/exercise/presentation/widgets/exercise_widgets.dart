@@ -70,7 +70,7 @@ class ProgressRing extends StatelessWidget {
     this.size = 200,
     this.strokeWidth = 14,
     this.trackColor,
-    this.colors = const [AppColors.lavender, AppColors.vermilion],
+    this.colors = const [AppColors.teal, AppColors.mint],
   });
 
   final double? progress;
@@ -306,7 +306,7 @@ class HeroNumber extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: AppColors.peach, fontSize: 12, fontWeight: FontWeight.w600)),
+        Text(label, style: const TextStyle(color: AppColors.mintLight, fontSize: 12, fontWeight: FontWeight.w600)),
         const SizedBox(height: 4),
         Text.rich(
           TextSpan(

@@ -113,7 +113,7 @@ class _ProfileHeader extends ConsumerWidget {
           children: [
             Row(
               children: [
-                DogAvatar(dog: dog, size: 84, ringColor: AppColors.peach),
+                DogAvatar(dog: dog, size: 84, ringColor: AppColors.honey),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -123,7 +123,7 @@ class _ProfileHeader extends ConsumerWidget {
                       const SizedBox(height: 4),
                       Text(
                         dog.summary.isEmpty ? '프로필 정보를 입력해 주세요' : dog.summary,
-                        style: const TextStyle(color: AppColors.peach, fontWeight: FontWeight.w600),
+                        style: const TextStyle(color: AppColors.mintLight, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
@@ -195,7 +195,10 @@ class _HealthInfo extends ConsumerWidget {
           onRetry: () => ref.invalidate(dogHealthProfileProvider(dogId)),
           data: (profile) {
             if (profile == null || profile.isEmpty) {
-              return const AppCard(child: Text('등록된 건강 정보가 없어요. 수정 화면에서 입력할 수 있어요.'));
+              return const InlineEmptyCard(
+                icon: Icons.medical_services_outlined,
+                message: '등록된 건강 정보가 없어요. 수정 화면에서 입력할 수 있어요.',
+              );
             }
             Widget group(String title, List<HealthItem> items, IconData icon, {bool highlight = false}) {
               if (items.isEmpty) return const SizedBox.shrink();
@@ -206,7 +209,7 @@ class _HealthInfo extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(icon, size: 18, color: highlight ? AppColors.vermilion : scheme.onSurfaceVariant),
+                        Icon(icon, size: 18, color: highlight ? AppColors.honeyDeep : scheme.onSurfaceVariant),
                         const SizedBox(width: 6),
                         Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
                       ],

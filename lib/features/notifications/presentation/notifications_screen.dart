@@ -103,7 +103,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 background: Container(
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.only(right: 24),
-                  color: AppColors.burgundy,
+                  color: AppColors.coral,
                   child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
                 ),
                 onDismissed: (_) => _delete(item),
@@ -183,7 +183,7 @@ class _NotificationTile extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 6),
                   width: 8,
                   height: 8,
-                  decoration: const BoxDecoration(color: AppColors.vermilion, shape: BoxShape.circle),
+                  decoration: const BoxDecoration(color: AppColors.coral, shape: BoxShape.circle),
                 ),
               ],
             ],

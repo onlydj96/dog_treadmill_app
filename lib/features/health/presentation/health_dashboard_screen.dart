@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
+import '../../consents/data/consent_repository.dart';
 import '../../dogs/providers.dart';
 import '../data/analysis_models.dart';
 import '../providers.dart';
@@ -20,6 +21,8 @@ class HealthDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dog = ref.watch(selectedDogProvider).valueOrNull;
+    // 리포트와 함께 동의 상태를 미리 불러와, 리포트 없음 안내 문구가 뒤늦게 바뀌어 보이지 않게 한다.
+    ref.listen(videoConsentGrantedProvider, (_, __) {});
 
     return Scaffold(
       appBar: AppBar(title: Text(dog == null ? '건강' : '${dog.name}의 건강 분석')),
@@ -38,7 +41,8 @@ class HealthDashboardScreen extends ConsumerWidget {
                 onRefresh: () async {
                   ref
                     ..invalidate(reportsProvider(dog.id))
-                    ..invalidate(activePlanProvider(dog.id));
+                    ..invalidate(activePlanProvider(dog.id))
+                    ..invalidate(consentsProvider);
                   await ref.read(reportsProvider(dog.id).future);
                 },
                 child: _Dashboard(dogId: dog.id, reports: reports),
@@ -63,12 +67,13 @@ class _Dashboard extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
       children: [
-        if (pending.isNotEmpty) ...[
+        // 완료된 리포트가 없으면 아래 카드가 분석 중임을 알리므로 배너는 생략한다.
+        if (pending.isNotEmpty && latest != null) ...[
           _PendingBanner(count: pending.length),
           const SizedBox(height: 16),
         ],
         if (latest == null)
-          const _NoReportCard()
+          _NoReportCard(analyzing: pending.isNotEmpty)
         else ...[
           _LatestSummaryCard(report: latest),
           const SizedBox(height: 28),
@@ -126,19 +131,47 @@ class _PendingBanner extends StatelessWidget {
   }
 }
 
-class _NoReportCard extends StatelessWidget {
-  const _NoReportCard();
+/// 완료된 리포트가 없을 때. 분석 진행 여부와 영상 촬영 동의 상태에 맞는 안내 하나만 보여준다.
+class _NoReportCard extends ConsumerWidget {
+  const _NoReportCard({required this.analyzing});
+
+  /// 분석 중인 운동 영상이 있는지
+  final bool analyzing;
 
   @override
-  Widget build(BuildContext context) {
-    return AppCard(
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (analyzing) {
+      return const AppCard(
+        child: EmptyState(
+          compact: true,
+          icon: Icons.auto_awesome_rounded,
+          title: '첫 분석 리포트를 준비하고 있어요',
+          message: '운동 영상으로 관절 움직임과 보행 패턴을 분석 중이에요. 완료되면 알림으로 알려 드릴게요.',
+        ),
+      );
+    }
+
+    // 동의 상태를 아직 모르면(로딩·오류) 동의 여부와 무관한 안내만 보여준다.
+    if (ref.watch(videoConsentGrantedProvider) == false) {
+      return AppCard(
+        child: EmptyState(
+          compact: true,
+          icon: Icons.videocam_outlined,
+          title: '운동 영상 촬영 동의가 필요해요',
+          message: 'AI 보행 분석 리포트는 운동 영상으로 만들어요. '
+              '동의하면 다음 운동부터 관절 움직임과 보행 패턴을 분석해 드려요.',
+          actionLabel: '동의하러 가기',
+          onAction: () => context.push(AppRoutes.consents),
+        ),
+      );
+    }
+
+    return const AppCard(
       child: EmptyState(
+        compact: true,
         icon: Icons.auto_awesome_rounded,
         title: '아직 분석 리포트가 없어요',
-        message: '트레드밀 운동을 마치면 촬영 영상으로 관절 움직임과 보행 패턴을 분석해 드려요. '
-            '리포트를 받으려면 운동 영상 촬영에 동의해 주세요.',
-        actionLabel: '동의 설정 확인',
-        onAction: () => context.push(AppRoutes.consents),
+        message: '트레드밀 운동을 마치면 촬영 영상으로 관절 움직임과 보행 패턴을 분석해 드려요.',
       ),
     );
   }
@@ -299,17 +332,17 @@ class _TrendSectionState extends State<_TrendSection> {
       _TrendMetric.symmetry => (
           '좌우 다리 움직임이 얼마나 비슷한지 보여줘요. 높을수록 균형 잡힌 보행이에요.',
           (double v) => '${v.toStringAsFixed(0)}%',
-          AppColors.vermilion,
+          AppColors.mintDeep,
         ),
       _TrendMetric.cadence => (
           '1분 동안의 걸음 수예요. 평소 기준선과 크게 달라지면 관찰이 필요해요.',
           (double v) => v.toStringAsFixed(0),
-          AppColors.violet,
+          AppColors.tealDeep,
         ),
       _TrendMetric.variability => (
           '걸음걸이 주기가 얼마나 일정한지 보여줘요. 낮을수록 리듬이 안정적이에요.',
           (double v) => '${v.toStringAsFixed(1)}%',
-          AppColors.burgundy,
+          AppColors.honeyDeep,
         ),
     };
 

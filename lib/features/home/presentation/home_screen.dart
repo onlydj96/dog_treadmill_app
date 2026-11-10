@@ -11,6 +11,7 @@ import '../../../core/widgets/brand_mark.dart';
 import '../../../core/widgets/common.dart';
 import '../../booking/presentation/widgets/booking_widgets.dart';
 import '../../booking/providers.dart';
+import '../../consents/data/consent_repository.dart';
 import '../../dogs/data/dog.dart';
 import '../../dogs/presentation/dog_switcher_sheet.dart';
 import '../../dogs/presentation/widgets/dog_avatar.dart';
@@ -33,7 +34,8 @@ class HomeScreen extends ConsumerWidget {
       ..invalidate(currentUserProfileProvider)
       ..invalidate(dogsProvider)
       ..invalidate(nextBookingProvider)
-      ..invalidate(noticesProvider);
+      ..invalidate(noticesProvider)
+      ..invalidate(consentsProvider);
     if (dogId != null) {
       ref
         ..invalidate(sessionsProvider(dogId))
@@ -104,7 +106,7 @@ class _HomeHeader extends ConsumerWidget {
           icon: Badge(
             isLabelVisible: unread > 0,
             label: Text(unread > 99 ? '99+' : '$unread'),
-            backgroundColor: AppColors.vermilion,
+            backgroundColor: AppColors.coral,
             child: const Icon(Icons.notifications_none_rounded, size: 26),
           ),
         ),
@@ -168,7 +170,7 @@ class _DogHeroCard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    DogAvatar(dog: dog, size: 64, ringColor: AppColors.peach),
+                    DogAvatar(dog: dog, size: 64, ringColor: AppColors.honey),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(
@@ -179,7 +181,7 @@ class _DogHeroCard extends ConsumerWidget {
                           const SizedBox(height: 2),
                           Text(
                             dog.summary.isEmpty ? '프로필을 완성해 주세요' : dog.summary,
-                            style: const TextStyle(color: AppColors.peach, fontWeight: FontWeight.w600),
+                            style: const TextStyle(color: AppColors.mintLight, fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
@@ -248,14 +250,14 @@ class _NoDogCard extends StatelessWidget {
             const SizedBox(height: 6),
             const Text(
               '건강 정보와 운동 제한 사항을 함께 등록하면\n현장 운영자가 안전하게 운동을 진행할 수 있어요.',
-              style: TextStyle(color: AppColors.peach, height: 1.5),
+              style: TextStyle(color: AppColors.mintLight, height: 1.5),
             ),
             const SizedBox(height: 18),
             FilledButton.icon(
               onPressed: () => context.push(AppRoutes.dogNew),
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.peach,
-                foregroundColor: AppColors.burgundyDeep,
+                backgroundColor: AppColors.mint,
+                foregroundColor: AppColors.charcoal,
                 minimumSize: const Size(0, 48),
               ),
               icon: const Icon(Icons.add_rounded),
@@ -283,7 +285,7 @@ class _LiveSessionBanner extends ConsumerWidget {
         button: true,
         onTapHint: '실시간 운동 현황 보기',
         child: Material(
-          color: AppColors.vermilion,
+          color: AppColors.mintDeep,
           borderRadius: BorderRadius.circular(20),
           child: InkWell(
             borderRadius: BorderRadius.circular(20),
@@ -335,7 +337,7 @@ class _QuickActions extends StatelessWidget {
             label: '운동 예약',
             caption: '빈 시간 확인',
             icon: Icons.add_circle_rounded,
-            background: AppColors.vermilion,
+            background: AppColors.mintDeep,
             foreground: Colors.white,
             onTap: () => context.push(AppRoutes.bookingNew),
           ),
@@ -421,7 +423,6 @@ class _NextBookingSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final next = ref.watch(nextBookingProvider);
-    final scheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -433,15 +434,11 @@ class _NextBookingSection extends ConsumerWidget {
               ErrorView(message: friendlyError(error), onRetry: () => ref.invalidate(nextBookingProvider)),
           data: (booking) {
             if (booking == null) {
-              return AppCard(
-                child: Row(
-                  children: [
-                    Icon(Icons.event_busy_rounded, color: scheme.onSurfaceVariant),
-                    const SizedBox(width: 12),
-                    const Expanded(child: Text('예정된 예약이 없어요.')),
-                    TextButton(onPressed: () => context.push(AppRoutes.bookingNew), child: const Text('예약하기')),
-                  ],
-                ),
+              return InlineEmptyCard(
+                icon: Icons.event_busy_rounded,
+                message: '예정된 예약이 없어요.',
+                actionLabel: '예약하기',
+                onAction: () => context.push(AppRoutes.bookingNew),
               );
             }
             return BookingCard(
@@ -475,7 +472,10 @@ class _RecentExerciseSection extends ConsumerWidget {
           data: (list) {
             final ExerciseSession? latest = list.firstOrNull;
             if (latest == null) {
-              return const AppCard(child: Text('아직 운동 기록이 없어요. 첫 운동을 예약해 보세요!'));
+              return const InlineEmptyCard(
+                icon: Icons.insights_rounded,
+                message: '아직 운동 기록이 없어요. 첫 운동을 예약해 보세요!',
+              );
             }
             return ExerciseRecordTile(
               session: latest,
@@ -512,21 +512,19 @@ class _AnalysisSummarySection extends ConsumerWidget {
             final pending = list.where((r) => r.status.isPending).firstOrNull;
             final latest = list.where((r) => r.isCompleted).firstOrNull;
             if (latest == null) {
-              return AppCard(
+              // 분석 중이 아니고 영상 촬영에 동의하지 않았으면 리포트가 생기지 않으므로 동의를 안내한다.
+              final needsConsent = pending == null && ref.watch(videoConsentGrantedProvider) == false;
+              return InlineEmptyCard(
+                icon: Icons.auto_awesome_rounded,
+                message: pending != null
+                    ? '최근 운동 영상을 분석하고 있어요. 완료되면 알려 드릴게요.'
+                    : needsConsent
+                        ? '운동 영상 촬영에 동의하면 AI 보행 분석 리포트를 받을 수 있어요.'
+                        : '운동을 마치면 AI 보행 분석 리포트가 여기에 표시돼요.',
+                actionLabel: needsConsent ? '동의하기' : null,
+                onAction: needsConsent ? () => context.push(AppRoutes.consents) : null,
                 color: scheme.tertiaryContainer,
-                borderColor: Colors.transparent,
-                child: Row(
-                  children: [
-                    Icon(Icons.auto_awesome_rounded, color: scheme.onTertiaryContainer),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        pending != null ? '최근 운동 영상을 분석하고 있어요. 완료되면 알려 드릴게요.' : '운동을 마치면 AI 보행 분석 리포트가 여기에 표시돼요.',
-                        style: TextStyle(color: scheme.onTertiaryContainer),
-                      ),
-                    ),
-                  ],
-                ),
+                foregroundColor: scheme.onTertiaryContainer,
               );
             }
 
@@ -617,7 +615,7 @@ class _NoticesSection extends ConsumerWidget {
                   dense: true,
                   leading: Icon(
                     notice.isPinned ? Icons.push_pin_rounded : Icons.campaign_outlined,
-                    color: notice.isPinned ? AppColors.vermilion : scheme.onSurfaceVariant,
+                    color: notice.isPinned ? scheme.primary : scheme.onSurfaceVariant,
                     size: 20,
                   ),
                   title: Text(notice.title,

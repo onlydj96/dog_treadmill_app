@@ -158,10 +158,10 @@ class SkeletonDiagram extends StatelessWidget {
       child: CustomPaint(
         painter: _SkeletonPainter(
           highlights: highlights,
-          boneColor: dark ? AppColors.peach : AppColors.burgundy,
-          jointColor: AppColors.lavender,
+          boneColor: dark ? AppColors.mintLight : AppColors.charcoal,
+          jointColor: AppColors.teal,
           floorColor: scheme.outlineVariant,
-          bodyColor: dark ? Colors.white.withValues(alpha: 0.08) : AppColors.peach.withValues(alpha: 0.55),
+          bodyColor: dark ? Colors.white.withValues(alpha: 0.08) : AppColors.honey.withValues(alpha: 0.4),
         ),
       ),
     );
@@ -252,7 +252,7 @@ class _SkeletonPainter extends CustomPainter {
       final center = at(point);
       final level = highlights[point.key];
       if (level != null && level != AnomalyLevel.normal) {
-        final haloColor = level == AnomalyLevel.warning ? AppColors.burgundy : AppColors.vermilion;
+        final haloColor = level == AnomalyLevel.warning ? AppColors.coral : AppColors.honeyDeep;
         canvas.drawCircle(center, 13, Paint()..color = haloColor.withValues(alpha: 0.22));
         canvas.drawCircle(center, 7, Paint()..color = haloColor);
         canvas.drawCircle(
@@ -289,7 +289,7 @@ class TrendChart extends StatelessWidget {
     required this.points,
     required this.valueFormatter,
     this.baseline,
-    this.color = AppColors.vermilion,
+    this.color = AppColors.mintDeep,
     this.height = 190,
   });
 
@@ -359,7 +359,7 @@ class TrendChart extends StatelessWidget {
               if (baseline != null)
                 HorizontalLine(
                   y: baseline!,
-                  color: AppColors.burgundy.withValues(alpha: 0.55),
+                  color: scheme.secondary.withValues(alpha: 0.55),
                   strokeWidth: 1.5,
                   dashArray: [6, 4],
                   label: HorizontalLineLabel(

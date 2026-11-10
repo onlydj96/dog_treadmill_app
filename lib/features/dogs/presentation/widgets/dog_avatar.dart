@@ -18,8 +18,8 @@ class DogAvatar extends ConsumerWidget {
     final fallback = Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(color: AppColors.peach, shape: BoxShape.circle),
-      child: Icon(Icons.pets_rounded, size: size * 0.48, color: AppColors.burgundy),
+      decoration: const BoxDecoration(color: AppColors.honey, shape: BoxShape.circle),
+      child: Icon(Icons.pets_rounded, size: size * 0.48, color: AppColors.honeyInk),
     );
 
     final path = dog?.profileImagePath;

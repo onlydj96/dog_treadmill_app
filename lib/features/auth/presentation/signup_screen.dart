@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/common.dart';
@@ -165,7 +164,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 child: _submitting
                     ? const SizedBox.square(
                         dimension: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
+                        child: CircularProgressIndicator(strokeWidth: 2.4),
                       )
                     : const Text('가입하기'),
               ),
@@ -221,7 +220,7 @@ class _ConsentSection extends StatelessWidget {
                       text: type.isRequired ? '[필수] ' : '[선택] ',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: type.isRequired ? AppColors.vermilion : scheme.onSurfaceVariant,
+                        color: type.isRequired ? scheme.primary : scheme.onSurfaceVariant,
                       ),
                     ),
                     TextSpan(text: type.title),

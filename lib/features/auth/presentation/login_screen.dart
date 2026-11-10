@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/brand_mark.dart';
@@ -71,13 +72,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           const BrandMark(size: 56),
                           const SizedBox(height: 28),
                           Text(
-                            '반려견 AI 헬스장',
-                            style: theme.textTheme.headlineMedium?.copyWith(color: Colors.white),
+                            'PawFit',
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              color: Colors.white,
+                              fontFamily: AppText.numericFamily,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             '트레드밀 예약부터 AI 보행 분석까지,\n우리 아이의 건강한 걸음을 함께 기록해요.',
-                            style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.peach),
+                            style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.mintLight),
                           ),
                         ],
                       ),
@@ -125,7 +130,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             child: _submitting
                                 ? const SizedBox.square(
                                     dimension: 22,
-                                    child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
+                                    child: CircularProgressIndicator(strokeWidth: 2.4),
                                   )
                                 : const Text('로그인'),
                           ),

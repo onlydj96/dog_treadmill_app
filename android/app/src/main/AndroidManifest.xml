@@ -2,7 +2,7 @@
     <!-- Supabase API·Realtime·Storage 통신 (릴리스 빌드에도 필요) -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="AI 헬스장"
+        android:label="PawFit"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -32,6 +32,11 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Flutter 3.29.0 Impeller 글리프 아틀라스 버그("Could not find glyph position in the atlas") 회피.
+             Flutter를 업그레이드한 뒤에는 제거해도 된다. -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

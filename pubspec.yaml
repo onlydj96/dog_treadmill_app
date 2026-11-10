@@ -1,5 +1,5 @@
 name: dog_treadmill_app
-description: "반려견 AI 헬스장 - 트레드밀 예약 및 AI 보행 분석 앱"
+description: "PawFit - 반려견 트레드밀 예약 및 AI 보행 분석 앱"
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -30,6 +30,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # 앱 내 브랜드 마크 (원본 로고는 assets/logo — 용량이 커서 번들에 넣지 않는다)
+  assets:
+    - assets/images/
 
   # 숫자·통계·브랜드 워드마크용 디스플레이 폰트 (SIL OFL 1.1, assets/fonts/OFL.txt)
   # 한글은 각 플랫폼 시스템 폰트를 사용한다.

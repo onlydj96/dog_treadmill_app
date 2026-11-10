@@ -146,6 +146,7 @@ class _PendingState extends StatelessWidget {
     final failed = report.status == AnalysisStatus.failed;
     return AppCard(
       child: EmptyState(
+        compact: true,
         icon: failed ? Icons.error_outline_rounded : Icons.auto_awesome_rounded,
         title: failed ? '분석을 완료하지 못했어요' : '운동 영상을 분석하고 있어요',
         message: failed
@@ -223,9 +224,9 @@ class _AnomalySection extends StatelessWidget {
                     value: score.clamp(0.0, 1.0),
                     minHeight: 10,
                     color: switch (anomaly.level) {
-                      AnomalyLevel.normal => AppColors.lavender,
-                      AnomalyLevel.caution => AppColors.vermilion,
-                      AnomalyLevel.warning => AppColors.burgundy,
+                      AnomalyLevel.normal => AppColors.tealDeep,
+                      AnomalyLevel.caution => AppColors.honeyDeep,
+                      AnomalyLevel.warning => AppColors.coral,
                     },
                   ),
                 ),
@@ -253,7 +254,7 @@ class _AnomalySection extends StatelessWidget {
                                 ? Icons.warning_amber_rounded
                                 : Icons.visibility_rounded,
                             size: 18,
-                            color: finding.severity == AnomalyLevel.warning ? AppColors.burgundy : AppColors.vermilion,
+                            color: finding.severity == AnomalyLevel.warning ? AppColors.coral : AppColors.honeyDeep,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -424,9 +425,9 @@ class _JointSection extends StatelessWidget {
                 runSpacing: 4,
                 alignment: WrapAlignment.center,
                 children: [
-                  _Legend(color: AppColors.lavender, label: '추적 관절'),
-                  _Legend(color: AppColors.vermilion, label: '관찰 필요'),
-                  _Legend(color: AppColors.burgundy, label: '주의 필요'),
+                  _Legend(color: AppColors.teal, label: '추적 관절'),
+                  _Legend(color: AppColors.honeyDeep, label: '관찰 필요'),
+                  _Legend(color: AppColors.coral, label: '주의 필요'),
                 ],
               ),
               if (joints.joints.isNotEmpty) ...[
@@ -460,7 +461,7 @@ class _JointSection extends StatelessWidget {
                                 joint.label,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  color: highlights.containsKey(joint.key) ? AppColors.vermilion : null,
+                                  color: highlights.containsKey(joint.key) ? scheme.cautionTone.foreground : null,
                                 ),
                               ),
                               if (joint.minAngleDeg != null && joint.maxAngleDeg != null)
@@ -653,9 +654,9 @@ class _VideoSection extends ConsumerWidget {
               children: [
                 for (final (title, path, icon) in videos)
                   ListTile(
-                    leading: Icon(icon, color: AppColors.burgundy),
+                    leading: Icon(icon, color: AppColors.mintDeep),
                     title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-                    trailing: const Icon(Icons.play_circle_fill_rounded, color: AppColors.vermilion, size: 30),
+                    trailing: const Icon(Icons.play_circle_fill_rounded, color: AppColors.mintDeep, size: 30),
                     onTap: () => context.push(AppRoutes.video(path: path, title: title)),
                   ),
               ],

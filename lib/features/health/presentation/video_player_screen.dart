@@ -74,7 +74,7 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen> {
                 child: Text(_error!, style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
               )
             : controller == null
-                ? const CircularProgressIndicator(color: AppColors.peach)
+                ? const CircularProgressIndicator(color: AppColors.mint)
                 : Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -91,8 +91,8 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen> {
                           controller,
                           allowScrubbing: true,
                           colors: const VideoProgressColors(
-                            playedColor: AppColors.vermilion,
-                            bufferedColor: Color(0x55FFD3BF),
+                            playedColor: AppColors.mint,
+                            bufferedColor: Color(0x55B3EAD7),
                             backgroundColor: Color(0x33FFFFFF),
                           ),
                         ),

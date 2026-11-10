@@ -68,7 +68,7 @@ class _Header extends StatelessWidget {
             const SizedBox(height: 14),
             Text(
               Fmt.dateFull(booking.startAt),
-              style: theme.textTheme.titleMedium?.copyWith(color: AppColors.peach),
+              style: theme.textTheme.titleMedium?.copyWith(color: AppColors.mintLight),
             ),
             const SizedBox(height: 4),
             Text(
@@ -134,12 +134,12 @@ class _StatusSteps extends StatelessWidget {
                     height: 26,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: i <= currentIndex ? AppColors.vermilion : scheme.surfaceContainerHigh,
+                      color: i <= currentIndex ? scheme.primary : scheme.surfaceContainerHigh,
                     ),
                     child: Icon(
                       i < currentIndex ? Icons.check_rounded : Icons.circle,
                       size: i < currentIndex ? 16 : 8,
-                      color: i <= currentIndex ? Colors.white : scheme.outline,
+                      color: i <= currentIndex ? scheme.onPrimary : scheme.outline,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -344,7 +344,7 @@ class _CancelReasonSheetState extends State<_CancelReasonSheet> {
             const SizedBox(height: 20),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(_selected),
-              style: FilledButton.styleFrom(backgroundColor: AppColors.burgundy),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.coral),
               child: const Text('예약 취소하기'),
             ),
           ],
@@ -453,7 +453,7 @@ class _RescheduleSheetState extends ConsumerState<_RescheduleSheet> {
                 child: _submitting
                     ? const SizedBox.square(
                         dimension: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
+                        child: CircularProgressIndicator(strokeWidth: 2.4),
                       )
                     : Text(_slot == null ? '변경할 시간을 선택해 주세요' : '${Fmt.time(_slot!.start)} 예약으로 변경'),
               ),

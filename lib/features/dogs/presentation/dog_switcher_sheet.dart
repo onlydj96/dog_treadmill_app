@@ -38,11 +38,11 @@ class _DogSwitcherSheet extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Material(
-                  color: dog.id == selectedId ? AppColors.peach : theme.colorScheme.surfaceContainerLowest,
+                  color: dog.id == selectedId ? AppColors.mintMist : theme.colorScheme.surfaceContainerLowest,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
                     side: BorderSide(
-                      color: dog.id == selectedId ? AppColors.peach : theme.colorScheme.outlineVariant,
+                      color: dog.id == selectedId ? AppColors.mintMist : theme.colorScheme.outlineVariant,
                     ),
                   ),
                   child: ListTile(
@@ -53,15 +53,15 @@ class _DogSwitcherSheet extends ConsumerWidget {
                       dog.name,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
-                        color: dog.id == selectedId ? AppColors.burgundyDeep : null,
+                        color: dog.id == selectedId ? AppColors.mintInk : null,
                       ),
                     ),
                     subtitle: Text(
                       dog.summary,
-                      style: TextStyle(color: dog.id == selectedId ? AppColors.burgundy : null),
+                      style: TextStyle(color: dog.id == selectedId ? AppColors.mintDeep : null),
                     ),
                     trailing:
-                        dog.id == selectedId ? const Icon(Icons.check_circle_rounded, color: AppColors.burgundy) : null,
+                        dog.id == selectedId ? const Icon(Icons.check_circle_rounded, color: AppColors.mintDeep) : null,
                     onTap: () {
                       ref.read(selectedDogIdProvider.notifier).select(dog.id);
                       Navigator.of(context).pop();

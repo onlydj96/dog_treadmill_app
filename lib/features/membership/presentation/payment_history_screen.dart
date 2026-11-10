@@ -26,11 +26,7 @@ class PaymentHistoryScreen extends ConsumerWidget {
             await ref.read(paymentsProvider.future);
           },
           child: payments.isEmpty
-              ? ListView(
-                  children: const [
-                    EmptyState(icon: Icons.receipt_long_rounded, title: '결제 내역이 없어요'),
-                  ],
-                )
+              ? const EmptyState(icon: Icons.receipt_long_rounded, title: '결제 내역이 없어요')
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
                   itemCount: payments.length,
@@ -66,8 +62,8 @@ class _PaymentTile extends StatelessWidget {
           Container(
             width: 44,
             height: 44,
-            decoration: BoxDecoration(color: AppColors.peach, borderRadius: BorderRadius.circular(14)),
-            child: const Icon(Icons.receipt_long_rounded, color: AppColors.burgundy),
+            decoration: BoxDecoration(color: AppColors.mintMist, borderRadius: BorderRadius.circular(14)),
+            child: const Icon(Icons.receipt_long_rounded, color: AppColors.mintDeep),
           ),
           const SizedBox(width: 12),
           Expanded(

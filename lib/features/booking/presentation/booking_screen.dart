@@ -284,7 +284,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                       }),
                       child: Row(
                         children: [
-                          const Icon(Icons.confirmation_number_rounded, color: AppColors.burgundy),
+                          const Icon(Icons.confirmation_number_rounded, color: AppColors.mintDeep),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
@@ -308,7 +308,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   }),
                   child: const Row(
                     children: [
-                      Icon(Icons.storefront_rounded, color: AppColors.burgundy),
+                      Icon(Icons.storefront_rounded, color: AppColors.mintDeep),
                       SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -370,7 +370,7 @@ class _StepHeader extends StatelessWidget {
             width: 24,
             height: 24,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(color: AppColors.burgundy, shape: BoxShape.circle),
+            decoration: const BoxDecoration(color: AppColors.mintDeep, shape: BoxShape.circle),
             child: Text('$number', style: AppText.numeric(13, color: Colors.white)),
           ),
           const SizedBox(width: 10),
@@ -399,7 +399,7 @@ class _SelectableCard extends StatelessWidget {
         color: selected ? scheme.primaryContainer : scheme.surfaceContainerLowest,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
-          side: BorderSide(color: selected ? AppColors.vermilion : scheme.outlineVariant, width: selected ? 1.6 : 1),
+          side: BorderSide(color: selected ? scheme.primary : scheme.outlineVariant, width: selected ? 1.6 : 1),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(18),
@@ -427,10 +427,10 @@ class _ProgramCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    // 선택 카드 배경(피치)과 겹치지 않도록 강도가 높을수록 진한 톤을 쓴다.
+    // 선택 카드 배경(연민트)과 겹치지 않도록 강도는 청록 → 허니 → 코랄 순으로 진해진다.
     final tone = switch (program.intensity) {
       ProgramIntensity.low => scheme.calmTone,
-      ProgramIntensity.medium => scheme.activeTone,
+      ProgramIntensity.medium => scheme.cautionTone,
       ProgramIntensity.high => scheme.alertTone,
     };
     return _SelectableCard(
@@ -558,7 +558,7 @@ class _SummaryBar extends StatelessWidget {
                 child: submitting
                     ? const SizedBox.square(
                         dimension: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
+                        child: CircularProgressIndicator(strokeWidth: 2.4),
                       )
                     : const Text('예약하기'),
               ),

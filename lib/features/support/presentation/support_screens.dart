@@ -41,7 +41,7 @@ class NoticesScreen extends ConsumerWidget {
                   initiallyExpanded: index == 0,
                   leading: Icon(
                     notice.isPinned ? Icons.push_pin_rounded : Icons.campaign_outlined,
-                    color: notice.isPinned ? AppColors.vermilion : scheme.onSurfaceVariant,
+                    color: notice.isPinned ? scheme.primary : scheme.onSurfaceVariant,
                   ),
                   title: Text(notice.title, style: const TextStyle(fontWeight: FontWeight.w700)),
                   subtitle: Text(Fmt.dateShort(notice.publishedAt), style: const TextStyle(fontSize: 12.5)),
@@ -108,9 +108,13 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
                     child: ExpansionTile(
                       shape: const Border(),
                       collapsedShape: const Border(),
-                      leading: const Text(
+                      leading: Text(
                         'Q',
-                        style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.vermilion),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 18,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                       ),
                       title: Text(faq.question, style: const TextStyle(fontWeight: FontWeight.w700)),
                       childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
@@ -144,7 +148,7 @@ class InquiryListScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('1:1 문의')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push(AppRoutes.inquiryNew),
-        backgroundColor: AppColors.vermilion,
+        backgroundColor: AppColors.mintDeep,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.edit_rounded),
         label: const Text('문의하기', style: TextStyle(fontWeight: FontWeight.w700)),
@@ -205,7 +209,7 @@ class InquiryListScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('답변', style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.vermilion)),
+                            Text('답변', style: TextStyle(fontWeight: FontWeight.w800, color: scheme.primary)),
                             const SizedBox(height: 6),
                             Text(inquiry.answer!, style: const TextStyle(height: 1.6)),
                             if (inquiry.answeredAt != null) ...[

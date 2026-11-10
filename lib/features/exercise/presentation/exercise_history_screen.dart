@@ -22,7 +22,13 @@ class ExerciseHistoryScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(dog == null ? '운동 기록' : '${dog.name}의 운동 기록')),
       body: dog == null
-          ? const EmptyState(icon: Icons.pets_rounded, title: '등록된 반려견이 없어요')
+          ? EmptyState(
+              icon: Icons.pets_rounded,
+              title: '등록된 반려견이 없어요',
+              message: '반려견을 등록하면 운동 기록을 볼 수 있어요.',
+              actionLabel: '반려견 등록',
+              onAction: () => context.push(AppRoutes.dogNew),
+            )
           : AsyncValueView<List<ExerciseSession>>(
               value: ref.watch(finishedSessionsProvider(dog.id)),
               onRetry: () => ref.invalidate(sessionsProvider(dog.id)),
@@ -32,14 +38,10 @@ class ExerciseHistoryScreen extends ConsumerWidget {
                   await ref.read(sessionsProvider(dog.id).future);
                 },
                 child: sessions.isEmpty
-                    ? ListView(
-                        children: const [
-                          EmptyState(
-                            icon: Icons.insights_rounded,
-                            title: '아직 운동 기록이 없어요',
-                            message: '운동을 마치면 날짜별 기록이 쌓여요.',
-                          ),
-                        ],
+                    ? const EmptyState(
+                        icon: Icons.insights_rounded,
+                        title: '아직 운동 기록이 없어요',
+                        message: '운동을 마치면 날짜별 기록이 쌓여요.',
                       )
                     : _HistoryList(sessions: sessions),
               ),
@@ -69,13 +71,13 @@ class _HistoryList extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(color: AppColors.peach, borderRadius: BorderRadius.circular(24)),
+          decoration: BoxDecoration(color: AppColors.mintMist, borderRadius: BorderRadius.circular(24)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 '누적 운동 기록',
-                style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.burgundyDeep),
+                style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.mintInk),
               ),
               const SizedBox(height: 14),
               Row(
@@ -85,8 +87,8 @@ class _HistoryList extends StatelessWidget {
                       label: '총 운동',
                       value: '${totals.count}',
                       unit: '회',
-                      color: AppColors.burgundyDeep,
-                      labelColor: AppColors.burgundy,
+                      color: AppColors.mintInk,
+                      labelColor: AppColors.mintDeep,
                     ),
                   ),
                   Expanded(
@@ -94,8 +96,8 @@ class _HistoryList extends StatelessWidget {
                       label: '총 시간',
                       value: '${(totals.seconds / 60).round()}',
                       unit: '분',
-                      color: AppColors.burgundyDeep,
-                      labelColor: AppColors.burgundy,
+                      color: AppColors.mintInk,
+                      labelColor: AppColors.mintDeep,
                     ),
                   ),
                   Expanded(
@@ -103,8 +105,8 @@ class _HistoryList extends StatelessWidget {
                       label: '총 거리',
                       value: (totals.meters / 1000).toStringAsFixed(1),
                       unit: 'km',
-                      color: AppColors.burgundyDeep,
-                      labelColor: AppColors.burgundy,
+                      color: AppColors.mintInk,
+                      labelColor: AppColors.mintDeep,
                     ),
                   ),
                   Expanded(
@@ -112,8 +114,8 @@ class _HistoryList extends StatelessWidget {
                       label: '최고 속도',
                       value: bestSpeed == 0 ? '-' : bestSpeed.toStringAsFixed(1),
                       unit: bestSpeed == 0 ? null : 'km/h',
-                      color: AppColors.burgundyDeep,
-                      labelColor: AppColors.burgundy,
+                      color: AppColors.mintInk,
+                      labelColor: AppColors.mintDeep,
                     ),
                   ),
                 ],

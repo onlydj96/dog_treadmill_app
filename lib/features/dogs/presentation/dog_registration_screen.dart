@@ -264,7 +264,7 @@ class _DogFormState extends ConsumerState<_DogForm> {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.vermilion,
+                          color: AppColors.mintDeep,
                           shape: BoxShape.circle,
                           border: Border.all(color: scheme.surface, width: 3),
                         ),
@@ -403,7 +403,7 @@ class _DogFormState extends ConsumerState<_DogForm> {
               child: _saving
                   ? const SizedBox.square(
                       dimension: 22,
-                      child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
+                      child: CircularProgressIndicator(strokeWidth: 2.4),
                     )
                   : Text(_isEdit ? '저장하기' : '등록하기'),
             ),

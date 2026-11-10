@@ -5,75 +5,37 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 
-/// 브랜드 심볼 — 라벤더(AI)와 버밀리언(반려견)이 겹치는 교집합을 버건디로 표현한
-/// "brand intersection" 마크.
+/// PawFit 심볼 — 글자 없는 로고(assets/logo/PawFit_without_letter.png) 타일. 런처 아이콘과 같은 그림이다.
+/// 이름은 [BrandWordmark]가 텍스트로 그린다.
 class BrandMark extends StatelessWidget {
-  const BrandMark({super.key, this.size = 40, this.withBackground = true});
+  const BrandMark({super.key, this.size = 40});
+
+  static const asset = 'assets/images/pawfit_mark.png';
 
   final double size;
-  final bool withBackground;
 
   @override
   Widget build(BuildContext context) {
-    final mark = CustomPaint(
-      size: Size.square(size),
-      painter: const _IntersectionPainter(
-        left: AppColors.lavender,
-        right: AppColors.vermilion,
-        overlap: AppColors.burgundy,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size * 0.26),
+      child: Image.asset(
+        asset,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        filterQuality: FilterQuality.medium,
+        excludeFromSemantics: true,
       ),
-    );
-    if (!withBackground) return mark;
-    return Container(
-      width: size,
-      height: size,
-      padding: EdgeInsets.all(size * 0.16),
-      decoration: BoxDecoration(
-        color: AppColors.peach,
-        borderRadius: BorderRadius.circular(size * 0.3),
-      ),
-      child: mark,
     );
   }
 }
 
-class _IntersectionPainter extends CustomPainter {
-  const _IntersectionPainter({
-    required this.left,
-    required this.right,
-    required this.overlap,
-  });
-
-  final Color left;
-  final Color right;
-  final Color overlap;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final radius = size.width * 0.32;
-    final cy = size.height / 2;
-    final leftCircle = Path()..addOval(Rect.fromCircle(center: Offset(size.width * 0.35, cy), radius: radius));
-    final rightCircle = Path()..addOval(Rect.fromCircle(center: Offset(size.width * 0.65, cy), radius: radius));
-
-    canvas.drawPath(leftCircle, Paint()..color = left);
-    canvas.drawPath(rightCircle, Paint()..color = right);
-    canvas.drawPath(
-      Path.combine(PathOperation.intersect, leftCircle, rightCircle),
-      Paint()..color = overlap,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_IntersectionPainter oldDelegate) =>
-      oldDelegate.left != left || oldDelegate.right != right || oldDelegate.overlap != overlap;
-}
-
-/// 히어로 카드 배경의 장식 원 (브랜드 교집합 모티프)
+/// 히어로 카드 배경 — 트레드밀 같은 차콜 면에, 로고 뒤 민트 덩어리를 닮은 두 원이 겹친다.
 class IntersectionBackdrop extends StatelessWidget {
   const IntersectionBackdrop({
     super.key,
     required this.child,
-    this.background = AppColors.burgundy,
+    this.background = AppColors.charcoal,
     this.borderRadius = 28,
   });
 
@@ -103,15 +65,15 @@ class _BackdropPainter extends CustomPainter {
     canvas.drawRect(Offset.zero & size, Paint()..color = background);
     // 카드 크기와 무관하게 오른쪽 위 모서리에만 모티프를 둔다 (본문 텍스트 대비 유지)
     final s = math.min(size.shortestSide, 260.0);
-    final lavender = Path()
+    final mintGlow = Path()
       ..addOval(Rect.fromCircle(center: Offset(size.width - s * 0.05, s * 0.08), radius: s * 0.62));
-    final vermilion = Path()
+    final tealGlow = Path()
       ..addOval(Rect.fromCircle(center: Offset(size.width + s * 0.22, s * 0.62), radius: s * 0.55));
-    canvas.drawPath(lavender, Paint()..color = AppColors.lavender.withValues(alpha: 0.24));
-    canvas.drawPath(vermilion, Paint()..color = AppColors.vermilion.withValues(alpha: 0.42));
+    canvas.drawPath(mintGlow, Paint()..color = AppColors.mint.withValues(alpha: 0.2));
+    canvas.drawPath(tealGlow, Paint()..color = AppColors.teal.withValues(alpha: 0.28));
     canvas.drawPath(
-      Path.combine(PathOperation.intersect, lavender, vermilion),
-      Paint()..color = AppColors.peach.withValues(alpha: 0.22),
+      Path.combine(PathOperation.intersect, mintGlow, tealGlow),
+      Paint()..color = AppColors.mintLight.withValues(alpha: 0.18),
     );
   }
 
@@ -119,27 +81,25 @@ class _BackdropPainter extends CustomPainter {
   bool shouldRepaint(_BackdropPainter oldDelegate) => oldDelegate.background != background;
 }
 
+/// "PawFit" 텍스트 워드마크. 로고처럼 "Paw"는 차콜, "Fit"은 민트로 칠한다.
 class BrandWordmark extends StatelessWidget {
   const BrandWordmark({super.key, this.color});
 
+  /// "Paw" 색. 지정하지 않으면 라이트는 로고 차콜, 다크는 onSurface를 쓴다.
   final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final textColor = color ?? scheme.onSurface;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const BrandMark(size: 30),
-        const SizedBox(width: 8),
-        Text(
-          'AI 헬스장',
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: textColor, letterSpacing: -0.4),
-        ),
-        const SizedBox(width: 4),
-        Text('for dogs', style: AppText.numeric(13, weight: FontWeight.w600, color: textColor.withValues(alpha: 0.55))),
-      ],
+    final pawColor = color ?? (scheme.brightness == Brightness.dark ? scheme.onSurface : AppColors.charcoal);
+    final style = AppText.numeric(22, weight: FontWeight.w800, height: 1);
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: 'Paw', style: style.copyWith(color: pawColor)),
+          TextSpan(text: 'Fit', style: style.copyWith(color: AppColors.mint)),
+        ],
+      ),
     );
   }
 }

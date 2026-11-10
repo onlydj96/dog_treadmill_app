@@ -211,6 +211,13 @@ class InfoRow extends StatelessWidget {
   }
 }
 
+/// 빈 상태 안내 (아이콘 + 제목 + 설명 + 선택 액션). 항상 가운데 정렬한다.
+///
+/// - 화면 전체가 비었을 때: Scaffold 본문에 그대로 둔다. 화면 정중앙에 배치되고,
+///   공간이 모자라면 스크롤되며 [RefreshIndicator] 안에서도 당겨서 새로고침이 동작한다.
+/// - 섹션 하나가 비었을 때: [AppCard] 안에 `compact: true`로 넣는다.
+///
+/// 홈 요약 섹션처럼 한 줄 안내면 충분한 곳은 [InlineEmptyCard]를 쓴다.
 class EmptyState extends StatelessWidget {
   const EmptyState({
     super.key,
@@ -219,6 +226,7 @@ class EmptyState extends StatelessWidget {
     this.message,
     this.actionLabel,
     this.onAction,
+    this.compact = false,
   });
 
   final IconData icon;
@@ -227,37 +235,127 @@ class EmptyState extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
 
+  /// 카드 안에 넣을 때 여백과 아이콘을 줄인다.
+  final bool compact;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(color: scheme.primaryContainer, shape: BoxShape.circle),
-            child: Icon(icon, color: scheme.onPrimaryContainer, size: 30),
+    final badgeSize = compact ? 56.0 : 64.0;
+    return _CenterInAvailableSpace(
+      child: Padding(
+        padding: compact
+            ? const EdgeInsets.symmetric(horizontal: 4, vertical: 8)
+            : const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        child: ConstrainedBox(
+          // 태블릿·가로 화면에서도 설명 문구가 읽기 좋은 폭을 넘지 않게 한다.
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: badgeSize,
+                height: badgeSize,
+                decoration: BoxDecoration(color: scheme.primaryContainer, shape: BoxShape.circle),
+                child: Icon(icon, color: scheme.onPrimaryContainer, size: compact ? 26 : 30),
+              ),
+              SizedBox(height: compact ? 12 : 16),
+              Text(title, style: theme.textTheme.titleMedium, textAlign: TextAlign.center),
+              if (message != null) ...[
+                const SizedBox(height: 6),
+                Text(
+                  message!,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+                ),
+              ],
+              if (actionLabel != null) ...[
+                SizedBox(height: compact ? 16 : 20),
+                FilledButton(onPressed: onAction, child: Text(actionLabel!)),
+              ],
+            ],
           ),
-          const SizedBox(height: 16),
-          Text(title, style: theme.textTheme.titleMedium, textAlign: TextAlign.center),
-          if (message != null) ...[
-            const SizedBox(height: 6),
-            Text(
-              message!,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
-            ),
-          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 섹션 안의 짧은 빈 상태 안내. 아이콘 + 문구(+ 선택 액션)를 왼쪽 정렬 한 줄 카드로 보여준다.
+///
+/// 홈처럼 다른 화면을 요약해 보여주는 섹션이나 상세 화면의 보조 정보에 쓴다.
+/// 화면 전체나 탭의 주요 섹션이 비었을 때는 [EmptyState]를 쓴다.
+class InlineEmptyCard extends StatelessWidget {
+  const InlineEmptyCard({
+    super.key,
+    required this.icon,
+    required this.message,
+    this.actionLabel,
+    this.onAction,
+    this.color,
+    this.foregroundColor,
+  });
+
+  final IconData icon;
+  final String message;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  /// 카드 배경. 지정하면 테두리를 숨긴다.
+  final Color? color;
+
+  /// 아이콘과 문구 색. 지정하지 않으면 아이콘만 보조 색으로 표시한다.
+  final Color? foregroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return AppCard(
+      color: color,
+      borderColor: color == null ? null : Colors.transparent,
+      child: Row(
+        children: [
+          Icon(icon, color: foregroundColor ?? scheme.onSurfaceVariant),
+          const SizedBox(width: 12),
+          Expanded(child: Text(message, style: TextStyle(color: foregroundColor, height: 1.45))),
           if (actionLabel != null) ...[
-            const SizedBox(height: 20),
-            FilledButton(onPressed: onAction, child: Text(actionLabel!)),
+            const SizedBox(width: 8),
+            TextButton(
+              onPressed: onAction,
+              style: foregroundColor == null ? null : TextButton.styleFrom(foregroundColor: foregroundColor),
+              child: Text(actionLabel!),
+            ),
           ],
         ],
       ),
+    );
+  }
+}
+
+/// 높이·너비가 정해진 곳(Scaffold 본문 등)에서는 남는 공간의 정중앙에 두고 넘치면 스크롤한다.
+/// 스크롤 목록·카드처럼 높이가 무한한 곳에서는 가로 가운데 정렬만 한다.
+class _CenterInAvailableSpace extends StatelessWidget {
+  const _CenterInAvailableSpace({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.hasBoundedHeight || !constraints.hasBoundedWidth) {
+          return Center(child: child);
+        }
+        return SingleChildScrollView(
+          // 내용이 짧아도 RefreshIndicator로 당겨서 새로고침할 수 있게 항상 스크롤 가능하게 둔다.
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: constraints.maxWidth, minHeight: constraints.maxHeight),
+            child: Center(child: child),
+          ),
+        );
+      },
     );
   }
 }
@@ -285,23 +383,29 @@ class ErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.error_outline_rounded, color: scheme.error, size: 36),
-          const SizedBox(height: 12),
-          Text(message, textAlign: TextAlign.center),
-          if (onRetry != null) ...[
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh_rounded),
-              label: const Text('다시 시도'),
-            ),
-          ],
-        ],
+    // 빈 상태와 같은 규칙으로 배치한다 (화면 본문이면 정중앙, 목록 안이면 가로 가운데).
+    return _CenterInAvailableSpace(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline_rounded, color: scheme.error, size: 36),
+              const SizedBox(height: 12),
+              Text(message, textAlign: TextAlign.center),
+              if (onRetry != null) ...[
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: onRetry,
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: const Text('다시 시도'),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -340,7 +444,7 @@ class AiDisclaimer extends StatelessWidget {
 
 /// 운동 중 표시용 깜빡이는 점
 class PulsingDot extends StatefulWidget {
-  const PulsingDot({super.key, this.color = AppColors.vermilion, this.size = 10});
+  const PulsingDot({super.key, this.color = AppColors.mint, this.size = 10});
 
   final Color color;
   final double size;
@@ -407,7 +511,7 @@ Future<bool> confirmDialog(
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: destructive
-                ? FilledButton.styleFrom(backgroundColor: AppColors.burgundy, minimumSize: const Size(80, 44))
+                ? FilledButton.styleFrom(backgroundColor: AppColors.coral, minimumSize: const Size(80, 44))
                 : FilledButton.styleFrom(minimumSize: const Size(80, 44)),
             child: Text(confirmLabel),
           ),

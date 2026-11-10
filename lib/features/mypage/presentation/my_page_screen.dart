@@ -61,10 +61,10 @@ class MyPageScreen extends ConsumerWidget {
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundColor: AppColors.peach,
+                  backgroundColor: AppColors.mintMist,
                   child: Text(
                     (profile?.displayName ?? '보').characters.first,
-                    style: const TextStyle(color: AppColors.burgundy, fontWeight: FontWeight.w800, fontSize: 22),
+                    style: const TextStyle(color: AppColors.mintDeep, fontWeight: FontWeight.w800, fontSize: 22),
                   ),
                 ),
                 const SizedBox(width: 14),

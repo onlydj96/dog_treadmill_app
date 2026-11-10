@@ -5,7 +5,7 @@ enum ConsentType {
   terms(
     dbValue: 'terms',
     title: '서비스 이용약관',
-    description: '반려견 AI 헬스장 서비스 이용에 관한 약관입니다.',
+    description: 'PawFit 서비스 이용에 관한 약관입니다.',
     isRequired: true,
   ),
   privacy(

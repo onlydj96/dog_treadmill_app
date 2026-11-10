@@ -120,7 +120,7 @@ class _LiveSessionCard extends ConsumerWidget {
                 Row(
                   children: [
                     if (session.status == SessionStatus.running) ...[
-                      const PulsingDot(color: AppColors.peach),
+                      const PulsingDot(color: AppColors.mint),
                       const SizedBox(width: 8),
                     ],
                     Text(
@@ -148,7 +148,7 @@ class _LiveSessionCard extends ConsumerWidget {
                         const SizedBox(height: 4),
                         Text(
                           '목표 ${Fmt.durationMinutes(target)}',
-                          style: const TextStyle(color: AppColors.peach, fontWeight: FontWeight.w600, fontSize: 13),
+                          style: const TextStyle(color: AppColors.mintLight, fontWeight: FontWeight.w600, fontSize: 13),
                         ),
                       ],
                     ],
@@ -192,7 +192,7 @@ class _LiveSessionCard extends ConsumerWidget {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.shield_outlined, color: AppColors.peach, size: 18),
+                      const Icon(Icons.shield_outlined, color: AppColors.mintLight, size: 18),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -212,55 +212,34 @@ class _LiveSessionCard extends ConsumerWidget {
   }
 }
 
+/// 진행 중인 운동이 없을 때 — 건강 탭의 '리포트 없음' 카드와 같은 가운데 정렬 빈 상태.
+/// 다음 예약이 있으면 홈과 같은 '다음 예약' 섹션으로 따로 보여준다.
 class _NoLiveSession extends ConsumerWidget {
   const _NoLiveSession();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final next = ref.watch(nextBookingProvider).valueOrNull;
 
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(color: scheme.primaryContainer, shape: BoxShape.circle),
-                child: Icon(Icons.directions_run_rounded, color: scheme.onPrimaryContainer),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('진행 중인 운동이 없어요', style: theme.textTheme.titleMedium),
-                    Text(
-                      '운동이 시작되면 이곳에서 실시간으로 확인할 수 있어요.',
-                      style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppCard(
+          child: EmptyState(
+            compact: true,
+            icon: Icons.directions_run_rounded,
+            title: '진행 중인 운동이 없어요',
+            message: '운동이 시작되면 이곳에서 실시간으로 확인할 수 있어요.',
+            actionLabel: next == null ? '운동 예약하기' : null,
+            onAction: next == null ? () => context.push(AppRoutes.bookingNew) : null,
           ),
-          const SizedBox(height: 16),
-          if (next != null) ...[
-            Text('다음 예약', style: TextStyle(fontWeight: FontWeight.w700, color: scheme.onSurfaceVariant)),
-            const SizedBox(height: 8),
-            BookingCard(booking: next, onTap: () => context.push(AppRoutes.bookingDetail(next.id))),
-          ] else
-            FilledButton.icon(
-              onPressed: () => context.push(AppRoutes.bookingNew),
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('운동 예약하기'),
-            ),
+        ),
+        if (next != null) ...[
+          const SizedBox(height: 28),
+          SectionHeader(title: '다음 예약', actionLabel: '예약 내역', onAction: () => context.go(AppRoutes.booking)),
+          BookingCard(booking: next, onTap: () => context.push(AppRoutes.bookingDetail(next.id))),
         ],
-      ),
+      ],
     );
   }
 }
@@ -322,10 +301,13 @@ class _RecentRecords extends ConsumerWidget {
           ),
           data: (list) {
             if (list.isEmpty) {
-              return const EmptyState(
-                icon: Icons.insights_rounded,
-                title: '아직 운동 기록이 없어요',
-                message: '운동을 마치면 시간, 거리, 속도가 기록돼요.',
+              return const AppCard(
+                child: EmptyState(
+                  compact: true,
+                  icon: Icons.insights_rounded,
+                  title: '아직 운동 기록이 없어요',
+                  message: '운동을 마치면 시간, 거리, 속도가 기록돼요.',
+                ),
               );
             }
             return Column(

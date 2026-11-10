@@ -71,10 +71,13 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                     ? (list.where((b) => b.isUpcoming(now)).toList()..sort((a, b) => a.startAt.compareTo(b.startAt)))
                     : list.where((b) => !b.isUpcoming(now)).toList();
                 if (items.isEmpty) {
-                  return EmptyState(
-                    icon: Icons.event_note_rounded,
-                    title: _tab == _BookingTab.upcoming ? '예정된 예약이 없어요' : '지난 예약이 없어요',
-                    message: _tab == _BookingTab.upcoming ? '원하는 시간에 트레드밀을 예약해 보세요.' : null,
+                  return AppCard(
+                    child: EmptyState(
+                      compact: true,
+                      icon: Icons.event_note_rounded,
+                      title: _tab == _BookingTab.upcoming ? '예정된 예약이 없어요' : '지난 예약이 없어요',
+                      message: _tab == _BookingTab.upcoming ? '원하는 시간에 트레드밀을 예약해 보세요.' : null,
+                    ),
                   );
                 }
                 return Column(
@@ -108,7 +111,7 @@ class _NewBookingCard extends ConsumerWidget {
     final remaining = usable.fold<int>(0, (sum, m) => sum + m.remainingSessions);
 
     return Container(
-      decoration: BoxDecoration(color: AppColors.peach, borderRadius: BorderRadius.circular(28)),
+      decoration: BoxDecoration(color: AppColors.mintMist, borderRadius: BorderRadius.circular(28)),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -118,26 +121,26 @@ class _NewBookingCard extends ConsumerWidget {
             onTap: () => context.push(AppRoutes.membership),
             child: Row(
               children: [
-                const Icon(Icons.confirmation_number_rounded, color: AppColors.burgundy),
+                const Icon(Icons.confirmation_number_rounded, color: AppColors.mintDeep),
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
                     '사용 가능한 이용권',
-                    style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.burgundyDeep),
+                    style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.mintInk),
                   ),
                 ),
                 Text.rich(
                   TextSpan(
                     children: [
-                      TextSpan(text: '$remaining', style: AppText.numeric(22, color: AppColors.burgundyDeep)),
+                      TextSpan(text: '$remaining', style: AppText.numeric(22, color: AppColors.mintInk)),
                       const TextSpan(
                         text: ' 회',
-                        style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.burgundyDeep),
+                        style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.mintInk),
                       ),
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right_rounded, color: AppColors.burgundy),
+                const Icon(Icons.chevron_right_rounded, color: AppColors.mintDeep),
               ],
             ),
           ),

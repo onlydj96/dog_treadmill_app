@@ -123,7 +123,7 @@ class _ConsentCard extends StatelessWidget {
               StatusBadge(
                 label: type.isRequired ? '필수' : '선택',
                 tone: type.isRequired
-                    ? const StatusTone(foreground: Colors.white, background: AppColors.vermilion)
+                    ? const StatusTone(foreground: Colors.white, background: AppColors.mintDeep)
                     : scheme.neutralTone,
                 dense: true,
               ),

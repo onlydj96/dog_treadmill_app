@@ -41,8 +41,9 @@ class MembershipScreen extends ConsumerWidget {
               onRetry: () => ref.invalidate(membershipsProvider),
               data: (memberships) {
                 if (memberships.isEmpty) {
-                  return const AppCard(
-                    child: Text('보유한 이용권이 없어요. 아래 상품을 지점에서 구매하면 앱에서 바로 예약에 사용할 수 있어요.'),
+                  return const InlineEmptyCard(
+                    icon: Icons.confirmation_number_outlined,
+                    message: '보유한 이용권이 없어요. 아래 상품을 지점에서 구매하면 앱에서 바로 예약에 사용할 수 있어요.',
                   );
                 }
                 final sorted = [...memberships]..sort((a, b) {
@@ -111,7 +112,7 @@ class _MembershipCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: usable ? AppColors.burgundy : scheme.surfaceContainerHigh,
+        color: usable ? AppColors.charcoal : scheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -132,7 +133,7 @@ class _MembershipCard extends StatelessWidget {
               StatusBadge(
                 label: usable && daysLeft <= 14 ? 'D-$daysLeft' : membership.statusLabel,
                 tone: usable
-                    ? const StatusTone(foreground: AppColors.burgundyDeep, background: AppColors.peach)
+                    ? const StatusTone(foreground: AppColors.mintInk, background: AppColors.mintMist)
                     : scheme.neutralTone,
                 dense: true,
               ),
@@ -151,7 +152,7 @@ class _MembershipCard extends StatelessWidget {
                 child: Text(
                   '/ ${membership.totalSessions}회 남음',
                   style:
-                      TextStyle(color: usable ? AppColors.peach : scheme.onSurfaceVariant, fontWeight: FontWeight.w600),
+                      TextStyle(color: usable ? AppColors.mintLight : scheme.onSurfaceVariant, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -162,7 +163,7 @@ class _MembershipCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: ratio,
               minHeight: 8,
-              color: usable ? AppColors.peach : scheme.outline,
+              color: usable ? AppColors.mint : scheme.outline,
               backgroundColor: usable ? Colors.white.withValues(alpha: 0.18) : scheme.surfaceContainerHighest,
             ),
           ),
@@ -196,8 +197,8 @@ class _PlanCard extends StatelessWidget {
             width: 52,
             height: 52,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: AppColors.peach, borderRadius: BorderRadius.circular(16)),
-            child: Text('${plan.totalSessions}회', style: AppText.numeric(15, color: AppColors.burgundyDeep)),
+            decoration: BoxDecoration(color: AppColors.mintMist, borderRadius: BorderRadius.circular(16)),
+            child: Text('${plan.totalSessions}회', style: AppText.numeric(15, color: AppColors.mintInk)),
           ),
           const SizedBox(width: 14),
           Expanded(

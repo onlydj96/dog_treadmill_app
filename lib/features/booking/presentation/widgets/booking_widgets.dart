@@ -51,7 +51,7 @@ class BookingCard extends StatelessWidget {
             width: 58,
             padding: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
-              color: dimmed ? scheme.surfaceContainerHigh : AppColors.peach,
+              color: dimmed ? scheme.surfaceContainerHigh : AppColors.mintMist,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -61,16 +61,16 @@ class BookingCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w700,
-                    color: dimmed ? scheme.onSurfaceVariant : AppColors.burgundy,
+                    color: dimmed ? scheme.onSurfaceVariant : AppColors.mintDeep,
                   ),
                 ),
                 Text(
                   '${start.day}',
-                  style: AppText.numeric(24, color: dimmed ? scheme.onSurfaceVariant : AppColors.burgundyDeep),
+                  style: AppText.numeric(24, color: dimmed ? scheme.onSurfaceVariant : AppColors.mintInk),
                 ),
                 Text(
                   Fmt.weekday(start),
-                  style: TextStyle(fontSize: 11.5, color: dimmed ? scheme.onSurfaceVariant : AppColors.burgundy),
+                  style: TextStyle(fontSize: 11.5, color: dimmed ? scheme.onSurfaceVariant : AppColors.mintDeep),
                 ),
               ],
             ),
@@ -140,12 +140,12 @@ class DateStrip extends StatelessWidget {
         itemBuilder: (context, index) {
           final date = today.add(Duration(days: index));
           final isSelected = DateUtils.isSameDay(date, selected);
-          // 한국 달력 관례: 토요일 파랑 계열(보라), 일요일 빨강 계열(버밀리언)
+          // 한국 달력 관례: 토요일 파랑 계열(청록), 일요일 빨강 계열(코랄)
           final foreground = isSelected
-              ? Colors.white
+              ? scheme.onPrimary
               : switch (date.weekday) {
                   DateTime.saturday => scheme.tertiary,
-                  DateTime.sunday => scheme.primary,
+                  DateTime.sunday => scheme.error,
                   _ => scheme.onSurface,
                 };
           return Semantics(
@@ -271,7 +271,7 @@ class _SlotCell extends StatelessWidget {
     final hour12 = local.hour % 12 == 0 ? 12 : local.hour % 12;
     final label = '$hour12:${local.minute.toString().padLeft(2, '0')}';
     final foreground = selected
-        ? Colors.white
+        ? scheme.onPrimary
         : enabled
             ? scheme.onSurface
             : scheme.onSurfaceVariant.withValues(alpha: 0.5);
@@ -309,7 +309,7 @@ class _SlotCell extends StatelessWidget {
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: selected
-                        ? Colors.white.withValues(alpha: 0.85)
+                        ? scheme.onPrimary.withValues(alpha: 0.85)
                         : enabled && few
                             ? scheme.primary
                             : foreground,
