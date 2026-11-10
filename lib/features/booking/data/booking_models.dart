@@ -10,6 +10,7 @@ class Branch {
     required this.closesAt,
     required this.slotMinutes,
     this.phone,
+    this.is24Hours = false,
   });
 
   factory Branch.fromJson(Json json) => Branch(
@@ -20,6 +21,7 @@ class Branch {
         opensAt: _hhmm(json.strOrNull('opens_at')),
         closesAt: _hhmm(json.strOrNull('closes_at')),
         slotMinutes: json.intOr('slot_minutes', 30),
+        is24Hours: json.boolOr('is_24_hours'),
       );
 
   final String id;
@@ -32,7 +34,10 @@ class Branch {
   final String closesAt;
   final int slotMinutes;
 
-  String get hoursLabel => '$opensAt ~ $closesAt';
+  /// 24시간 운영 (DB: branches.is_24_hours). 자정을 넘기는 예약도 받는다.
+  final bool is24Hours;
+
+  String get hoursLabel => is24Hours ? '24시간' : '$opensAt ~ $closesAt';
 
   static String _hhmm(String? time) {
     if (time == null || time.length < 5) return '-';

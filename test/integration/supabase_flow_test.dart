@@ -259,16 +259,18 @@ void main() {
       final bookingRepo = BookingRepository(ownerClient);
       final branches = await bookingRepo.fetchBranches();
       final programs = await bookingRepo.fetchPrograms();
-      expect(branches, hasLength(2));
-      expect(programs, hasLength(4));
+      expect(branches, hasLength(3));
+      expect(programs, hasLength(6));
 
-      final branch = branches.firstWhere((b) => b.name == '강남점');
-      final program = programs.firstWhere((p) => p.durationMinutes == 30);
+      final branch = branches.firstWhere((b) => b.name == '용산 아이파크몰점');
+      expect(branch.hoursLabel, '10:30 ~ 20:30');
+      final program = programs.firstWhere((p) => p.name == '데일리 산책');
       final slots = await bookingRepo.fetchAvailableSlots(
         (branchId: branch.id, programId: program.id, date: tomorrowDate),
       );
-      expect(slots, isNotEmpty);
-      expect(slots.first.totalCount, 4);
+      // 10:30~20:30, 25분 프로그램 → 10:30부터 20:00까지 30분 간격 20칸
+      expect(slots, hasLength(20));
+      expect(slots.first.totalCount, 3);
 
       await service.from('memberships').insert({
         'user_id': ownerId,
@@ -291,7 +293,7 @@ void main() {
 
       final booking = await bookingRepo.fetchBooking(bookingId);
       expect(booking.status, BookingStatus.confirmed);
-      expect(booking.branch?.name, '강남점');
+      expect(booking.branch?.name, '용산 아이파크몰점');
       expect(booking.treadmill?.deviceName, isNotEmpty);
       expect(booking.program?.id, program.id);
       expect(booking.dog?.name, '코코');

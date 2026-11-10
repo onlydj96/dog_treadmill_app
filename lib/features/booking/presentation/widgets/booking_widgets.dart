@@ -211,8 +211,8 @@ class SlotGrid extends StatelessWidget {
       );
     }
 
-    final morning = slots.where((s) => s.start.toLocal().hour < 12).toList();
-    final afternoon = slots.where((s) => s.start.toLocal().hour >= 12).toList();
+    // 24시간 지점은 하루 48칸이라 시간대별로 나눠 보여 준다. 비어 있는 시간대는 숨긴다.
+    const periods = [('새벽', 0, 6), ('오전', 6, 12), ('오후', 12, 18), ('저녁', 18, 24)];
 
     Widget group(String title, List<TimeSlot> items) {
       if (items.isEmpty) return const SizedBox.shrink();
@@ -251,7 +251,16 @@ class SlotGrid extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [group('오전', morning), group('오후', afternoon)],
+      children: [
+        for (final (title, from, to) in periods)
+          group(
+            title,
+            slots.where((s) {
+              final hour = s.start.toLocal().hour;
+              return hour >= from && hour < to;
+            }).toList(),
+          ),
+      ],
     );
   }
 }

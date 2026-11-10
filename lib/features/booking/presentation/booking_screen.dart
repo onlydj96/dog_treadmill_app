@@ -210,7 +210,15 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                                 ],
                               ),
                             ),
-                            Text(item.hoursLabel, style: AppText.numeric(13, weight: FontWeight.w600)),
+                            if (item.is24Hours)
+                              StatusBadge(
+                                label: item.hoursLabel,
+                                tone: Theme.of(context).colorScheme.calmTone,
+                                icon: Icons.schedule_rounded,
+                                dense: true,
+                              )
+                            else
+                              Text(item.hoursLabel, style: AppText.numeric(13, weight: FontWeight.w600)),
                           ],
                         ),
                       ),

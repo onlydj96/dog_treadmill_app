@@ -51,7 +51,7 @@ supabase/
   migrations/  스키마 · RLS · 예약/운동 RPC · 알림 트리거 · Storage · Realtime
   functions/   delete-account (회원 탈퇴)
   tests/       pgTAP 테스트
-  seed.sql     로컬 개발용 기준 데이터 (지점·트레드밀·프로그램·이용권 상품·FAQ·공지)
+  seed.sql     로컬 개발용 샘플 데이터 (트레드밀·이용권 상품·FAQ·공지)
 docs/          AI 서버 결과 저장 규격
 test/          단위·위젯 테스트, 로컬 Supabase 통합 테스트
 ```
@@ -66,7 +66,8 @@ npx supabase db push                          # supabase/migrations 적용
 npx supabase functions deploy delete-account  # 회원 탈퇴 함수
 ```
 
-- `seed.sql`은 샘플 데이터라 원격에는 자동 적용되지 않습니다. 실제 지점·트레드밀·프로그램·이용권 상품을 넣어 주세요.
+- 지점 3곳과 운동 프로그램 6개는 마이그레이션(`20261110000200_branches_and_programs.sql`)으로 함께 들어갑니다.
+- `seed.sql`은 샘플 데이터라 원격에는 자동 적용되지 않습니다. 트레드밀 기기와 이용권 상품은 실제 값으로 넣어 주세요. 트레드밀이 없는 지점은 모든 시간이 마감으로 보입니다.
 - 운영자 계정은 `public.users.role = 'admin'`으로 지정하고, 담당 지점이 있으면 `managed_branch_id`를 넣습니다(NULL이면 전 지점).
 
 ### 2. 앱 실행
@@ -98,8 +99,8 @@ npx supabase status -o env
 | 명령 | 내용 |
 |---|---|
 | `flutter analyze` | 정적 분석 (strict-casts, strict-raw-types) |
-| `flutter test` | 단위·위젯 테스트 37개 (통합 테스트는 키가 없으면 건너뜀) |
-| `npx supabase test db` | pgTAP 43개: RLS 격리, 중복 예약 차단, 이용권 차감·복구, 운동 세션, 알림 설정 |
+| `flutter test` | 단위·위젯 테스트 46개 (통합 테스트는 키가 없으면 건너뜀) |
+| `npx supabase test db` | pgTAP 49개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 이용권 차감·복구, 운동 세션, 알림 설정 |
 | `flutter test test/integration --dart-define-from-file=<로컬 키 파일>` | 로컬 Supabase 대상 12개: 저장소 계층 전체, Realtime, Storage, Edge Function |
 
 통합 테스트 키 파일에는 `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`가 필요하며,
@@ -146,6 +147,9 @@ npx supabase status -o env
 
 | 항목 | 기본값 | 변경 위치 |
 |---|---|---|
+| 지점 운영 시간 | 몰 영업시간을 따름: 용산 10:30~20:30(매장 구역 미정이라 가장 이른 마감 기준), 고양 10:00~22:00, 영등포 10:30~22:00. 요일별·명절 예외 시간은 지원하지 않음 | `branches.opens_at`·`closes_at` |
+| 24시간 지점 | 00:00~24:00으로 넣으면 `is_24_hours`가 켜져 하루 전체 슬롯과 자정을 넘기는 예약을 받음 (현재 해당 지점 없음) | `branches.is_24_hours` |
+| 운동 프로그램 속도 | 비워 둠(체격별 적정 속도 차이가 커서 숫자 하나로 안내하지 않음) | `exercise_programs.target_speed_kmh` |
 | 보호자 변경·취소 마감 | 예약 시작 1시간 전 | `private.booking_change_deadline()`, `Booking.changeDeadline` |
 | 이용권 없이 예약 | 예약 대기(현장 결제) 상태로 접수 | `create_booking` |
 | 취소 시 이용권 | 사용한 1회 복구 | `cancel_booking` |

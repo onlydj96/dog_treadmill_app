@@ -3,7 +3,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(43);
+select plan(49);
 
 -- ---------------------------------------------------------------------
 -- 준비: 보호자 A, 다른 보호자 B, 관리자 C
@@ -26,12 +26,29 @@ insert into public.memberships (id, user_id, plan_name, total_sessions, remainin
 values ('eeeeeeee-0000-4000-8000-000000000001', 'aaaaaaaa-0000-4000-8000-000000000001',
         '10회 이용권', 10, 10, now() + interval '90 days');
 
+-- 테스트 전용 지점·트레드밀·프로그램 (운영 기준 데이터가 바뀌어도 테스트가 흔들리지 않게 직접 만든다)
+insert into public.branches (id, name, address, opens_at, closes_at, slot_minutes)
+values
+  ('f0000000-0000-4000-8000-000000000001', '테스트 일반 지점', '서울', '10:00', '21:00', 30),
+  ('f0000000-0000-4000-8000-000000000002', '테스트 24시간 지점', '서울', '00:00', '24:00', 30);
+
+insert into public.treadmills (branch_id, device_name)
+select 'f0000000-0000-4000-8000-000000000001'::uuid, 'T-0' || n from generate_series(1, 4) as n
+union all
+select 'f0000000-0000-4000-8000-000000000002'::uuid, 'T-0' || n from generate_series(1, 2) as n;
+
+insert into public.exercise_programs (id, name, duration_minutes, intensity)
+values
+  ('f1000000-0000-4000-8000-000000000030', '테스트 30분', 30, 'medium'),
+  ('f1000000-0000-4000-8000-000000000040', '테스트 40분', 40, 'high');
+
 create temporary table t_ctx as
 select
   ((now() at time zone 'Asia/Seoul')::date + 1) as tomorrow,
-  '11111111-1111-4111-8111-111111111111'::uuid as gangnam,
-  (select id from public.exercise_programs where name = '표준 유산소') as program_30,
-  (select id from public.exercise_programs where name = '근력 강화 인터벌') as program_40;
+  'f0000000-0000-4000-8000-000000000001'::uuid as regular,
+  'f0000000-0000-4000-8000-000000000002'::uuid as allday,
+  'f1000000-0000-4000-8000-000000000030'::uuid as program_30,
+  'f1000000-0000-4000-8000-000000000040'::uuid as program_40;
 grant select on t_ctx to authenticated;
 
 -- 1~3: 회원가입 트리거
@@ -98,29 +115,29 @@ set local request.jwt.claims to '{"sub": "aaaaaaaa-0000-4000-8000-000000000001",
 
 select is(
   (select count(*)::int from public.get_available_slots(
-    (select gangnam from t_ctx), (select tomorrow from t_ctx), (select program_30 from t_ctx))),
+    (select regular from t_ctx), (select tomorrow from t_ctx), (select program_30 from t_ctx))),
   22, '10:00~21:00, 30분 프로그램이면 30분 간격 22개 슬롯');
 
 select is(
   (select min(available_count)::int from public.get_available_slots(
-    (select gangnam from t_ctx), (select tomorrow from t_ctx), (select program_30 from t_ctx))),
+    (select regular from t_ctx), (select tomorrow from t_ctx), (select program_30 from t_ctx))),
   4, '예약이 없으면 모든 슬롯에 트레드밀 4대가 비어 있다');
 
 select is(
   (select status from public.create_booking(
-    'd0000000-0000-4000-8000-000000000001', (select gangnam from t_ctx), (select program_30 from t_ctx),
+    'd0000000-0000-4000-8000-000000000001', (select regular from t_ctx), (select program_30 from t_ctx),
     ((select tomorrow from t_ctx) + time '10:00') at time zone 'Asia/Seoul')),
   'pending', '이용권 없이 예약하면 예약 대기(pending)');
 
 select throws_ok($$
   select public.create_booking(
-    'd0000000-0000-4000-8000-000000000001', (select gangnam from t_ctx), (select program_30 from t_ctx),
+    'd0000000-0000-4000-8000-000000000001', (select regular from t_ctx), (select program_30 from t_ctx),
     ((select tomorrow from t_ctx) + time '10:00') at time zone 'Asia/Seoul')
 $$, '23P01', 'DOG_ALREADY_BOOKED', '같은 반려견은 같은 시간에 중복 예약할 수 없다');
 
 select is(
   (select status from public.create_booking(
-    'd0000000-0000-4000-8000-000000000002', (select gangnam from t_ctx), (select program_30 from t_ctx),
+    'd0000000-0000-4000-8000-000000000002', (select regular from t_ctx), (select program_30 from t_ctx),
     ((select tomorrow from t_ctx) + time '10:00') at time zone 'Asia/Seoul',
     'eeeeeeee-0000-4000-8000-000000000001')),
   'confirmed', '이용권을 적용하면 예약 확정(confirmed)');
@@ -136,46 +153,84 @@ select is(
 
 select is(
   (select available_count from public.get_available_slots(
-    (select gangnam from t_ctx), (select tomorrow from t_ctx), (select program_30 from t_ctx))
+    (select regular from t_ctx), (select tomorrow from t_ctx), (select program_30 from t_ctx))
    where slot_start = ((select tomorrow from t_ctx) + time '10:00') at time zone 'Asia/Seoul'),
   2, '10:00 슬롯 잔여 트레드밀 2대');
 
 select is(
   (select available_count from public.get_available_slots(
-    (select gangnam from t_ctx), (select tomorrow from t_ctx), (select program_30 from t_ctx))
+    (select regular from t_ctx), (select tomorrow from t_ctx), (select program_30 from t_ctx))
    where slot_start = ((select tomorrow from t_ctx) + time '10:30') at time zone 'Asia/Seoul'),
   4, '겹치지 않는 10:30 슬롯은 4대 모두 가능');
 
 select throws_ok($$
   select public.create_booking(
-    'd0000000-0000-4000-8000-000000000003', (select gangnam from t_ctx), (select program_30 from t_ctx),
+    'd0000000-0000-4000-8000-000000000003', (select regular from t_ctx), (select program_30 from t_ctx),
     ((select tomorrow from t_ctx) + time '10:15') at time zone 'Asia/Seoul')
 $$, '22023', 'SLOT_NOT_AVAILABLE', '슬롯 간격에 맞지 않는 시간은 예약할 수 없다');
 
 select throws_ok($$
   select public.create_booking(
-    'd0000000-0000-4000-8000-000000000003', (select gangnam from t_ctx), (select program_40 from t_ctx),
+    'd0000000-0000-4000-8000-000000000003', (select regular from t_ctx), (select program_40 from t_ctx),
     ((select tomorrow from t_ctx) + time '20:30') at time zone 'Asia/Seoul')
 $$, '22023', 'SLOT_NOT_AVAILABLE', '영업 종료(21:00) 이후까지 이어지는 예약은 할 수 없다');
 
 select throws_ok($$
   select public.create_booking(
-    'd0000000-0000-4000-8000-000000000003', (select gangnam from t_ctx), (select program_30 from t_ctx),
+    'd0000000-0000-4000-8000-000000000003', (select regular from t_ctx), (select program_30 from t_ctx),
     now() - interval '1 day')
 $$, '22023', 'SLOT_IN_PAST', '지난 시간은 예약할 수 없다');
 
 select lives_ok($$
   select public.create_booking(
-    ('d0000000-0000-4000-8000-00000000000' || n)::uuid, (select gangnam from t_ctx), (select program_30 from t_ctx),
+    ('d0000000-0000-4000-8000-00000000000' || n)::uuid, (select regular from t_ctx), (select program_30 from t_ctx),
     ((select tomorrow from t_ctx) + time '10:00') at time zone 'Asia/Seoul')
   from (values ('3'), ('4')) as v(n)
 $$, '남은 트레드밀 2대도 예약할 수 있다');
 
 select throws_ok($$
   select public.create_booking(
-    'd0000000-0000-4000-8000-000000000005', (select gangnam from t_ctx), (select program_30 from t_ctx),
+    'd0000000-0000-4000-8000-000000000005', (select regular from t_ctx), (select program_30 from t_ctx),
     ((select tomorrow from t_ctx) + time '10:00') at time zone 'Asia/Seoul')
 $$, '23P01', 'SLOT_FULL', '트레드밀이 모두 예약되면 SLOT_FULL');
+
+select lives_ok($$
+  select public.create_booking(
+    'd0000000-0000-4000-8000-000000000004', (select regular from t_ctx), (select program_30 from t_ctx),
+    ((select tomorrow from t_ctx) + time '20:30') at time zone 'Asia/Seoul')
+$$, '영업 종료 시각(21:00)에 딱 맞춰 끝나는 예약은 받는다');
+
+-- ---------------------------------------------------------------------
+-- 24시간 지점: 하루 전체 슬롯, 자정을 넘기는 예약
+-- ---------------------------------------------------------------------
+select ok(
+  (select is_24_hours from public.branches where id = (select allday from t_ctx))
+  and not (select is_24_hours from public.branches where id = (select regular from t_ctx)),
+  '00:00~24:00 지점만 24시간 지점으로 표시된다');
+
+select is(
+  (select count(*)::int from public.get_available_slots(
+    (select allday from t_ctx), (select tomorrow from t_ctx), (select program_40 from t_ctx))),
+  48, '24시간 지점은 40분 프로그램도 00:00~23:30 48개 슬롯을 연다');
+
+select is(
+  (select end_at from public.create_booking(
+    'd0000000-0000-4000-8000-000000000005', (select allday from t_ctx), (select program_40 from t_ctx),
+    ((select tomorrow from t_ctx) + time '23:30') at time zone 'Asia/Seoul')),
+  ((select tomorrow from t_ctx) + 1 + time '00:10') at time zone 'Asia/Seoul',
+  '24시간 지점은 자정을 넘기는 예약(23:30~다음 날 00:10)을 받는다');
+
+select is(
+  (select available_count from public.get_available_slots(
+    (select allday from t_ctx), (select tomorrow from t_ctx) + 1, (select program_30 from t_ctx))
+   where slot_start = ((select tomorrow from t_ctx) + 1 + time '00:00') at time zone 'Asia/Seoul'),
+  1, '자정을 넘긴 예약은 다음 날 00:00 슬롯 잔여 대수에 반영된다');
+
+select throws_ok($$
+  select public.create_booking(
+    'd0000000-0000-4000-8000-000000000004', (select allday from t_ctx), (select program_30 from t_ctx),
+    ((select tomorrow from t_ctx) + time '03:15') at time zone 'Asia/Seoul')
+$$, '22023', 'SLOT_NOT_AVAILABLE', '24시간 지점도 슬롯 간격에 맞지 않는 시간은 예약할 수 없다');
 
 -- ---------------------------------------------------------------------
 -- 취소 / 변경

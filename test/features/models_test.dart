@@ -110,6 +110,20 @@ void main() {
       expect(booking.usesMembership, isTrue);
     });
 
+    test('24시간 지점은 운영 시간을 "24시간"으로 표시한다', () {
+      final branch = Branch.fromJson({
+        'id': 'br2',
+        'name': '24시간 지점',
+        'address': '서울',
+        'opens_at': '00:00:00',
+        'closes_at': '24:00:00',
+        'slot_minutes': 30,
+        'is_24_hours': true,
+      });
+      expect(branch.is24Hours, isTrue);
+      expect(branch.hoursLabel, '24시간');
+    });
+
     test('시작 1시간 전까지만 변경·취소할 수 있다', () {
       final now = DateTime(2026, 11, 10, 9);
       expect(Booking.fromJson(bookingJson(start: DateTime(2026, 11, 10, 10, 30))).canModify(now), isTrue);

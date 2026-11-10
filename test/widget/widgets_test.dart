@@ -97,6 +97,8 @@ void main() {
 
     expect(find.text('오전'), findsOneWidget);
     expect(find.text('오후'), findsOneWidget);
+    expect(find.text('새벽'), findsNothing, reason: '슬롯이 없는 시간대는 숨긴다');
+    expect(find.text('저녁'), findsNothing);
     expect(find.text('마감'), findsOneWidget);
     expect(find.text('잔여 4'), findsOneWidget);
 
@@ -105,6 +107,36 @@ void main() {
 
     await tester.tap(find.text('3:00'));
     expect(selected?.start, base.add(const Duration(hours: 15)));
+  });
+
+  testWidgets('시간 슬롯: 24시간 지점은 새벽·오전·오후·저녁으로 나눈다', (tester) async {
+    final base = DateTime(2026, 11, 10);
+    TimeSlot slot(int minutes) => TimeSlot(
+          start: base.add(Duration(minutes: minutes)),
+          end: base.add(Duration(minutes: minutes + 30)),
+          availableCount: 2,
+          totalCount: 2,
+        );
+    // 00:00~23:30, 30분 간격 48칸
+    final slots = [for (var m = 0; m < 24 * 60; m += 30) slot(m)];
+
+    await tester.pumpWidget(_app(
+      Scaffold(
+        body: SingleChildScrollView(
+          child: SlotGrid(slots: slots, selectedStart: null, onSelected: (_) {}),
+        ),
+      ),
+    ));
+
+    final headers = ['새벽', '오전', '오후', '저녁'];
+    for (final header in headers) {
+      expect(find.text(header), findsOneWidget);
+    }
+    // 시간대 순서대로 위에서 아래로 놓인다.
+    final tops = [for (final header in headers) tester.getTopLeft(find.text(header)).dy];
+    expect(tops, orderedEquals([...tops]..sort()));
+    // 각 시간대 12칸씩 (6시간 × 30분)
+    expect(find.text('잔여 2'), findsNWidgets(48));
   });
 
   testWidgets('예약 상태 배지는 상태별 문구를 보여준다', (tester) async {
