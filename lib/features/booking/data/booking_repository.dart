@@ -91,6 +91,11 @@ class BookingRepository {
     });
   }
 
+  /// 무인 매장 셀프 체크인 (본인 예약, 시작 15분 전부터 종료 전까지)
+  Future<void> checkIn(String bookingId) async {
+    await _client.rpc<Json>('self_check_in_booking', params: {'p_booking_id': bookingId});
+  }
+
   Future<void> rescheduleBooking(String bookingId, DateTime newStartAt) async {
     await _client.rpc<Json>('reschedule_booking', params: {
       'p_booking_id': bookingId,

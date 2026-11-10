@@ -99,8 +99,8 @@ npx supabase status -o env
 | 명령 | 내용 |
 |---|---|
 | `flutter analyze` | 정적 분석 (strict-casts, strict-raw-types) |
-| `flutter test` | 단위·위젯 테스트 46개 (통합 테스트는 키가 없으면 건너뜀) |
-| `npx supabase test db` | pgTAP 49개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 이용권 차감·복구, 운동 세션, 알림 설정 |
+| `flutter test` | 단위·위젯 테스트 51개 (통합 테스트는 키가 없으면 건너뜀) |
+| `npx supabase test db` | pgTAP 54개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 셀프 체크인, 이용권 차감·복구, 운동 세션, 알림 설정 |
 | `flutter test test/integration --dart-define-from-file=<로컬 키 파일>` | 로컬 Supabase 대상 12개: 저장소 계층 전체, Realtime, Storage, Edge Function |
 
 통합 테스트 키 파일에는 `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`가 필요하며,
@@ -115,18 +115,26 @@ npx supabase status -o env
 | 5장 DB · 6장 Storage · 8장 권한 | 완료 (RLS, 서버 측 예약·관리자 검증, 영상/AI 학습 동의 분리) |
 | 3.3 실시간 운동 현황 | 완료 (Realtime 구독, 영상은 전송하지 않음) |
 | 3.4 AI 리포트 UI · 3.4-D 피로 징후 | UI 완료 / 피로 징후는 문서대로 추후 개발 |
-| 결제(PG) 연동 | **미구현** — PG사 결정 필요. 현재는 지점 데스크 구매 + 앱 예약 시 이용권 차감 또는 현장 결제(예약 대기) |
+| 결제(PG) 연동 | **형식만** — 예약 결제 단계와 이용권 구매 시트에 "앱 결제(준비 중)" 자리만 있음. PG사 결정 필요. 현재는 매장 구매 이용권 차감 또는 현장 결제(예약 대기) |
 | FCM 푸시 | **미구현** — Firebase 프로젝트 필요. 알림은 DB 트리거 → 앱 내 알림함(Realtime)으로 동작 |
 | 운영자 대시보드 (Flutter Web) | **미구현** — 필요한 DB 함수는 준비됨 (아래) |
 | AI 서버 (FastAPI) | **미구현** — 결과 저장 규격: [docs/analysis-metrics.md](docs/analysis-metrics.md) |
 
-### 운영자 대시보드·트레드밀 연동용 DB 함수
+### 무인 운영 흐름 (DOCUMENT.md 3.3 대비)
+
+매장에 직원이 없어 문서의 "현장 운영자" 역할을 보호자와 트레드밀 기기가 나눠 맡습니다.
+
+1. 보호자가 앱에서 셀프 체크인합니다: `self_check_in_booking(booking_id)`. 본인 예약이면서 예약 대기·확정 상태일 때, 시작 15분 전부터 종료 전까지 가능합니다. 매장 도착 여부는 확인하지 않습니다.
+2. 보호자가 배정된 트레드밀 기기에서 운동을 시작하고, 이상하면 기기의 비상정지 버튼을 누릅니다. 앱은 조회 중심입니다.
+3. 트레드밀 기기는 지점 관리자 계정(`managed_branch_id`)으로 아래 함수를 호출해 세션을 기록합니다.
+
+### 운영자 대시보드·트레드밀 기기용 DB 함수
 
 관리자 계정으로 호출하며, 담당 지점 권한을 DB에서 검증합니다.
 
 | 함수 | 용도 |
 |---|---|
-| `check_in_booking(booking_id)` | 체크인 |
+| `check_in_booking(booking_id)` | 체크인 (대시보드·매장 기기용. 보호자는 `self_check_in_booking`) |
 | `start_exercise_session(booking_id)` | 운동 시작 (보호자 앱에 실시간 반영, 시작 알림) |
 | `update_exercise_session_metrics(session_id, speed, distance, duration, status)` | 실시간 지표 갱신, 일시정지/재개 |
 | `finish_exercise_session(session_id, completed, stop_reason)` | 종료/중단, 평균 속도 계산, 동의 시 AI 분석 대기열 등록 |
@@ -151,7 +159,8 @@ npx supabase status -o env
 | 24시간 지점 | 00:00~24:00으로 넣으면 `is_24_hours`가 켜져 하루 전체 슬롯과 자정을 넘기는 예약을 받음 (현재 해당 지점 없음) | `branches.is_24_hours` |
 | 운동 프로그램 속도 | 비워 둠(체격별 적정 속도 차이가 커서 숫자 하나로 안내하지 않음) | `exercise_programs.target_speed_kmh` |
 | 보호자 변경·취소 마감 | 예약 시작 1시간 전 | `private.booking_change_deadline()`, `Booking.changeDeadline` |
-| 이용권 없이 예약 | 예약 대기(현장 결제) 상태로 접수 | `create_booking` |
+| 이용권 없이 예약 | 예약 대기(현장 결제) 상태로 접수, 이용 당일 매장에서 결제. 앱 결제는 준비 중 | `create_booking` |
+| 셀프 체크인 | 예약 시작 15분 전 ~ 종료 전, 현장 결제 예약도 가능. 매장 도착 확인 없음 | `private.check_in_opens_before()`, `Booking.checkInOpensBefore` |
 | 취소 시 이용권 | 사용한 1회 복구 | `cancel_booking` |
 | AI 분석 | 영상 촬영 동의자만 대기열 등록 | `finish_exercise_session` |
 | 회원 탈퇴 시 결제 기록 | `user_id`만 비우고 보관 | `payments.user_id on delete set null` |

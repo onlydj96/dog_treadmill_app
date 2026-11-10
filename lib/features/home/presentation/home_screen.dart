@@ -249,7 +249,7 @@ class _NoDogCard extends StatelessWidget {
             Text('반려견을 등록해 주세요', style: theme.textTheme.titleLarge?.copyWith(color: Colors.white)),
             const SizedBox(height: 6),
             const Text(
-              '건강 정보와 운동 제한 사항을 함께 등록하면\n현장 운영자가 안전하게 운동을 진행할 수 있어요.',
+              '건강 정보와 운동 제한 사항을 함께 등록하면\n예약할 때 주의할 점을 알려 드려요.',
               style: TextStyle(color: AppColors.mintLight, height: 1.5),
             ),
             const SizedBox(height: 18),
@@ -441,9 +441,15 @@ class _NextBookingSection extends ConsumerWidget {
                 onAction: () => context.push(AppRoutes.bookingNew),
               );
             }
-            return BookingCard(
+            final card = BookingCard(
               booking: booking,
               onTap: () => context.push(AppRoutes.bookingDetail(booking.id)),
+            );
+            // 무인 매장: 체크인 시간이 되면 홈에서 바로 체크인할 수 있게 한다.
+            if (!booking.canCheckIn()) return card;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [card, const SizedBox(height: 10), CheckInButton(booking: booking)],
             );
           },
         ),

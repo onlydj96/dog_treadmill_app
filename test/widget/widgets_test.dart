@@ -3,7 +3,9 @@ import 'package:dog_treadmill_app/core/widgets/common.dart';
 import 'package:dog_treadmill_app/features/auth/data/auth_repository.dart';
 import 'package:dog_treadmill_app/features/auth/presentation/login_screen.dart';
 import 'package:dog_treadmill_app/features/booking/data/booking_models.dart';
+import 'package:dog_treadmill_app/features/booking/presentation/booking_detail_screen.dart';
 import 'package:dog_treadmill_app/features/booking/presentation/widgets/booking_widgets.dart';
+import 'package:dog_treadmill_app/features/booking/providers.dart';
 import 'package:dog_treadmill_app/features/consents/data/consent.dart';
 import 'package:dog_treadmill_app/features/consents/data/consent_repository.dart';
 import 'package:dog_treadmill_app/features/dogs/data/dog.dart';
@@ -300,6 +302,63 @@ void main() {
       expect(find.text('첫 분석 리포트를 준비하고 있어요'), findsOneWidget);
       expect(find.textContaining('동의'), findsNothing);
       expect(find.textContaining('건을 분석하고 있어요'), findsNothing);
+    });
+  });
+
+  group('예약 상세: 무인 매장 셀프 체크인', () {
+    Booking booking(Duration startsIn, {BookingStatus status = BookingStatus.confirmed}) {
+      final start = DateTime.now().add(startsIn);
+      return Booking(
+        id: 'b1',
+        dogId: 'd1',
+        branchId: 'br1',
+        treadmillId: 't1',
+        membershipId: 'm1',
+        startAt: start,
+        endAt: start.add(const Duration(minutes: 25)),
+        status: status,
+        createdAt: DateTime(2026, 11, 1),
+        treadmill: const Treadmill(id: 't1', deviceName: 'T-03'),
+      );
+    }
+
+    Future<void> pumpDetail(WidgetTester tester, Booking value) async {
+      tester.view
+        ..physicalSize = const Size(1080, 2600)
+        ..devicePixelRatio = 2;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(_app(
+        const BookingDetailScreen(bookingId: 'b1'),
+        overrides: [bookingDetailProvider.overrideWith((ref, id) async => value)],
+      ));
+      await tester.pump();
+      await tester.pump();
+    }
+
+    testWidgets('체크인 시간이 되면 체크인 버튼과 배정 트레드밀을 안내한다', (tester) async {
+      await pumpDetail(tester, booking(const Duration(minutes: 10)));
+      expect(find.byType(CheckInButton), findsOneWidget);
+      expect(find.textContaining('트레드밀 T-03에서 운동을 시작해 주세요'), findsOneWidget);
+      expect(find.text('예약 취소'), findsNothing, reason: '시작 1시간 전부터는 변경·취소 불가');
+    });
+
+    testWidgets('체크인 시간 전에는 변경·취소 버튼과 체크인 가능 시각을 안내한다', (tester) async {
+      await pumpDetail(tester, booking(const Duration(hours: 3)));
+      expect(find.byType(CheckInButton), findsNothing);
+      expect(find.text('예약 취소'), findsOneWidget);
+      expect(find.textContaining('부터 앱에서 체크인할 수 있어요'), findsOneWidget);
+    });
+
+    testWidgets('변경 마감 뒤 체크인 전에는 지점 전화 대신 1:1 문의를 안내한다', (tester) async {
+      await pumpDetail(tester, booking(const Duration(minutes: 40)));
+      expect(find.byType(CheckInButton), findsNothing);
+      expect(find.text('1:1 문의하기'), findsOneWidget);
+    });
+
+    testWidgets('체크인한 뒤에는 트레드밀에서 직접 운동을 시작하라고 안내한다', (tester) async {
+      await pumpDetail(tester, booking(const Duration(minutes: -5), status: BookingStatus.checkedIn));
+      expect(find.byType(CheckInButton), findsNothing);
+      expect(find.textContaining('체크인했어요. 트레드밀 T-03에서 운동을 시작하고'), findsOneWidget);
     });
   });
 }

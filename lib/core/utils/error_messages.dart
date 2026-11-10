@@ -14,7 +14,10 @@ const _rpcMessages = <String, String>{
   'MEMBERSHIP_NOT_USABLE': '선택한 이용권은 이 시간에 사용할 수 없어요. 잔여 횟수와 유효기간을 확인해 주세요.',
   'BOOKING_NOT_FOUND': '예약 정보를 찾을 수 없어요.',
   'BOOKING_NOT_CANCELLABLE': '이미 진행되었거나 취소된 예약이에요.',
-  'CHANGE_DEADLINE_PASSED': '예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요. 지점으로 문의해 주세요.',
+  'CHANGE_DEADLINE_PASSED': '예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요. 1:1 문의로 알려 주세요.',
+  'INVALID_BOOKING_STATUS': '이미 체크인했거나 끝난 예약이에요.',
+  'CHECK_IN_TOO_EARLY': '체크인은 예약 시작 15분 전부터 할 수 있어요.',
+  'CHECK_IN_CLOSED': '예약 시간이 지나 체크인할 수 없어요.',
 };
 
 const _authMessages = <String, String>{

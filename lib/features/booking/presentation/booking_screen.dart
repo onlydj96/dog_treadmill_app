@@ -94,7 +94,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       refreshBookingData(ref);
       if (!mounted) return;
       context.showMessage(
-        membership != null ? '예약이 확정되었어요.' : '예약이 접수되었어요. 방문하시면 현장에서 결제 후 이용할 수 있어요.',
+        membership != null ? '예약이 확정되었어요.' : '예약이 접수되었어요. 이용 당일 매장에서 결제해 주세요.',
       );
       context.pushReplacement(AppRoutes.bookingDetail(bookingId));
     } catch (error) {
@@ -276,7 +276,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                     ),
                   ),
           ),
-          const _StepHeader(number: 6, title: '이용권'),
+          const _StepHeader(number: 6, title: '결제'),
           Padding(
             padding: kPagePadding,
             child: Column(
@@ -308,6 +308,10 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                       ),
                     ),
                   ),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: _AppPaymentOption(),
+                ),
                 _SelectableCard(
                   selected: membership == null,
                   onTap: () => setState(() {
@@ -323,7 +327,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('현장 결제', style: TextStyle(fontWeight: FontWeight.w800)),
-                            Text('예약 대기로 접수되며 방문 시 결제합니다.', style: TextStyle(fontSize: 12.5)),
+                            Text('예약 대기로 접수되고, 이용 당일 매장에서 결제해요.', style: TextStyle(fontSize: 12.5)),
                           ],
                         ),
                       ),
@@ -333,7 +337,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               ],
             ),
           ),
-          const _StepHeader(number: 7, title: '요청 사항 (선택)'),
+          const _StepHeader(number: 7, title: '메모 (선택)'),
           Padding(
             padding: kPagePadding,
             child: TextField(
@@ -341,12 +345,15 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               maxLength: 500,
               maxLines: 3,
               minLines: 2,
-              decoration: const InputDecoration(hintText: '운영자에게 전달할 내용을 적어 주세요. (예: 낯선 소리에 예민해요)'),
+              decoration: const InputDecoration(hintText: '반려견에 대해 남겨 둘 내용을 적어 주세요. (예: 낯선 소리에 예민해요)'),
             ),
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(20, 4, 20, 0),
-            child: _Hint(text: '예약 시작 1시간 전까지 앱에서 변경·취소할 수 있어요. 이용권으로 예약한 경우 취소하면 횟수가 복구돼요.'),
+            child: _Hint(
+              text: '무인 매장이에요. 이용 당일 예약 시작 15분 전부터 앱에서 체크인하고, 배정된 트레드밀에서 운동을 시작해 주세요.\n'
+                  '예약 시작 1시간 전까지 앱에서 변경·취소할 수 있어요. 이용권으로 예약한 경우 취소하면 횟수가 복구돼요.',
+            ),
           ),
         ],
       ),
@@ -393,33 +400,68 @@ class _SelectableCard extends StatelessWidget {
   const _SelectableCard({required this.selected, required this.onTap, required this.child});
 
   final bool selected;
-  final VoidCallback onTap;
+
+  /// null이면 고를 수 없는 항목(예: 준비 중인 앱 결제)으로 흐리게 보여 준다.
+  final VoidCallback? onTap;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final enabled = onTap != null;
+    final card = Material(
+      color: selected ? scheme.primaryContainer : scheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: BorderSide(color: selected ? scheme.primary : scheme.outlineVariant, width: selected ? 1.6 : 1),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: DefaultTextStyle.merge(
+            style: TextStyle(color: selected ? scheme.onPrimaryContainer : scheme.onSurface),
+            child: child,
+          ),
+        ),
+      ),
+    );
     return Semantics(
       container: true,
       button: true,
+      enabled: enabled,
       selected: selected,
-      child: Material(
-        color: selected ? scheme.primaryContainer : scheme.surfaceContainerLowest,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-          side: BorderSide(color: selected ? scheme.primary : scheme.outlineVariant, width: selected ? 1.6 : 1),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(18),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: DefaultTextStyle.merge(
-              style: TextStyle(color: selected ? scheme.onPrimaryContainer : scheme.onSurface),
-              child: child,
+      child: enabled ? card : Opacity(opacity: 0.6, child: card),
+    );
+  }
+}
+
+/// 앱 결제(PG). 아직 연동 전이라 형식만 두고 고를 수 없게 한다.
+/// PG를 연동하면 선택할 수 있게 열고, 결제 완료 시 예약을 확정한다.
+class _AppPaymentOption extends StatelessWidget {
+  const _AppPaymentOption();
+
+  @override
+  Widget build(BuildContext context) {
+    return _SelectableCard(
+      selected: false,
+      onTap: null,
+      child: Row(
+        children: [
+          const Icon(Icons.smartphone_rounded, color: AppColors.mintDeep),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('앱 결제', style: TextStyle(fontWeight: FontWeight.w800)),
+                Text('카드·간편결제로 바로 결제하고 예약을 확정해요.', style: TextStyle(fontSize: 12.5)),
+              ],
             ),
           ),
-        ),
+          StatusBadge(label: '준비 중', tone: Theme.of(context).colorScheme.neutralTone, dense: true),
+        ],
       ),
     );
   }
@@ -504,7 +546,7 @@ class _RestrictionNotice extends ConsumerWidget {
             Expanded(
               child: Text(
                 '운동 제한 사항: ${restrictions.map((e) => e.name).join(', ')}\n'
-                '현장 운영자가 예약 정보를 확인한 뒤 안전하게 운동을 진행합니다.',
+                '무인 매장이라 보호자가 직접 확인해야 해요. 제한 사항에 맞는 프로그램을 고르고, 운동하는 동안 곁에서 지켜봐 주세요.',
                 style: TextStyle(color: scheme.cautionTone.foreground, fontSize: 13, height: 1.5),
               ),
             ),

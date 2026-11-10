@@ -3,7 +3,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(49);
+select plan(54);
 
 -- ---------------------------------------------------------------------
 -- 준비: 보호자 A, 다른 보호자 B, 관리자 C
@@ -262,7 +262,47 @@ select is(
   '보호자는 예약 시간을 변경할 수 있다');
 
 -- ---------------------------------------------------------------------
--- 운동 세션 (관리자) / 실시간 지표 / 종료 / AI 분석 대기열 / 알림
+-- 무인 매장: 보호자 셀프 체크인 (시작 15분 전 ~ 종료 전)
+-- 체크인 시간대를 맞추려고 오늘 시각으로 예약을 직접 넣는다.
+-- ---------------------------------------------------------------------
+reset role;
+insert into public.bookings (id, user_id, dog_id, branch_id, treadmill_id, start_at, end_at, status)
+select v.id::uuid, 'aaaaaaaa-0000-4000-8000-000000000001', v.dog_id::uuid,
+       'f0000000-0000-4000-8000-000000000002',
+       (select t.id from public.treadmills t
+        where t.branch_id = 'f0000000-0000-4000-8000-000000000002' and t.device_name = 'T-01'),
+       now() + v.starts_in, now() + v.starts_in + interval '30 minutes', v.status
+from (values
+  ('c0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000003', interval '10 minutes', 'pending'),
+  ('c0000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000004', interval '2 hours', 'confirmed'),
+  ('c0000000-0000-4000-8000-000000000003', 'd0000000-0000-4000-8000-000000000005', interval '-1 hour', 'confirmed')
+) as v(id, dog_id, starts_in, status);
+set local role authenticated;
+
+set local request.jwt.claims to '{"sub": "bbbbbbbb-0000-4000-8000-000000000002", "role": "authenticated"}';
+select throws_ok($$
+  select public.self_check_in_booking('c0000000-0000-4000-8000-000000000001')
+$$, 'P0002', 'BOOKING_NOT_FOUND', '다른 보호자의 예약은 체크인할 수 없다');
+
+set local request.jwt.claims to '{"sub": "aaaaaaaa-0000-4000-8000-000000000001", "role": "authenticated"}';
+select throws_ok($$
+  select public.self_check_in_booking('c0000000-0000-4000-8000-000000000002')
+$$, '22023', 'CHECK_IN_TOO_EARLY', '시작 15분 전보다 이르면 체크인할 수 없다');
+
+select is(
+  (select status from public.self_check_in_booking('c0000000-0000-4000-8000-000000000001')),
+  'checked_in', '현장 결제(예약 대기) 예약도 시작 15분 전부터 보호자가 직접 체크인할 수 있다');
+
+select throws_ok($$
+  select public.self_check_in_booking('c0000000-0000-4000-8000-000000000001')
+$$, '22023', 'INVALID_BOOKING_STATUS', '이미 체크인한 예약은 다시 체크인할 수 없다');
+
+select throws_ok($$
+  select public.self_check_in_booking('c0000000-0000-4000-8000-000000000003')
+$$, '22023', 'CHECK_IN_CLOSED', '예약 시간이 끝나면 체크인할 수 없다');
+
+-- ---------------------------------------------------------------------
+-- 운동 세션 (관리자·트레드밀 기기) / 실시간 지표 / 종료 / AI 분석 대기열 / 알림
 -- ---------------------------------------------------------------------
 select throws_ok($$
   select public.start_exercise_session(

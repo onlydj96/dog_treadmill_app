@@ -196,7 +196,7 @@ class _LiveSessionCard extends ConsumerWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          '트레드밀 구동과 비상정지는 현장 운영자가 직접 관리해요.',
+                          '무인 매장이에요. 운동하는 동안 반려견 곁을 지켜 주시고, 이상하면 트레드밀의 비상정지 버튼을 눌러 주세요.',
                           style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 12.5),
                         ),
                       ),

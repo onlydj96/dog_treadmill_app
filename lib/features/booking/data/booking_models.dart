@@ -198,6 +198,9 @@ class Booking {
   /// 보호자가 앱에서 변경·취소할 수 있는 마감 (DB: private.booking_change_deadline)
   static const changeDeadline = Duration(hours: 1);
 
+  /// 무인 매장 셀프 체크인이 열리는 시점: 예약 시작 15분 전 (DB: private.check_in_opens_before)
+  static const checkInOpensBefore = Duration(minutes: 15);
+
   final String id;
   final String dogId;
   final String branchId;
@@ -226,4 +229,14 @@ class Booking {
   }
 
   bool isUpcoming([DateTime? now]) => status.isActive && endAt.isAfter(now ?? DateTime.now());
+
+  DateTime get checkInOpensAt => startAt.subtract(checkInOpensBefore);
+
+  /// 셀프 체크인 가능 여부: 예약 대기·확정 상태에서 시작 15분 전부터 종료 전까지
+  bool canCheckIn([DateTime? now]) {
+    final current = now ?? DateTime.now();
+    return (status == BookingStatus.pending || status == BookingStatus.confirmed) &&
+        !current.isBefore(checkInOpensAt) &&
+        current.isBefore(endAt);
+  }
 }

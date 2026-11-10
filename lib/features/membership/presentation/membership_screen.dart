@@ -43,7 +43,7 @@ class MembershipScreen extends ConsumerWidget {
                 if (memberships.isEmpty) {
                   return const InlineEmptyCard(
                     icon: Icons.confirmation_number_outlined,
-                    message: '보유한 이용권이 없어요. 아래 상품을 지점에서 구매하면 앱에서 바로 예약에 사용할 수 있어요.',
+                    message: '보유한 이용권이 없어요. 아래 상품을 구매하면 앱에서 바로 예약에 사용할 수 있어요.',
                   );
                 }
                 final sorted = [...memberships]..sort((a, b) {
@@ -71,7 +71,13 @@ class MembershipScreen extends ConsumerWidget {
                   for (final plan in plans)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10),
-                      child: _PlanCard(plan: plan),
+                      child: _PlanCard(
+                        plan: plan,
+                        onTap: () => showModalBottomSheet<void>(
+                          context: context,
+                          builder: (context) => _PurchaseSheet(plan: plan),
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -84,7 +90,8 @@ class MembershipScreen extends ConsumerWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    '이용권은 지점 데스크에서 구매할 수 있으며, 구매 즉시 앱의 보유 이용권에 반영됩니다.',
+                    '상품을 누르면 결제 방법을 볼 수 있어요. 앱 결제는 준비 중이라 지금은 매장에서 구매할 수 있고, '
+                    '구매하면 바로 보유 이용권에 반영돼요.',
                     style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.45),
                   ),
                 ),
@@ -182,14 +189,16 @@ class _MembershipCard extends StatelessWidget {
 }
 
 class _PlanCard extends StatelessWidget {
-  const _PlanCard({required this.plan});
+  const _PlanCard({required this.plan, required this.onTap});
 
   final MembershipPlan plan;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return AppCard(
+      onTap: onTap,
       padding: const EdgeInsets.all(18),
       child: Row(
         children: [
@@ -223,6 +232,93 @@ class _PlanCard extends StatelessWidget {
                 ),
             ],
           ),
+          const SizedBox(width: 4),
+          Icon(Icons.chevron_right_rounded, color: scheme.onSurfaceVariant),
+        ],
+      ),
+    );
+  }
+}
+
+/// 이용권 구매 방법. 앱 결제(PG)는 아직 연동 전이라 형식만 두고, 지금은 매장 구매로 안내한다.
+class _PurchaseSheet extends StatelessWidget {
+  const _PurchaseSheet({required this.plan});
+
+  final MembershipPlan plan;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(plan.name, style: theme.textTheme.titleLarge),
+            const SizedBox(height: 4),
+            Text(
+              '${Fmt.won(plan.price)} · ${plan.totalSessions}회 · 유효기간 ${plan.validityDays}일',
+              style: TextStyle(color: scheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 16),
+            _PurchaseMethod(
+              icon: Icons.smartphone_rounded,
+              title: '앱 결제',
+              body: '카드·간편결제로 결제하면 바로 보유 이용권에 추가돼요.',
+              badge: StatusBadge(label: '준비 중', tone: scheme.neutralTone, dense: true),
+            ),
+            const SizedBox(height: 8),
+            const _PurchaseMethod(
+              icon: Icons.storefront_rounded,
+              title: '매장 결제',
+              body: '지금은 매장에서 구매할 수 있어요. 구매하면 바로 앱의 보유 이용권에 반영돼요.',
+            ),
+            const SizedBox(height: 20),
+            // PG 연동 후 결제 요청으로 바꾼다.
+            const FilledButton(onPressed: null, child: Text('앱 결제 준비 중')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PurchaseMethod extends StatelessWidget {
+  const _PurchaseMethod({required this.icon, required this.title, required this.body, this.badge});
+
+  final IconData icon;
+  final String title;
+  final String body;
+  final Widget? badge;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: scheme.outlineVariant),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: AppColors.mintDeep),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+                const SizedBox(height: 2),
+                Text(body, style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant, height: 1.45)),
+              ],
+            ),
+          ),
+          if (badge != null) ...[const SizedBox(width: 8), badge!],
         ],
       ),
     );

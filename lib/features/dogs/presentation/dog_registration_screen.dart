@@ -348,7 +348,7 @@ class _DogFormState extends ConsumerState<_DogForm> {
             Text('건강 정보', style: theme.textTheme.titleMedium),
             const SizedBox(height: 4),
             Text(
-              '현장 운영자가 운동 전 확인하는 정보예요. 정확하게 입력해 주세요.',
+              '예약할 때 주의할 점을 알려 드리는 데 쓰여요. 정확하게 입력해 주세요.',
               style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant),
             ),
             const SizedBox(height: 12),

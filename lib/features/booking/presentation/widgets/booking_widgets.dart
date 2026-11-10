@@ -1,10 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/error_messages.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/common.dart';
 import '../../data/booking_models.dart';
+import '../../providers.dart';
+
+/// 무인 매장 셀프 체크인 버튼. 체크인할 수 있을 때만 놓는다([Booking.canCheckIn]).
+class CheckInButton extends ConsumerStatefulWidget {
+  const CheckInButton({super.key, required this.booking});
+
+  final Booking booking;
+
+  @override
+  ConsumerState<CheckInButton> createState() => _CheckInButtonState();
+}
+
+class _CheckInButtonState extends ConsumerState<CheckInButton> {
+  bool _busy = false;
+
+  Future<void> _checkIn() async {
+    final booking = widget.booking;
+    final machine = booking.treadmill?.deviceName;
+    final confirmed = await confirmDialog(
+      context,
+      title: '체크인할까요?',
+      message: '매장에 도착했을 때 체크인해 주세요.${machine == null ? '' : '\n배정된 트레드밀: $machine'}',
+      confirmLabel: '체크인',
+    );
+    if (!confirmed || !mounted) return;
+    setState(() => _busy = true);
+    try {
+      await ref.read(bookingRepositoryProvider).checkIn(booking.id);
+      refreshBookingData(ref, bookingId: booking.id);
+      if (mounted) {
+        context.showMessage(machine == null ? '체크인했어요.' : '체크인했어요. 트레드밀 $machine에서 운동을 시작해 주세요.');
+      }
+    } catch (error) {
+      if (mounted) context.showMessage(friendlyError(error));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: _busy ? null : _checkIn,
+      icon: _busy
+          ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2.2))
+          : const Icon(Icons.how_to_reg_rounded),
+      label: const Text('체크인'),
+    );
+  }
+}
 
 class BookingStatusBadge extends StatelessWidget {
   const BookingStatusBadge({super.key, required this.status, this.dense = false});

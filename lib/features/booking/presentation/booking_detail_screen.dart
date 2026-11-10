@@ -191,7 +191,7 @@ class _InfoCard extends StatelessWidget {
             label: '결제',
             value: booking.usesMembership ? '이용권 1회 사용' : '현장 결제',
           ),
-          if (booking.note != null) InfoRow(icon: Icons.edit_note_rounded, label: '요청 사항', value: booking.note!),
+          if (booking.note != null) InfoRow(icon: Icons.edit_note_rounded, label: '메모', value: booking.note!),
           if (booking.status == BookingStatus.cancelled)
             InfoRow(
               icon: Icons.block_rounded,
@@ -264,41 +264,76 @@ class _ActionsState extends ConsumerState<_Actions> {
 
     if (!booking.status.isActive) return const SizedBox.shrink();
 
-    if (!booking.canModify()) {
+    final hintStyle = TextStyle(color: scheme.onSurfaceVariant, fontSize: 13, height: 1.5);
+    final machine = booking.treadmill?.deviceName;
+    final atMachine = machine == null ? '배정된 트레드밀에서' : '트레드밀 $machine에서';
+    final payOnSite = booking.usesMembership ? '' : '\n현장 결제 예약이라 이용 전에 매장에서 결제해 주세요.';
+
+    // 무인 매장: 체크인 후 보호자가 트레드밀 기기에서 직접 운동을 시작한다.
+    if (booking.status == BookingStatus.checkedIn) {
       return Text(
-        booking.status == BookingStatus.checkedIn
-            ? '체크인이 완료되었어요. 운동이 시작되면 운동 탭에서 실시간으로 확인할 수 있어요.'
-            : '예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요. 지점으로 문의해 주세요.',
-        style: TextStyle(color: scheme.onSurfaceVariant, height: 1.5),
+        '체크인했어요. $atMachine 운동을 시작하고, 운동하는 동안 반려견 곁을 지켜 주세요. '
+        '운동이 시작되면 운동 탭에서 실시간으로 볼 수 있어요.$payOnSite',
+        style: hintStyle,
       );
+    }
+
+    final now = DateTime.now();
+    final canCheckIn = booking.canCheckIn(now);
+    final canModify = booking.canModify(now);
+    final ended = !now.isBefore(booking.endAt);
+
+    final String guide;
+    if (ended) {
+      guide = '예약 시간이 지나 체크인할 수 없어요.';
+    } else if (canCheckIn) {
+      guide = '매장에 도착하면 체크인하고 $atMachine 운동을 시작해 주세요.$payOnSite';
+    } else if (canModify) {
+      guide = '예약 시작 1시간 전까지 변경·취소할 수 있어요.'
+          '${booking.usesMembership ? ' 취소하면 이용권 횟수가 복구돼요.' : ''}\n'
+          '이용 당일 ${Fmt.time(booking.checkInOpensAt)}부터 앱에서 체크인할 수 있어요.';
+    } else {
+      guide = '${Fmt.time(booking.checkInOpensAt)}부터 앱에서 체크인할 수 있어요.\n'
+          '예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요.';
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: _busy ? null : _cancel,
-                child: const Text('예약 취소'),
+        if (canCheckIn) ...[
+          CheckInButton(booking: booking),
+          const SizedBox(height: 12),
+        ],
+        if (canModify) ...[
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _busy ? null : _cancel,
+                  child: const Text('예약 취소'),
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: FilledButton(
-                onPressed: _busy ? null : _reschedule,
-                child: const Text('시간 변경'),
+              const SizedBox(width: 10),
+              Expanded(
+                child: FilledButton(
+                  onPressed: _busy ? null : _reschedule,
+                  child: const Text('시간 변경'),
+                ),
               ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
+        Text(guide, style: hintStyle),
+        // 무인 매장이라 지점 전화 대신 1:1 문의로 안내한다.
+        if (!canModify && !canCheckIn)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              onPressed: () => context.push(AppRoutes.inquiryNew),
+              child: const Text('1:1 문의하기'),
             ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text(
-          '예약 시작 1시간 전까지 변경·취소할 수 있어요.'
-          '${booking.usesMembership ? ' 취소하면 이용권 횟수가 복구돼요.' : ''}',
-          style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
-        ),
+          ),
       ],
     );
   }
@@ -432,7 +467,7 @@ class _RescheduleSheetState extends ConsumerState<_RescheduleSheet> {
               child: SingleChildScrollView(
                 padding: kPagePadding,
                 child: programId == null
-                    ? const Text('프로그램 정보가 없어 시간을 변경할 수 없어요. 지점으로 문의해 주세요.')
+                    ? const Text('프로그램 정보가 없어 시간을 변경할 수 없어요. 1:1 문의로 알려 주세요.')
                     : AsyncValueView<List<TimeSlot>>(
                         value: ref.watch(availableSlotsProvider(
                           (branchId: booking.branchId, programId: programId, date: _date),

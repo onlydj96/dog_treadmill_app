@@ -134,6 +134,18 @@ void main() {
       );
     });
 
+    test('셀프 체크인은 예약 대기·확정 상태에서 시작 15분 전부터 종료 전까지만 할 수 있다', () {
+      final start = DateTime(2026, 11, 10, 10); // 종료 10:30
+      Booking booking([String status = 'confirmed']) => Booking.fromJson(bookingJson(start: start, status: status));
+
+      expect(booking().canCheckIn(DateTime(2026, 11, 10, 9, 44)), isFalse, reason: '16분 전');
+      expect(booking().canCheckIn(DateTime(2026, 11, 10, 9, 45)), isTrue, reason: '15분 전');
+      expect(booking('pending').canCheckIn(DateTime(2026, 11, 10, 10, 10)), isTrue, reason: '현장 결제 예약');
+      expect(booking().canCheckIn(DateTime(2026, 11, 10, 10, 30)), isFalse, reason: '종료 시각');
+      expect(booking('checked_in').canCheckIn(DateTime(2026, 11, 10, 10)), isFalse, reason: '이미 체크인');
+      expect(booking('cancelled').canCheckIn(DateTime(2026, 11, 10, 10)), isFalse, reason: '취소');
+    });
+
     test('예정/지난 예약 구분', () {
       final now = DateTime(2026, 11, 10, 9);
       expect(Booking.fromJson(bookingJson(start: DateTime(2026, 11, 10, 12))).isUpcoming(now), isTrue);

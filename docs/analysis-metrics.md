@@ -6,7 +6,7 @@ AI 서버(FastAPI)가 `analysis_reports`에 결과를 저장할 때 따라야 �
 
 ## 처리 흐름
 
-1. 운영자가 운동을 종료하면(`finish_exercise_session`) 보호자가 **영상 촬영에 동의한 경우에만**
+1. 트레드밀 기기(또는 운영자 대시보드)가 운동을 종료하면(`finish_exercise_session`) 보호자가 **영상 촬영에 동의한 경우에만**
    `analysis_reports` 행이 `analysis_status = 'queued'`로 생성됩니다.
 2. AI 서버는 `queued` 행을 가져가 `processing`으로 바꾼 뒤 분석합니다.
 3. 완료 시 아래 지표와 함께 `completed`로 갱신합니다. `completed_at`은 DB가 자동 기록하고,
