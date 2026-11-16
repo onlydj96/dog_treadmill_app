@@ -9,6 +9,7 @@ import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/brand_mark.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/app_language.dart';
 import '../data/auth_repository.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -63,6 +64,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const Align(alignment: Alignment.centerRight, child: LanguageButton()),
+                  const SizedBox(height: 8),
                   IntersectionBackdrop(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),

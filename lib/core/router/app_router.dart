@@ -30,6 +30,7 @@ import '../../features/ranking/presentation/ranking_screen.dart';
 import '../../features/ranking/presentation/store_board_screen.dart';
 import '../../features/shell/app_shell.dart';
 import '../../features/support/presentation/support_screens.dart';
+import '../../l10n/l10n.dart';
 import '../supabase/supabase_providers.dart';
 import 'app_routes.dart';
 
@@ -99,9 +100,9 @@ GoRouter buildRouter({
       ),
       GoRoute(
         path: '/video',
-        builder: (_, state) => VideoPlayerScreen(
+        builder: (context, state) => VideoPlayerScreen(
           path: state.uri.queryParameters['path'] ?? '',
-          title: state.uri.queryParameters['title'] ?? '운동 영상',
+          title: state.uri.queryParameters['title'] ?? context.l10n.videoDefaultTitle,
         ),
       ),
       GoRoute(path: AppRoutes.dogs, builder: (_, __) => const DogListScreen()),

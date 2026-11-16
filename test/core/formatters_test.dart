@@ -2,10 +2,11 @@ import 'package:dog_treadmill_app/core/utils/formatters.dart';
 import 'package:dog_treadmill_app/core/utils/json.dart';
 import 'package:dog_treadmill_app/core/utils/validators.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/date_symbol_data_local.dart';
+
+import '../helpers/l10n.dart';
 
 void main() {
-  setUpAll(() => initializeDateFormatting('ko_KR'));
+  setUpAll(initTestLocales);
 
   group('Fmt', () {
     test('duration은 시/분/초 단위로 줄여 표시한다', () {

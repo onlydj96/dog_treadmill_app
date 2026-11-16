@@ -1,0 +1,10 @@
+# 다국어 문구 생성 설정 (flutter gen-l10n). 사용법은 docs/i18n.md
+arb-dir: lib/l10n
+template-arb-file: app_ko.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+output-dir: lib/l10n/generated
+synthetic-package: false
+nullable-getter: false
+preferred-supported-locales: [ko]
+format: true

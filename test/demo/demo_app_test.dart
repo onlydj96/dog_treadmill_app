@@ -2,8 +2,9 @@ import 'package:dog_treadmill_app/demo/demo_app.dart';
 import 'package:dog_treadmill_app/demo/mock_server/mock_server.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/l10n.dart';
 
 // 데모 앱을 실제 화면 그대로 띄워, 목업 서버만으로 로그인 → 체크인 → 실시간 운동 → 완료 알림까지 흘러가는지 본다.
 
@@ -15,7 +16,7 @@ Future<void> _settle(WidgetTester tester, [int frames = 12]) async {
 }
 
 void main() {
-  setUpAll(() => initializeDateFormatting('ko_KR'));
+  setUpAll(initTestLocales);
 
   testWidgets('데모 앱: 데모 계정으로 시작해 체크인하면 운동이 실시간으로 보이고, 끝나면 점수 알림이 온다', (tester) async {
     // 390dp 폰 화면. 탭을 모두 돌며 레이아웃 넘침이 없는지도 본다.

@@ -11,6 +11,7 @@ import 'core/supabase/supabase_providers.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ko_KR');
+  await initializeDateFormatting('en_US');
 
   if (!Env.isConfigured) {
     runApp(const ConfigMissingApp());

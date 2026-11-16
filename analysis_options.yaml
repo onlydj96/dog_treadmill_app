@@ -1,6 +1,9 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  # flutter gen-l10n이 만드는 파일 (lib/l10n/*.arb에서 생성)
+  exclude:
+    - lib/l10n/generated/**
   language:
     strict-casts: true
     strict-raw-types: true

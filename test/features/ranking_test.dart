@@ -5,10 +5,11 @@ import 'package:dog_treadmill_app/features/exercise/data/exercise_session.dart';
 import 'package:dog_treadmill_app/features/profile/data/app_user.dart';
 import 'package:dog_treadmill_app/features/ranking/data/ranking_models.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/date_symbol_data_local.dart';
+
+import '../helpers/l10n.dart';
 
 void main() {
-  setUpAll(() => initializeDateFormatting('ko_KR'));
+  setUpAll(initTestLocales);
 
   group('RankingMonth', () {
     test('한국 시간 기준으로 이번 달을 정한다 (UTC 15시 = 다음 날 0시)', () {

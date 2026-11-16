@@ -1,4 +1,3 @@
-import 'package:dog_treadmill_app/core/theme/app_theme.dart';
 import 'package:dog_treadmill_app/core/widgets/common.dart';
 import 'package:dog_treadmill_app/features/auth/data/auth_repository.dart';
 import 'package:dog_treadmill_app/features/auth/presentation/login_screen.dart';
@@ -16,7 +15,8 @@ import 'package:dog_treadmill_app/features/health/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/date_symbol_data_local.dart';
+
+import '../helpers/l10n.dart';
 
 /// 로그인 요청만 기록하는 테스트용 저장소
 class _RecordingAuthRepository implements AuthRepository {
@@ -52,13 +52,13 @@ class _RecordingAuthRepository implements AuthRepository {
 
 Widget _app(Widget child, {List<Override> overrides = const []}) {
   return ProviderScope(
-    overrides: overrides,
-    child: MaterialApp(theme: AppTheme.light(), home: child),
+    overrides: [languageOverride(), ...overrides],
+    child: localizedApp(child),
   );
 }
 
 void main() {
-  setUpAll(() => initializeDateFormatting('ko_KR'));
+  setUpAll(initTestLocales);
 
   testWidgets('로그인: 빈 입력은 검증 오류, 올바른 입력은 로그인 요청', (tester) async {
     final auth = _RecordingAuthRepository();

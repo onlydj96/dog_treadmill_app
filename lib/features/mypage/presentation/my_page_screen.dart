@@ -6,6 +6,8 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_messages.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/app_language.dart';
+import '../../../l10n/l10n.dart';
 import '../../auth/data/auth_repository.dart';
 import '../../dogs/presentation/widgets/dog_avatar.dart';
 import '../../dogs/providers.dart';
@@ -165,6 +167,12 @@ class MyPageScreen extends ConsumerWidget {
               _MenuItem(Icons.manage_accounts_outlined, '프로필 및 로그인 계정', () => context.push(AppRoutes.profileEdit)),
               _MenuItem(Icons.notifications_outlined, '알림 설정', () => context.push(AppRoutes.notificationSettings)),
               _MenuItem(Icons.privacy_tip_outlined, '개인정보 및 영상 이용 동의', () => context.push(AppRoutes.consents)),
+              _MenuItem(
+                Icons.language_rounded,
+                context.l10n.languageMenuTitle,
+                () => showLanguagePicker(context),
+                trailing: ref.watch(appLanguageProvider).nativeName,
+              ),
             ],
           ),
           _MenuGroup(
@@ -199,11 +207,14 @@ class MyPageScreen extends ConsumerWidget {
 }
 
 class _MenuItem {
-  const _MenuItem(this.icon, this.label, this.onTap);
+  const _MenuItem(this.icon, this.label, this.onTap, {this.trailing});
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+
+  /// 오른쪽에 보여 줄 현재 값 (예: 언어 이름)
+  final String? trailing;
 }
 
 class _MenuGroup extends StatelessWidget {
@@ -228,7 +239,19 @@ class _MenuGroup extends StatelessWidget {
                   ListTile(
                     leading: Icon(item.icon),
                     title: Text(item.label, style: const TextStyle(fontWeight: FontWeight.w600)),
-                    trailing: const Icon(Icons.chevron_right_rounded),
+                    trailing: item.trailing == null
+                        ? const Icon(Icons.chevron_right_rounded)
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                item.trailing!,
+                                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                              ),
+                              const SizedBox(width: 4),
+                              const Icon(Icons.chevron_right_rounded),
+                            ],
+                          ),
                     onTap: item.onTap,
                   ),
               ],

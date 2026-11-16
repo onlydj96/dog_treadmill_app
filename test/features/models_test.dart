@@ -4,10 +4,11 @@ import 'package:dog_treadmill_app/features/exercise/data/exercise_session.dart';
 import 'package:dog_treadmill_app/features/health/data/analysis_models.dart';
 import 'package:dog_treadmill_app/features/membership/data/membership_models.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/date_symbol_data_local.dart';
+
+import '../helpers/l10n.dart';
 
 void main() {
-  setUpAll(() => initializeDateFormatting('ko_KR'));
+  setUpAll(initTestLocales);
 
   group('Dog', () {
     test('fromJson과 요약 문구', () {

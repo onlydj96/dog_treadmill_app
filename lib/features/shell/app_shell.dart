@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/l10n.dart';
+
 /// 하단 내비게이션 (홈 / 예약 / 운동 / 건강 / 마이페이지)
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.navigationShell});
@@ -10,6 +12,7 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: DecoratedBox(
@@ -20,31 +23,31 @@ class AppShell extends StatelessWidget {
             index,
             initialLocation: index == navigationShell.currentIndex,
           ),
-          destinations: const [
+          destinations: [
             NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home_rounded),
-              label: '홈',
+              icon: const Icon(Icons.home_outlined),
+              selectedIcon: const Icon(Icons.home_rounded),
+              label: l10n.navHome,
             ),
             NavigationDestination(
-              icon: Icon(Icons.calendar_month_outlined),
-              selectedIcon: Icon(Icons.calendar_month_rounded),
-              label: '예약',
+              icon: const Icon(Icons.calendar_month_outlined),
+              selectedIcon: const Icon(Icons.calendar_month_rounded),
+              label: l10n.navBooking,
             ),
             NavigationDestination(
-              icon: Icon(Icons.directions_run_outlined),
-              selectedIcon: Icon(Icons.directions_run_rounded),
-              label: '운동',
+              icon: const Icon(Icons.directions_run_outlined),
+              selectedIcon: const Icon(Icons.directions_run_rounded),
+              label: l10n.navExercise,
             ),
             NavigationDestination(
-              icon: Icon(Icons.monitor_heart_outlined),
-              selectedIcon: Icon(Icons.monitor_heart_rounded),
-              label: '건강',
+              icon: const Icon(Icons.monitor_heart_outlined),
+              selectedIcon: const Icon(Icons.monitor_heart_rounded),
+              label: l10n.navHealth,
             ),
             NavigationDestination(
-              icon: Icon(Icons.person_outline_rounded),
-              selectedIcon: Icon(Icons.person_rounded),
-              label: '마이페이지',
+              icon: const Icon(Icons.person_outline_rounded),
+              selectedIcon: const Icon(Icons.person_rounded),
+              label: l10n.navMyPage,
             ),
           ],
         ),

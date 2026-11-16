@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 
@@ -400,7 +401,7 @@ class ErrorView extends StatelessWidget {
                 OutlinedButton.icon(
                   onPressed: onRetry,
                   icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('다시 시도'),
+                  label: Text(context.l10n.commonRetry),
                 ),
               ],
             ],
@@ -431,8 +432,7 @@ class AiDisclaimer extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'AI 분석 결과는 보행 변화에 대한 참고 정보이며, 질병 진단이나 수의사의 진료를 대체하지 않습니다. '
-              '이상 징후가 의심되면 동물병원 진료를 받아 주세요.',
+              context.l10n.commonAiDisclaimer,
               style: TextStyle(fontSize: 12.5, height: 1.5, color: scheme.onSurfaceVariant),
             ),
           ),
@@ -486,13 +486,13 @@ extension SnackBarX on BuildContext {
   }
 }
 
-/// 확인 다이얼로그. 확인하면 true.
+/// 확인 다이얼로그. 확인하면 true. 버튼 이름을 주지 않으면 "확인"/"취소"(현재 언어).
 Future<bool> confirmDialog(
   BuildContext context, {
   required String title,
   required String message,
-  String confirmLabel = '확인',
-  String cancelLabel = '취소',
+  String? confirmLabel,
+  String? cancelLabel,
   bool destructive = false,
 }) async {
   final result = await showDialog<bool>(
@@ -506,14 +506,14 @@ Future<bool> confirmDialog(
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
             style: TextButton.styleFrom(foregroundColor: scheme.onSurfaceVariant),
-            child: Text(cancelLabel),
+            child: Text(cancelLabel ?? context.l10n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: destructive
                 ? FilledButton.styleFrom(backgroundColor: AppColors.coral, minimumSize: const Size(80, 44))
                 : FilledButton.styleFrom(minimumSize: const Size(80, 44)),
-            child: Text(confirmLabel),
+            child: Text(confirmLabel ?? context.l10n.commonConfirm),
           ),
         ],
       );

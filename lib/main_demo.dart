@@ -15,6 +15,7 @@ import 'demo/demo_app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ko_KR');
+  await initializeDateFormatting('en_US');
   final preferences = await SharedPreferences.getInstance();
   runApp(DemoApp(preferences: preferences));
 }

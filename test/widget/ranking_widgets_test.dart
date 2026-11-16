@@ -1,4 +1,3 @@
-import 'package:dog_treadmill_app/core/theme/app_theme.dart';
 import 'package:dog_treadmill_app/features/booking/data/booking_models.dart';
 import 'package:dog_treadmill_app/features/booking/providers.dart';
 import 'package:dog_treadmill_app/features/consents/data/consent_repository.dart';
@@ -16,12 +15,13 @@ import 'package:dog_treadmill_app/features/ranking/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/date_symbol_data_local.dart';
+
+import '../helpers/l10n.dart';
 
 Widget _app(Widget child, {List<Override> overrides = const []}) {
   return ProviderScope(
-    overrides: overrides,
-    child: MaterialApp(theme: AppTheme.light(), home: child),
+    overrides: [languageOverride(), ...overrides],
+    child: localizedApp(child),
   );
 }
 
@@ -84,7 +84,7 @@ List<Override> _rankingOverrides({
     ];
 
 void main() {
-  setUpAll(() => initializeDateFormatting('ko_KR'));
+  setUpAll(initTestLocales);
 
   testWidgets('시상대: 1~3위 이름·닉네임·점수, 누르면 그 반려견', (tester) async {
     LeaderboardEntry? tapped;

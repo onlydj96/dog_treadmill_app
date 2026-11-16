@@ -1,0 +1,269 @@
+{
+  "@@locale": "ko",
+  "appTitle": "PawFit",
+  "commonConfirm": "확인",
+  "commonCancel": "취소",
+  "commonRetry": "다시 시도",
+  "commonSave": "저장",
+  "commonDelete": "삭제",
+  "commonEdit": "수정",
+  "commonClose": "닫기",
+  "commonDone": "완료",
+  "commonNext": "다음",
+  "commonPrevious": "이전",
+  "commonAdd": "추가",
+  "commonManage": "관리",
+  "commonViewAll": "전체 보기",
+  "commonYes": "예",
+  "commonNo": "아니요",
+  "commonNone": "없음",
+  "commonOptional": "선택",
+  "commonRequired": "필수",
+  "commonOwnerFallbackName": "보호자",
+  "@commonOwnerFallbackName": {
+    "description": "이름이 없는 보호자(사용자)를 부를 때"
+  },
+  "commonAiDisclaimer": "AI 분석 결과는 보행 변화에 대한 참고 정보이며, 질병 진단이나 수의사의 진료를 대체하지 않습니다. 이상 징후가 의심되면 동물병원 진료를 받아 주세요.",
+  "navHome": "홈",
+  "navBooking": "예약",
+  "navExercise": "운동",
+  "navHealth": "건강",
+  "navMyPage": "마이페이지",
+  "languageMenuTitle": "언어 (Language)",
+  "languagePickerTitle": "언어 / Language",
+  "videoDefaultTitle": "운동 영상",
+  "configMissingTitle": "Supabase 설정이 필요해요",
+  "configMissingBody": "프로젝트 루트의 .env에 SUPABASE_URL과 SUPABASE_PUBLISHABLE_KEY를 넣고 아래와 같이 실행해 주세요.",
+  "fmtPatternDate": "M월 d일 (E)",
+  "@fmtPatternDate": {
+    "description": "intl DateFormat 패턴. 예) 11월 16일 (월)"
+  },
+  "fmtPatternDateFull": "yyyy년 M월 d일 (E)",
+  "@fmtPatternDateFull": {
+    "description": "intl DateFormat 패턴. 예) 2026년 11월 16일 (월)"
+  },
+  "fmtPatternDateShort": "yyyy.MM.dd",
+  "@fmtPatternDateShort": {
+    "description": "intl DateFormat 패턴. 예) 2026.11.16"
+  },
+  "fmtPatternMonthDay": "M.d",
+  "@fmtPatternMonthDay": {
+    "description": "intl DateFormat 패턴. 예) 11.16"
+  },
+  "fmtPatternYearMonth": "yyyy년 M월",
+  "@fmtPatternYearMonth": {
+    "description": "intl DateFormat 패턴. 예) 2026년 11월"
+  },
+  "fmtPatternMonth": "M월",
+  "@fmtPatternMonth": {
+    "description": "intl DateFormat 패턴. 예) 11월"
+  },
+  "fmtPatternWeekday": "E",
+  "@fmtPatternWeekday": {
+    "description": "intl DateFormat 패턴. 예) 월"
+  },
+  "fmtAm": "오전",
+  "fmtPm": "오후",
+  "fmtTime": "{period} {time}",
+  "@fmtTime": {
+    "description": "예) 오후 3:30",
+    "placeholders": {
+      "period": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "fmtDateTime": "{date} {time}",
+  "@fmtDateTime": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "fmtTimeRange": "{start} ~ {end}",
+  "@fmtTimeRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "fmtWon": "{amount}원",
+  "@fmtWon": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "fmtPoints": "{formatted}점",
+  "@fmtPoints": {
+    "description": "랭킹 점수. count는 복수형 판단용 숫자, formatted는 천 단위 구분이 들어간 숫자",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      },
+      "formatted": {
+        "type": "String"
+      }
+    }
+  },
+  "fmtDurationHourMinute": "{hours}시간 {minutes}분",
+  "@fmtDurationHourMinute": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtDurationHour": "{hours}시간",
+  "@fmtDurationHour": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtDurationMinuteSecond": "{minutes}분 {seconds}초",
+  "@fmtDurationMinuteSecond": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtDurationMinute": "{minutes}분",
+  "@fmtDurationMinute": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtDurationSecond": "{seconds}초",
+  "@fmtDurationSecond": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtJustNow": "방금 전",
+  "fmtMinutesAgo": "{minutes}분 전",
+  "@fmtMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtHoursAgo": "{hours}시간 전",
+  "@fmtHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtDaysAgo": "{days}일 전",
+  "@fmtDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtDogAgeUnderOneMonth": "1개월 미만",
+  "fmtDogAgeMonths": "{months}개월",
+  "@fmtDogAgeMonths": {
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtDogAgeYears": "{years}살",
+  "@fmtDogAgeYears": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "validationRequired": "{label}을(를) 입력해 주세요.",
+  "@validationRequired": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "validationEmailRequired": "이메일을 입력해 주세요.",
+  "validationEmailInvalid": "올바른 이메일 형식이 아니에요.",
+  "validationPasswordRequired": "비밀번호를 입력해 주세요.",
+  "validationPasswordTooShort": "8자 이상 입력해 주세요.",
+  "validationPasswordLettersAndDigits": "영문과 숫자를 함께 사용해 주세요.",
+  "validationPhoneRequired": "휴대전화 번호를 입력해 주세요.",
+  "validationPhoneInvalid": "올바른 휴대전화 번호가 아니에요.",
+  "validationNameRequired": "이름을 입력해 주세요.",
+  "validationNameTooLong": "20자 이내로 입력해 주세요.",
+  "validationNicknameRequired": "닉네임을 입력해 주세요.",
+  "validationNicknameLength": "2~12자로 입력해 주세요.",
+  "validationNicknameCharacters": "한글·영문·숫자·밑줄(_)만 쓸 수 있어요.",
+  "errorAuthRequired": "로그인이 필요해요. 다시 로그인해 주세요.",
+  "errorDogNotFound": "반려견 정보를 찾을 수 없어요.",
+  "errorBranchNotFound": "지점 정보를 찾을 수 없어요.",
+  "errorProgramNotFound": "운동 프로그램 정보를 찾을 수 없어요.",
+  "errorSlotInPast": "이미 지난 시간이에요. 다른 시간을 선택해 주세요.",
+  "errorSlotNotAvailable": "예약할 수 없는 시간이에요. 다른 시간을 선택해 주세요.",
+  "errorSlotFull": "선택한 시간의 트레드밀이 모두 예약되었어요. 다른 시간을 선택해 주세요.",
+  "errorDogAlreadyBooked": "같은 시간에 이미 이 반려견의 예약이 있어요.",
+  "errorMembershipNotFound": "이용권을 찾을 수 없어요.",
+  "errorMembershipNotUsable": "선택한 이용권은 이 시간에 사용할 수 없어요. 잔여 횟수와 유효기간을 확인해 주세요.",
+  "errorBookingNotFound": "예약 정보를 찾을 수 없어요.",
+  "errorBookingNotCancellable": "이미 진행되었거나 취소된 예약이에요.",
+  "errorChangeDeadlinePassed": "예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요. 1:1 문의로 알려 주세요.",
+  "errorInvalidBookingStatus": "이미 체크인했거나 끝난 예약이에요.",
+  "errorCheckInTooEarly": "체크인은 예약 시작 15분 전부터 할 수 있어요.",
+  "errorCheckInClosed": "예약 시간이 지나 체크인할 수 없어요.",
+  "errorNicknameInvalid": "닉네임은 2~12자의 한글·영문·숫자·밑줄(_)로 입력해 주세요.",
+  "errorNicknameForbidden": "사용할 수 없는 단어가 들어 있어요. 다른 닉네임을 입력해 주세요.",
+  "errorNicknameTaken": "이미 사용 중인 닉네임이에요.",
+  "errorNicknameCooldown": "닉네임은 30일에 한 번 바꿀 수 있어요.",
+  "errorCannotCheerOwnDog": "내 반려견은 응원할 수 없어요.",
+  "errorInvalidRankingScope": "랭킹 정보를 불러오지 못했어요. 다시 시도해 주세요.",
+  "errorInvalidCredentials": "이메일 또는 비밀번호가 올바르지 않아요.",
+  "errorEmailNotConfirmed": "이메일 인증을 완료한 뒤 로그인해 주세요.",
+  "errorUserAlreadyExists": "이미 가입된 이메일이에요.",
+  "errorWeakPassword": "비밀번호가 너무 단순해요. 영문과 숫자를 섞어 8자 이상 입력해 주세요.",
+  "errorSamePassword": "기존 비밀번호와 다른 비밀번호를 입력해 주세요.",
+  "errorRateLimited": "요청이 많아요. 잠시 후 다시 시도해 주세요.",
+  "errorSignupDisabled": "현재 회원가입을 받을 수 없어요.",
+  "errorPermissionDenied": "이 작업을 수행할 권한이 없어요.",
+  "errorNotFound": "요청한 정보를 찾을 수 없어요.",
+  "errorAuthGeneric": "인증 처리 중 문제가 발생했어요. 다시 시도해 주세요.",
+  "errorStorage": "파일을 처리하지 못했어요. 사진 크기(5MB 이하)와 형식을 확인해 주세요.",
+  "errorFunction": "요청을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.",
+  "errorNetwork": "네트워크 연결을 확인한 뒤 다시 시도해 주세요.",
+  "errorGeneric": "문제가 발생했어요. 잠시 후 다시 시도해 주세요.",
+  "serverStopReasonByStaff": "운영자 판단에 의한 중단",
+  "@serverStopReasonByStaff": {
+    "description": "DB가 사유 없이 중단된 운동에 저장하는 기본 사유 (exercise_sessions.stop_reason)"
+  }
+}
