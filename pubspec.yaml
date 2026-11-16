@@ -19,6 +19,8 @@ dependencies:
   go_router: ^16.1.0
   image_picker: ^1.2.0
   intl: ^0.19.0
+  # 12.x는 Android Kotlin 2.2를 요구해 앱(Kotlin 1.8)과 맞지 않는다
+  share_plus: ^11.1.0
   shared_preferences: ^2.5.3
   supabase_flutter: ^2.15.4
   video_player: ^2.10.0

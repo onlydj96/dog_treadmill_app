@@ -38,6 +38,15 @@ abstract final class Fmt {
 
   static String number(num value) => _number.format(value);
 
+  /// 랭킹 점수: 1234 → "1,234점"
+  static String points(num value) => '${_number.format(value)}점';
+
+  /// 랭킹 기간 등 월만 표시: "11월"
+  static String month(DateTime value) => '${value.month}월';
+
+  /// 누적 거리 요약: 12430 → "12.4km"
+  static String km(num meters) => '${(meters / 1000).toStringAsFixed(1)}km';
+
   /// 3725 → "1시간 2분", 1930 → "32분 10초", 45 → "45초"
   static String duration(int seconds) {
     if (seconds <= 0) return '0분';
@@ -97,12 +106,18 @@ abstract final class Fmt {
 
   /// 반려견 나이: 1살 미만은 개월 수, 이상은 만 나이
   static String dogAge(DateTime birthDate, {DateTime? now}) {
-    final today = now ?? DateTime.now();
-    var months = (today.year - birthDate.year) * 12 + today.month - birthDate.month;
-    if (today.day < birthDate.day) months -= 1;
+    final months = dogAgeMonths(birthDate, now: now);
     if (months < 1) return '1개월 미만';
     if (months < 12) return '$months개월';
     return '${months ~/ 12}살';
+  }
+
+  /// 만 개월 수 (DB private.dog_age_months와 같은 계산)
+  static int dogAgeMonths(DateTime birthDate, {DateTime? now}) {
+    final today = now ?? DateTime.now();
+    var months = (today.year - birthDate.year) * 12 + today.month - birthDate.month;
+    if (today.day < birthDate.day) months -= 1;
+    return months;
   }
 }
 

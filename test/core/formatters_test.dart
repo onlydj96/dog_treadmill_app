@@ -44,6 +44,13 @@ void main() {
       expect(Fmt.dogAge(DateTime(2026, 11, 1), now: now), '1개월 미만');
     });
 
+    test('dogAgeMonths는 만 개월 수 (일자가 안 지났으면 한 달 빼기)', () {
+      final now = DateTime(2026, 11, 9);
+      expect(Fmt.dogAgeMonths(DateTime(2023, 1, 15), now: now), 45);
+      expect(Fmt.dogAgeMonths(DateTime(2026, 10, 9), now: now), 1);
+      expect(Fmt.dogAgeMonths(DateTime(2026, 10, 10), now: now), 0);
+    });
+
     test('relative는 경과 시간을 한국어로 표시', () {
       final now = DateTime(2026, 11, 9, 12);
       expect(Fmt.relative(now.subtract(const Duration(seconds: 20)), now: now), '방금 전');

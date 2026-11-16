@@ -12,6 +12,9 @@ import '../../../core/widgets/common.dart';
 import '../../exercise/presentation/widgets/exercise_widgets.dart';
 import '../../exercise/providers.dart';
 import '../../health/providers.dart';
+import '../../ranking/data/ranking_models.dart';
+import '../../ranking/presentation/widgets/ranking_widgets.dart';
+import '../../ranking/providers.dart';
 import '../data/dog.dart';
 import '../providers.dart';
 import 'widgets/dog_avatar.dart';
@@ -79,6 +82,7 @@ class DogProfileScreen extends ConsumerWidget {
             const SizedBox(height: 20),
             _HealthInfo(dogId: dog.id),
             _PlanInfo(dogId: dog.id),
+            _AchievementSection(dogId: dog.id),
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: () {
@@ -161,12 +165,32 @@ class _BasicInfo extends StatelessWidget {
         AppCard(
           child: Column(
             children: [
-              InfoRow(label: '견종', value: dog.breed ?? '-'),
+              InfoRow(label: '견종', value: dog.breedLabel ?? '-'),
               InfoRow(
-                label: '생년월일',
-                value: dog.birthDate == null ? '-' : '${Fmt.dateShort(dog.birthDate!)} (${dog.ageLabel})',
+                label: '체구',
+                value: dog.size == null
+                    ? '-'
+                    : [
+                        '${dog.size!.label}견',
+                        if (dog.isBrachycephalic == true) '단두종',
+                      ].join(' · '),
               ),
-              InfoRow(label: '성별', value: dog.sexLabel ?? '-'),
+              if (dog.birthDateEstimated)
+                InfoRow(label: '나이', value: '${dog.ageLabel} (추정)')
+              else
+                InfoRow(
+                  label: '생년월일',
+                  value: dog.birthDate == null ? '-' : '${Fmt.dateShort(dog.birthDate!)} (${dog.ageLabel})',
+                ),
+              InfoRow(label: '성별', value: dog.sex?.label ?? '-'),
+              InfoRow(
+                label: '중성화',
+                value: switch (dog.neutered) {
+                  true => '했어요',
+                  false => '안 했어요',
+                  null => '-',
+                },
+              ),
               InfoRow(label: '체중', value: Fmt.weight(dog.weightKg)),
             ],
           ),
@@ -184,6 +208,10 @@ class _HealthInfo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(dogHealthProfileProvider(dogId));
+    final conditionNames = {
+      for (final condition in ref.watch(healthConditionsProvider).valueOrNull ?? const <HealthCondition>[])
+        condition.code: condition.name,
+    };
     final scheme = Theme.of(context).colorScheme;
 
     return Column(
@@ -239,8 +267,17 @@ class _HealthInfo extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (profile.conditionCodes case final codes?)
+                    group(
+                      '질병·주의사항',
+                      codes.isEmpty
+                          ? const [HealthItem(name: '해당 없음')]
+                          : [for (final code in codes) HealthItem(name: conditionNames[code] ?? code)],
+                      Icons.health_and_safety_outlined,
+                      highlight: codes.isNotEmpty,
+                    ),
                   group('운동 제한 사항', profile.exerciseRestrictions, Icons.block_rounded, highlight: true),
-                  group('기저질환', profile.diseases, Icons.healing_rounded),
+                  group('질환 상세', profile.diseases, Icons.healing_rounded),
                   group('수술 및 치료 이력', profile.surgeries, Icons.medical_services_outlined),
                   group('복용 중인 약물', profile.medications, Icons.medication_outlined),
                   if (profile.veterinaryNotes != null && profile.veterinaryNotes!.isNotEmpty) ...[
@@ -260,6 +297,119 @@ class _HealthInfo extends ConsumerWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+/// 받은 배지·수상 기록과 다음 배지까지의 진행률
+class _AchievementSection extends ConsumerWidget {
+  const _AchievementSection({required this.dogId});
+
+  final String dogId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final achievements = ref.watch(dogAchievementsProvider(dogId)).valueOrNull;
+    final catalog = ref.watch(badgeCatalogProvider).valueOrNull;
+    // 불러오는 동안·실패 시에는 섹션을 숨긴다 (배지함 화면에서 다시 시도할 수 있다)
+    if (achievements == null || catalog == null) return const SizedBox.shrink();
+
+    final earned = [
+      for (final badge in catalog)
+        if (achievements.earned(badge.code) != null) badge,
+    ];
+    BadgeDef? next;
+    var nextProgress = -1.0;
+    for (final badge in catalog) {
+      if (achievements.earned(badge.code) != null) continue;
+      final progress = badge.progress(achievements.stats);
+      if (progress != null && progress > nextProgress) {
+        next = badge;
+        nextProgress = progress;
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SectionHeader(
+            title: '배지 ${earned.length}/${catalog.length}',
+            actionLabel: '배지함',
+            onAction: () => context.push(AppRoutes.dogBadges(dogId)),
+          ),
+          AppCard(
+            onTap: () => context.push(AppRoutes.dogBadges(dogId)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (achievements.awards.isNotEmpty) ...[
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      for (final award in achievements.awards.take(4))
+                        RankingTitleChip(text: award.text, rank: award.rank, dense: false),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                ],
+                if (earned.isEmpty)
+                  Text('첫 운동을 마치면 「첫 발걸음」 배지를 받아요.', style: TextStyle(color: scheme.onSurfaceVariant))
+                else
+                  SizedBox(
+                    height: 86,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: earned.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 6),
+                      itemBuilder: (context, index) => SizedBox(
+                        width: 76,
+                        child: Column(
+                          children: [
+                            BadgeMedallion(badge: earned[index], earned: true, size: 50),
+                            const SizedBox(height: 4),
+                            Text(
+                              earned[index].name,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, height: 1.2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                if (next != null) ...[
+                  const Divider(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '다음 배지 · ${next.name}',
+                          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5),
+                        ),
+                      ),
+                      Text(
+                        next.progressLabel(achievements.stats) ?? '',
+                        style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  LinearProgressIndicator(
+                    value: nextProgress,
+                    minHeight: 6,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

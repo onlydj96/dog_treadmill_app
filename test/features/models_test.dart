@@ -23,9 +23,52 @@ void main() {
         'profile_image_path': null,
       });
       expect(dog.sex, DogSex.female);
-      expect(dog.sexLabel, '암컷(중성화)');
+      expect(dog.neutered, isTrue);
+      expect(dog.isMixed, isFalse);
+      expect(dog.size, isNull);
       expect(dog.summary, startsWith('말티즈 · '));
       expect(dog.summary, endsWith('3.2kg'));
+    });
+
+    test('견종 카탈로그·체구·추정 나이·중성화 미응답', () {
+      final dog = Dog.fromJson({
+        'id': 'd2',
+        'owner_id': 'u1',
+        'name': '보리',
+        'breed': '말티푸',
+        'breed_id': null,
+        'is_mixed': true,
+        'size_class': 'small',
+        'is_brachycephalic': false,
+        'birth_date': '2024-01-01',
+        'birth_date_estimated': true,
+        'neutered': null,
+        'weight_kg': '4.5',
+      });
+      expect(dog.breedLabel, '믹스견(말티푸)');
+      expect(dog.size, DogSize.small);
+      expect(dog.isBrachycephalic, isFalse);
+      expect(dog.neutered, isNull);
+      expect(dog.ageLabel, startsWith('약 '));
+      expect(dog.summary, startsWith('믹스견(말티푸) · 약 '));
+
+      final unnamedMix = Dog.fromJson({'id': 'd3', 'name': '콩', 'is_mixed': true});
+      expect(unnamedMix.breedLabel, '믹스견');
+    });
+
+    test('Breed·HealthCondition 카탈로그 파싱', () {
+      final breed = Breed.fromJson({
+        'id': 'shih_tzu',
+        'name': '시츄',
+        'size_class': 'small',
+        'is_brachycephalic': true,
+      });
+      expect(breed.size, DogSize.small);
+      expect(breed.isBrachycephalic, isTrue);
+
+      final condition = HealthCondition.fromJson({'code': 'obesity', 'name': '비만', 'description': null});
+      expect(condition.code, 'obesity');
+      expect(condition.description, isNull);
     });
 
     test('DogDraft는 빈 견종을 null로 저장한다', () {
@@ -34,7 +77,48 @@ void main() {
       expect(json['name'], '보리');
       expect(json['breed'], isNull);
       expect(json['birth_date'], isNull);
+      expect(json['birth_date_estimated'], isFalse);
+      expect(json['neutered'], isNull);
       expect(json['weight_kg'], 5.1);
+    });
+
+    test('DogDraft 구조화 필드 직렬화', () {
+      final draft = DogDraft(
+        name: '코코',
+        breed: '시츄',
+        breedId: 'shih_tzu',
+        size: DogSize.small,
+        isBrachycephalic: true,
+        birthDate: DateTime(2025, 3, 1),
+        birthDateEstimated: true,
+        neutered: false,
+        weightKg: 6,
+      );
+      final json = draft.toJson();
+      expect(json['breed_id'], 'shih_tzu');
+      expect(json['is_mixed'], isFalse);
+      expect(json['size_class'], 'small');
+      expect(json['is_brachycephalic'], isTrue);
+      expect(json['birth_date'], '2025-03-01');
+      expect(json['birth_date_estimated'], isTrue);
+      expect(json['neutered'], isFalse);
+    });
+
+    test('질병 코드: null은 미응답, 빈 목록은 해당 없음', () {
+      final unanswered = DogHealthProfile.fromJson({'dog_id': 'd1'});
+      expect(unanswered.conditionCodes, isNull);
+      expect(unanswered.isEmpty, isTrue);
+      expect(unanswered.toJson()['condition_codes'], isNull);
+
+      final none = DogHealthProfile.fromJson({'dog_id': 'd1', 'condition_codes': <dynamic>[]});
+      expect(none.conditionCodes, isEmpty);
+      expect(none.isEmpty, isFalse);
+
+      final some = DogHealthProfile.fromJson({
+        'dog_id': 'd1',
+        'condition_codes': ['joint_disease', 'obesity'],
+      });
+      expect(some.toJson()['condition_codes'], ['joint_disease', 'obesity']);
     });
 
     test('건강 정보 JSON 왕복', () {

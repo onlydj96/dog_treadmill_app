@@ -8,6 +8,7 @@ import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
 import '../../profile/data/user_repository.dart';
+import '../../ranking/providers.dart';
 import '../data/consent.dart';
 import '../data/consent_repository.dart';
 
@@ -35,6 +36,15 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
         destructive: true,
       );
       if (!confirmed) return;
+    } else if (!granted && type == ConsentType.ranking) {
+      final confirmed = await confirmDialog(
+        context,
+        title: '랭킹에서 나갈까요?',
+        message: '순위표와 명예의 전당에서 닉네임과 반려견 정보가 바로 가려져요. 점수와 배지는 그대로 쌓여요.',
+        confirmLabel: '나가기',
+        destructive: true,
+      );
+      if (!confirmed) return;
     }
 
     setState(() => _saving.add(type));
@@ -51,6 +61,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
         }
       }
       ref.invalidate(consentsProvider);
+      if (type == ConsentType.ranking) refreshRankingProviders(ref);
     } catch (error) {
       if (mounted) context.showMessage(friendlyError(error));
     } finally {

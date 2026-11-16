@@ -23,6 +23,11 @@ import '../../health/presentation/widgets/health_widgets.dart';
 import '../../health/providers.dart';
 import '../../notifications/data/notification_repository.dart';
 import '../../profile/data/user_repository.dart';
+import '../../ranking/data/ranking_models.dart';
+import '../../ranking/presentation/ranking_dog_sheet.dart';
+import '../../ranking/presentation/ranking_settings_sheet.dart';
+import '../../ranking/presentation/widgets/ranking_widgets.dart';
+import '../../ranking/providers.dart';
 import '../../support/data/support_repository.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -39,7 +44,9 @@ class HomeScreen extends ConsumerWidget {
     if (dogId != null) {
       ref
         ..invalidate(sessionsProvider(dogId))
-        ..invalidate(reportsProvider(dogId));
+        ..invalidate(reportsProvider(dogId))
+        ..invalidate(myRankingProvider)
+        ..invalidate(leaderboardProvider);
     }
     await ref.read(dogsProvider.future);
   }
@@ -75,6 +82,8 @@ class HomeScreen extends ConsumerWidget {
                 const _QuickActions(),
                 const SizedBox(height: 28),
                 const _NextBookingSection(),
+                const SizedBox(height: 28),
+                _RankingSection(dog: dog),
                 const SizedBox(height: 28),
                 _RecentExerciseSection(dogId: dog.id),
                 const SizedBox(height: 28),
@@ -155,6 +164,8 @@ class _DogHeroCard extends ConsumerWidget {
       sessions.where((s) => s.date.toLocal().year == now.year && s.date.toLocal().month == now.month),
     );
     final symmetry = latestReport?.gaitMetrics?.symmetryIndex;
+    final ranking = ref.watch(myRankingProvider(DogMonth(dog.id, RankingMonth.current()))).valueOrNull;
+    final overallRank = ranking != null && ranking.participating ? ranking.overall : null;
 
     return Semantics(
       container: true,
@@ -183,6 +194,10 @@ class _DogHeroCard extends ConsumerWidget {
                             dog.summary.isEmpty ? '프로필을 완성해 주세요' : dog.summary,
                             style: const TextStyle(color: AppColors.mintLight, fontWeight: FontWeight.w600),
                           ),
+                          if (overallRank != null) ...[
+                            const SizedBox(height: 6),
+                            RankingTitleChip(text: '이번 달 전체 ${overallRank.rank}위'),
+                          ],
                         ],
                       ),
                     ),
@@ -450,6 +465,156 @@ class _NextBookingSection extends ConsumerWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [card, const SizedBox(height: 10), CheckInButton(booking: booking)],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+/// 이번 달 랭킹 요약: 내 순위·다음 순위까지 남은 점수, 다른 순위(지점·체급), 상위 3마리
+class _RankingSection extends ConsumerWidget {
+  const _RankingSection({required this.dog});
+
+  final Dog dog;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final month = RankingMonth.current();
+    final ranking = ref.watch(myRankingProvider(DogMonth(dog.id, month)));
+    final top = ref.watch(leaderboardProvider(RankingQuery(month: month, limit: 3))).valueOrNull ?? const [];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SectionHeader(
+          title: '${Fmt.month(month)} 랭킹',
+          actionLabel: '전체 랭킹',
+          onAction: () => context.push(AppRoutes.ranking),
+        ),
+        ranking.when(
+          skipLoadingOnRefresh: true,
+          loading: () => const LoadingView(padding: EdgeInsets.all(16)),
+          error: (error, _) => ErrorView(
+            message: friendlyError(error),
+            onRetry: () => ref.invalidate(myRankingProvider(DogMonth(dog.id, month))),
+          ),
+          data: (mine) {
+            final overall = mine.overall;
+            final (title, caption) = switch (overall) {
+              null => ('이번 달 첫 운동을 기다리고 있어요', '운동을 마치면 점수가 쌓이고 바로 랭킹에 올라요.'),
+              _ when !mine.participating => (
+                  '참여하면 전체 ${overall.rank}위예요',
+                  '랭킹에 참여하고 ${josa(dog.name, '를', '을')} 자랑해 보세요.',
+                ),
+              _ => (
+                  '${dog.name} · 전체 ${overall.rank}위',
+                  '${Fmt.points(mine.points)} · '
+                      '${overall.pointsToNext == null ? '1위를 지키고 있어요!' : '${overall.pointsToNext}점 더 받으면 순위가 올라요'}',
+                ),
+            };
+            final otherRanks = mine.ranks.where((r) => r.scope != RankingScope.all).toList();
+
+            return AppCard(
+              onTap: () => context.push(AppRoutes.ranking),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      if (overall != null && overall.rank <= 3 && mine.participating)
+                        RankMedal(rank: overall.rank, size: 46)
+                      else
+                        Container(
+                          width: 46,
+                          height: 46,
+                          decoration: const BoxDecoration(color: AppColors.honey, shape: BoxShape.circle),
+                          child: const Icon(Icons.emoji_events_rounded, color: AppColors.honeyInk),
+                        ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+                            const SizedBox(height: 2),
+                            Text(caption, style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (otherRanks.isNotEmpty || mine.streakWeeks >= 2) ...[
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        for (final rank in otherRanks)
+                          StatusBadge(
+                            label: rank.shortText,
+                            tone: mine.participating ? scheme.activeTone : scheme.neutralTone,
+                            dense: true,
+                          ),
+                        if (mine.streakWeeks >= 2)
+                          StatusBadge(
+                            label: '${mine.streakWeeks}주 연속 운동',
+                            tone: scheme.cautionTone,
+                            icon: Icons.local_fire_department_rounded,
+                            dense: true,
+                          ),
+                      ],
+                    ),
+                  ],
+                  if (top.isNotEmpty) ...[
+                    const Divider(height: 28),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final entry in top)
+                          Expanded(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(14),
+                              onTap: () => showRankingDogSheet(context, entry.dogId),
+                              child: Column(
+                                children: [
+                                  Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      DogAvatar.path(path: entry.photoPath, size: 44),
+                                      Positioned(right: -6, bottom: -4, child: RankMedal(rank: entry.rank, size: 20)),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    entry.dogName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                                  ),
+                                  Text(
+                                    Fmt.points(entry.points),
+                                    style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                  if (!mine.participating) ...[
+                    const SizedBox(height: 14),
+                    OutlinedButton.icon(
+                      onPressed: () => showRankingSettingsSheet(context),
+                      icon: const Icon(Icons.emoji_events_outlined),
+                      label: const Text('랭킹 참여하기'),
+                    ),
+                  ],
+                ],
+              ),
             );
           },
         ),

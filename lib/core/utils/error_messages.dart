@@ -18,6 +18,12 @@ const _rpcMessages = <String, String>{
   'INVALID_BOOKING_STATUS': '이미 체크인했거나 끝난 예약이에요.',
   'CHECK_IN_TOO_EARLY': '체크인은 예약 시작 15분 전부터 할 수 있어요.',
   'CHECK_IN_CLOSED': '예약 시간이 지나 체크인할 수 없어요.',
+  'NICKNAME_INVALID': '닉네임은 2~12자의 한글·영문·숫자·밑줄(_)로 입력해 주세요.',
+  'NICKNAME_FORBIDDEN': '사용할 수 없는 단어가 들어 있어요. 다른 닉네임을 입력해 주세요.',
+  'NICKNAME_TAKEN': '이미 사용 중인 닉네임이에요.',
+  'NICKNAME_COOLDOWN': '닉네임은 30일에 한 번 바꿀 수 있어요.',
+  'CANNOT_CHEER_OWN_DOG': '내 반려견은 응원할 수 없어요.',
+  'INVALID_RANKING_SCOPE': '랭킹 정보를 불러오지 못했어요. 다시 시도해 주세요.',
 };
 
 const _authMessages = <String, String>{

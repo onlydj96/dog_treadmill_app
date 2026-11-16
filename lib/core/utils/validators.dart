@@ -38,6 +38,17 @@ abstract final class Validators {
     if (text.length > 20) return '20자 이내로 입력해 주세요.';
     return null;
   }
+
+  static final _nicknamePattern = RegExp(r'^[가-힣A-Za-z0-9_]+$');
+
+  /// 랭킹 닉네임: 2~12자, 한글(완성형)·영문·숫자·밑줄. DB 제약(users_nickname_format)과 같다.
+  static String? nickname(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return '닉네임을 입력해 주세요.';
+    if (text.length < 2 || text.length > 12) return '2~12자로 입력해 주세요.';
+    if (!_nicknamePattern.hasMatch(text)) return '한글·영문·숫자·밑줄(_)만 쓸 수 있어요.';
+    return null;
+  }
 }
 
 /// 01012345678 → 010-1234-5678

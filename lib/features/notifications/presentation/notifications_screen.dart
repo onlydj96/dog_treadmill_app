@@ -42,6 +42,15 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       unawaited(context.push(AppRoutes.bookingDetail(bookingId)));
     } else if (notification.type == 'exercise') {
       context.go(AppRoutes.exercise);
+    } else if (notification.type == 'ranking') {
+      final dogId = notification.dogId;
+      if (notification.badgeCode != null && dogId != null) {
+        unawaited(context.push(AppRoutes.dogBadges(dogId)));
+      } else if (notification.periodMonth != null) {
+        unawaited(context.push(AppRoutes.rankingTab('hall')));
+      } else {
+        unawaited(context.push(AppRoutes.ranking));
+      }
     }
   }
 
@@ -88,7 +97,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             return const EmptyState(
               icon: Icons.notifications_none_rounded,
               title: '새 알림이 없어요',
-              message: '예약 확정, 운동 시작·완료, AI 분석 결과를 알려 드려요.',
+              message: '예약 확정, 운동 시작·완료, AI 분석 결과, 배지·랭킹 소식을 알려 드려요.',
             );
           }
           return ListView.separated(
@@ -130,6 +139,7 @@ class _NotificationTile extends StatelessWidget {
       'booking' => (Icons.event_available_rounded, scheme.activeTone),
       'exercise' => (Icons.directions_run_rounded, scheme.cautionTone),
       'analysis' => (Icons.auto_awesome_rounded, scheme.calmTone),
+      'ranking' => (Icons.emoji_events_rounded, scheme.cautionTone),
       _ => (Icons.campaign_rounded, scheme.neutralTone),
     };
 

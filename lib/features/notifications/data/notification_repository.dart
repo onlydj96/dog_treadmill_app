@@ -36,6 +36,11 @@ class AppNotification {
   String? get bookingId => data['booking_id'] as String?;
   String? get reportId => data['report_id'] as String?;
   String? get sessionId => data['session_id'] as String?;
+
+  /// 랭킹 알림: 배지(dog_id + badge_code), 월간 수상(period_month + dog_id), 응원(dog_id)
+  String? get dogId => data['dog_id'] as String?;
+  String? get badgeCode => data['badge_code'] as String?;
+  String? get periodMonth => data['period_month'] as String?;
 }
 
 class NotificationRepository {

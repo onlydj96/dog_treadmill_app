@@ -62,6 +62,16 @@ final dogDetailProvider = FutureProvider.autoDispose.family<Dog, String>(
   (ref, dogId) => ref.watch(dogRepositoryProvider).fetchDog(dogId),
 );
 
+/// 견종 카탈로그. 앱 실행 중에는 한 번만 불러온다.
+final breedsProvider = FutureProvider<List<Breed>>(
+  (ref) => ref.watch(dogRepositoryProvider).fetchBreeds(),
+);
+
+/// 질병·주의사항 카탈로그. 앱 실행 중에는 한 번만 불러온다.
+final healthConditionsProvider = FutureProvider<List<HealthCondition>>(
+  (ref) => ref.watch(dogRepositoryProvider).fetchHealthConditions(),
+);
+
 final dogHealthProfileProvider = FutureProvider.autoDispose.family<DogHealthProfile?, String>(
   (ref, dogId) => ref.watch(dogRepositoryProvider).fetchHealthProfile(dogId),
 );

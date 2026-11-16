@@ -55,6 +55,16 @@ class _HistoryList extends StatelessWidget {
 
   final List<ExerciseSession> sessions;
 
+  /// "2026년 11월 · 3회 · 120점" (점수 기록이 있는 달만 점수를 붙인다)
+  static String _monthTitle(String month, List<ExerciseSession> sessions) {
+    final scored = sessions.map((s) => s.pointsSummary).nonNulls.toList();
+    return [
+      month,
+      '${sessions.length}회',
+      if (scored.isNotEmpty) Fmt.points(scored.fold<int>(0, (sum, p) => sum + p.total)),
+    ].join(' · ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final totals = ExerciseTotals.of(sessions);
@@ -125,7 +135,7 @@ class _HistoryList extends StatelessWidget {
         ),
         for (final entry in groups.entries) ...[
           const SizedBox(height: 24),
-          SectionHeader(title: '${entry.key} · ${entry.value.length}회'),
+          SectionHeader(title: _monthTitle(entry.key, entry.value)),
           for (final session in entry.value)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),

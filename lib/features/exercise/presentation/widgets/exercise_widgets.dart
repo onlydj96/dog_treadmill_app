@@ -7,6 +7,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/common.dart';
+import '../../../ranking/presentation/widgets/ranking_widgets.dart';
 import '../../data/exercise_session.dart';
 
 /// 운동 경과 시간을 1초마다 갱신해 보여주는 위젯
@@ -157,6 +158,7 @@ class ExerciseRecordTile extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final report = session.latestReport;
+    final points = session.pointsSummary;
 
     return AppCard(
       padding: const EdgeInsets.all(16),
@@ -222,6 +224,26 @@ class ExerciseRecordTile extends StatelessWidget {
             Text(
               '중단 사유: ${session.stopReason}',
               style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant),
+            ),
+          ],
+          if (points != null) ...[
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                PointsChip(summary: points, onTap: () => showPointsBreakdownSheet(context, points)),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    points.voided
+                        ? '운영자 확인 후 무효 처리된 기록이에요'
+                        : points.note?.message ??
+                            (points.weeklyBonus > 0 ? '주간 보너스 ${points.weeklyBonus}점 포함' : '랭킹 점수'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant),
+                  ),
+                ),
+              ],
             ),
           ],
         ],

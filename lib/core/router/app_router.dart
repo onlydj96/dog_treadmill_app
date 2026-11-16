@@ -25,6 +25,9 @@ import '../../features/mypage/presentation/my_page_screen.dart';
 import '../../features/mypage/presentation/notification_settings_screen.dart';
 import '../../features/mypage/presentation/profile_edit_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
+import '../../features/ranking/presentation/badge_collection_screen.dart';
+import '../../features/ranking/presentation/ranking_screen.dart';
+import '../../features/ranking/presentation/store_board_screen.dart';
 import '../../features/shell/app_shell.dart';
 import '../../features/support/presentation/support_screens.dart';
 import '../supabase/supabase_providers.dart';
@@ -111,7 +114,19 @@ GoRouter buildRouter({
             path: 'edit',
             builder: (_, state) => DogRegistrationScreen(dogId: state.pathParameters['id']),
           ),
+          GoRoute(
+            path: 'badges',
+            builder: (_, state) => BadgeCollectionScreen(dogId: state.pathParameters['id']!),
+          ),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.ranking,
+        builder: (_, state) => RankingScreen(initialTab: RankingTab.fromQuery(state.uri.queryParameters['tab'])),
+      ),
+      GoRoute(
+        path: '/board/:branchId',
+        builder: (_, state) => StoreBoardScreen(branchId: state.pathParameters['branchId']!),
       ),
       GoRoute(path: AppRoutes.membership, builder: (_, __) => const MembershipScreen()),
       GoRoute(path: AppRoutes.payments, builder: (_, __) => const PaymentHistoryScreen()),

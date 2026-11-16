@@ -49,6 +49,18 @@ abstract final class AppColors {
 
   /// 주의 필요 상태, 파괴적 행동 (흰 글자 5.8:1)
   static const coral = Color(0xFFB6374B);
+
+  /// 랭킹 메달. 금은 로고 허니를 그대로 쓰고, 은·동은 같은 명도대로 맞췄다.
+  /// 메달 위 글자·아이콘은 [charcoal] (금 11:1 · 은 11:1 · 동 7.6:1).
+  static const medalGold = honey;
+  static const medalSilver = Color(0xFFD5DAE1);
+  static const medalBronze = Color(0xFFE6A97C);
+
+  static Color medal(int rank) => switch (rank) {
+        1 => medalGold,
+        2 => medalSilver,
+        _ => medalBronze,
+      };
 }
 
 /// 의미 기반 상태 색. 로고 색이 신호등처럼 단계적으로 강해진다.

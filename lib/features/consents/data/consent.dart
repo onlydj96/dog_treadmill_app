@@ -26,6 +26,12 @@ enum ConsentType {
     description: '촬영 영상과 관절 좌표를 비식별화해 AI 모델 개선에 활용합니다. '
         '동의하지 않아도 서비스 이용에는 제한이 없습니다.',
   ),
+  ranking(
+    dbValue: 'ranking',
+    title: '랭킹 참여 (닉네임·반려견 공개)',
+    description: '월간 랭킹과 명예의 전당에 닉네임, 반려견 이름·견종·사진, 운동 점수를 다른 회원에게 보여줍니다. '
+        '실명·이메일·연락처는 공개되지 않으며, 철회하면 바로 랭킹에서 빠집니다.',
+  ),
   marketing(
     dbValue: 'marketing',
     title: '마케팅 정보 수신',

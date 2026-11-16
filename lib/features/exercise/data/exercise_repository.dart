@@ -10,7 +10,9 @@ class ExerciseRepository {
 
   static const _sessionColumns = '*, '
       'treadmill:treadmills(id, device_name), '
-      'reports:analysis_reports(id, analysis_status, created_at)';
+      'reports:analysis_reports(id, analysis_status, created_at), '
+      'points:exercise_points(kind, attendance_points, achievement_points, distance_points, bonus_points, '
+      'points, note, voided_at)';
 
   /// 반려견의 최신 운동 세션을 Realtime으로 구독한다 (운동 진행 화면).
   /// 영상은 전송하지 않고 상태·속도·거리 등 지표만 받는다.

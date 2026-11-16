@@ -1,4 +1,5 @@
 import '../../../core/utils/json.dart';
+import '../../ranking/data/ranking_models.dart';
 
 enum SessionStatus {
   ready('ready', '준비 중'),
@@ -47,6 +48,7 @@ class ExerciseSession {
     this.stopReason,
     this.updatedAt,
     this.reports = const [],
+    this.points = const [],
   });
 
   factory ExerciseSession.fromJson(Json json) {
@@ -55,6 +57,7 @@ class ExerciseSession {
         .objList('reports')
         .map((r) => SessionReportRef(id: r.str('id'), status: r.str('analysis_status')))
         .toList();
+    final points = json.objList('points').map(SessionPoints.fromJson).toList();
     return ExerciseSession(
       id: json.str('id'),
       dogId: json.str('dog_id'),
@@ -74,6 +77,7 @@ class ExerciseSession {
       createdAt: json.dateTime('created_at'),
       updatedAt: json.dateTimeOrNull('updated_at'),
       reports: reports,
+      points: points,
     );
   }
 
@@ -95,6 +99,12 @@ class ExerciseSession {
   final DateTime createdAt;
   final DateTime? updatedAt;
   final List<SessionReportRef> reports;
+
+  /// 이 운동으로 받은 랭킹 점수 원장 (운동 1회 점수 + 붙은 주간 보너스). Realtime 행에는 없다.
+  final List<SessionPoints> points;
+
+  /// 받은 점수 합계와 내역. 점수 기록이 없으면 null.
+  SessionPointsSummary? get pointsSummary => SessionPointsSummary.of(points);
 
   /// 운동 기준일 (시작 전이면 생성 시각)
   DateTime get date => startedAt ?? createdAt;

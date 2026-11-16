@@ -41,6 +41,18 @@ class DogRepository {
     await _client.from('dogs').update({'deleted_at': DateTime.now().toUtc().toIso8601String()}).eq('id', dogId);
   }
 
+  /// 견종 카탈로그 (사용 중인 견종만, 정렬 순서대로)
+  Future<List<Breed>> fetchBreeds() async {
+    final rows = await _client.from('breeds').select().eq('is_active', true).order('sort_order');
+    return rows.map(Breed.fromJson).toList();
+  }
+
+  /// 질병·주의사항 카탈로그
+  Future<List<HealthCondition>> fetchHealthConditions() async {
+    final rows = await _client.from('health_conditions').select().eq('is_active', true).order('sort_order');
+    return rows.map(HealthCondition.fromJson).toList();
+  }
+
   Future<DogHealthProfile?> fetchHealthProfile(String dogId) async {
     final row = await _client.from('dog_health_profiles').select().eq('dog_id', dogId).maybeSingle();
     return row == null ? null : DogHealthProfile.fromJson(row);

@@ -10,6 +10,7 @@ import '../../auth/data/auth_repository.dart';
 import '../../dogs/presentation/widgets/dog_avatar.dart';
 import '../../dogs/providers.dart';
 import '../../profile/data/user_repository.dart';
+import '../../ranking/presentation/ranking_settings_sheet.dart';
 
 /// 마이페이지 (문서 3.5, 화면 12 MyPageScreen)
 class MyPageScreen extends ConsumerWidget {
@@ -73,6 +74,11 @@ class MyPageScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('${profile?.displayName ?? '보호자'}님', style: theme.textTheme.titleMedium),
+                      if (profile != null && profile.nickname.isNotEmpty)
+                        Text(
+                          '@${profile.nickname}',
+                          style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w700, fontSize: 13),
+                        ),
                       if (email != null) Text(email, style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13)),
                       if (profile?.phone != null)
                         Text(profile!.phone!, style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13)),
@@ -144,6 +150,13 @@ class MyPageScreen extends ConsumerWidget {
               _MenuItem(Icons.receipt_long_outlined, '결제·환불 내역', () => context.push(AppRoutes.payments)),
               _MenuItem(Icons.event_note_outlined, '예약 내역', () => context.go(AppRoutes.booking)),
               _MenuItem(Icons.insights_outlined, '운동 누적 기록', () => context.push(AppRoutes.exerciseHistory)),
+            ],
+          ),
+          _MenuGroup(
+            title: '랭킹',
+            items: [
+              _MenuItem(Icons.leaderboard_outlined, '월간 랭킹·명예의 전당', () => context.push(AppRoutes.ranking)),
+              _MenuItem(Icons.badge_outlined, '랭킹 참여·닉네임 설정', () => showRankingSettingsSheet(context)),
             ],
           ),
           _MenuGroup(

@@ -48,3 +48,10 @@ final videoConsentGrantedProvider = Provider.autoDispose<bool?>((ref) {
   if (consents == null) return null;
   return consents[ConsentType.videoRecording]?.granted ?? false;
 });
+
+/// 랭킹 참여 동의 여부. 동의 기록이 없으면 false, 아직 불러오지 못했으면 null.
+final rankingConsentGrantedProvider = Provider.autoDispose<bool?>((ref) {
+  final consents = ref.watch(consentsProvider).valueOrNull;
+  if (consents == null) return null;
+  return consents[ConsentType.ranking]?.granted ?? false;
+});

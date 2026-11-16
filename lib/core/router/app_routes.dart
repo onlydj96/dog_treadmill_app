@@ -25,6 +25,14 @@ abstract final class AppRoutes {
   static const dogNew = '/dogs/new';
   static String dogDetail(String id) => '/dogs/$id';
   static String dogEdit(String id) => '/dogs/$id/edit';
+  static String dogBadges(String id) => '/dogs/$id/badges';
+
+  // 랭킹 (탭: leaderboard 기본 / battle / hall)
+  static const ranking = '/ranking';
+  static String rankingTab(String tab) => Uri(path: ranking, queryParameters: {'tab': tab}).toString();
+
+  /// 매장 태블릿·TV용 지점 랭킹 보드
+  static String storeBoard(String branchId) => '/board/$branchId';
 
   static const membership = '/membership';
   static const payments = '/payments';

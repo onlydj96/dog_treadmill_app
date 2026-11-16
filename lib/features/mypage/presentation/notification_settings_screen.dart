@@ -85,6 +85,13 @@ class _PrefsFormState extends ConsumerState<_PrefsForm> {
                 value: _prefs.analysis,
                 onChanged: (value) => _update(_prefs.copyWith(analysis: value)),
               ),
+              SwitchListTile(
+                secondary: const Icon(Icons.emoji_events_outlined),
+                title: const Text('랭킹 알림', style: TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: const Text('배지 획득, 응원, 월간 순위 확정'),
+                value: _prefs.ranking,
+                onChanged: (value) => _update(_prefs.copyWith(ranking: value)),
+              ),
             ],
           ),
         ),

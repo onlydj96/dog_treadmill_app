@@ -13,33 +13,9 @@ import '../data/dog.dart';
 import '../providers.dart';
 import 'widgets/dog_avatar.dart';
 
-const _breedSuggestions = [
-  '말티즈',
-  '푸들',
-  '토이 푸들',
-  '포메라니안',
-  '시츄',
-  '비숑 프리제',
-  '치와와',
-  '요크셔테리어',
-  '닥스훈트',
-  '웰시코기',
-  '골든 리트리버',
-  '래브라도 리트리버',
-  '진돗개',
-  '시바견',
-  '슈나우저',
-  '비글',
-  '보더콜리',
-  '프렌치 불독',
-  '퍼그',
-  '사모예드',
-  '스피츠',
-  '말티푸',
-  '믹스견',
-];
-
 /// 반려견 등록·수정 (화면 3 DogRegistrationScreen)
+///
+/// 견종·체구·나이·체중·중성화·질병은 AI 운동 강도 산정과 금기 규칙의 입력이라 필수로 받는다.
 class DogRegistrationScreen extends ConsumerWidget {
   const DogRegistrationScreen({super.key, this.dogId});
 
@@ -49,34 +25,59 @@ class DogRegistrationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = dogId;
-    if (id == null) {
-      return const _DogForm(dog: null, profile: null);
-    }
-    final dog = ref.watch(dogDetailProvider(id));
-    final profile = ref.watch(dogHealthProfileProvider(id));
-    if (dog.hasError || profile.hasError) {
+    final title = id == null ? '반려견 등록' : '반려견 정보 수정';
+    final breeds = ref.watch(breedsProvider);
+    final conditions = ref.watch(healthConditionsProvider);
+    final AsyncValue<Dog?> dog = id == null ? const AsyncData(null) : ref.watch(dogDetailProvider(id));
+    final AsyncValue<DogHealthProfile?> profile =
+        id == null ? const AsyncData(null) : ref.watch(dogHealthProfileProvider(id));
+
+    final states = <AsyncValue<Object?>>[breeds, conditions, dog, profile];
+    final failed = states.where((state) => state.hasError).firstOrNull;
+    if (failed != null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('반려견 정보 수정')),
+        appBar: AppBar(title: Text(title)),
         body: ErrorView(
-          message: friendlyError(dog.error ?? profile.error!),
-          onRetry: () => ref
-            ..invalidate(dogDetailProvider(id))
-            ..invalidate(dogHealthProfileProvider(id)),
+          message: friendlyError(failed.error!),
+          onRetry: () {
+            ref
+              ..invalidate(breedsProvider)
+              ..invalidate(healthConditionsProvider);
+            if (id != null) {
+              ref
+                ..invalidate(dogDetailProvider(id))
+                ..invalidate(dogHealthProfileProvider(id));
+            }
+          },
         ),
       );
     }
-    if (!dog.hasValue || !profile.hasValue) {
-      return Scaffold(appBar: AppBar(title: const Text('반려견 정보 수정')), body: const LoadingView());
+    if (states.any((state) => !state.hasValue)) {
+      return Scaffold(appBar: AppBar(title: Text(title)), body: const LoadingView());
     }
-    return _DogForm(dog: dog.value, profile: profile.value);
+    return _DogForm(
+      dog: dog.value,
+      profile: profile.value,
+      breeds: breeds.requireValue,
+      conditions: conditions.requireValue,
+    );
   }
 }
 
+enum _AgeInput { birthDate, estimate }
+
 class _DogForm extends ConsumerStatefulWidget {
-  const _DogForm({required this.dog, required this.profile});
+  const _DogForm({
+    required this.dog,
+    required this.profile,
+    required this.breeds,
+    required this.conditions,
+  });
 
   final Dog? dog;
   final DogHealthProfile? profile;
+  final List<Breed> breeds;
+  final List<HealthCondition> conditions;
 
   @override
   ConsumerState<_DogForm> createState() => _DogFormState();
@@ -87,10 +88,18 @@ class _DogFormState extends ConsumerState<_DogForm> {
   late final TextEditingController _nameController;
   late final TextEditingController _weightController;
   late final TextEditingController _vetNotesController;
+  late final TextEditingController _ageYearsController;
+  late final TextEditingController _ageMonthsController;
   late String _breed;
+  late bool _isMixed;
+  DogSize? _size;
+  late bool _brachycephalic;
+  late _AgeInput _ageInput;
   DateTime? _birthDate;
   DogSex? _sex;
-  bool _neutered = false;
+  bool? _neutered;
+  late Set<String> _conditionCodes;
+  late bool _noConditions;
   late List<HealthItem> _diseases;
   late List<HealthItem> _surgeries;
   late List<HealthItem> _medications;
@@ -99,20 +108,58 @@ class _DogFormState extends ConsumerState<_DogForm> {
   String _imageExtension = 'jpg';
   bool _saving = false;
 
+  /// 저장을 한 번 시도한 뒤부터 선택형 필수 항목의 오류를 보여 준다
+  bool _showErrors = false;
+
   bool get _isEdit => widget.dog != null;
+
+  /// 믹스견이 아니고 입력한 이름이 카탈로그와 같으면 카탈로그 견종 (체구·단두종 자동)
+  Breed? get _catalogBreed {
+    if (_isMixed) return null;
+    final name = _breed.trim();
+    for (final breed in widget.breeds) {
+      if (breed.name == name) return breed;
+    }
+    return null;
+  }
+
+  bool get _conditionsAnswered => _noConditions || _conditionCodes.isNotEmpty;
+
+  String? get _breedHelperText {
+    final breed = _catalogBreed;
+    if (breed != null) {
+      return [
+        '${breed.size.label}견',
+        if (breed.isBrachycephalic) '단두종',
+      ].join(' · ');
+    }
+    if (!_isMixed && _breed.trim().isNotEmpty) return '목록에 없는 견종이에요. 아래에서 체구를 골라 주세요.';
+    return null;
+  }
 
   @override
   void initState() {
     super.initState();
     final dog = widget.dog;
     final profile = widget.profile;
+    final estimated = dog?.birthDateEstimated ?? false;
+    final estimatedMonths = estimated && dog?.birthDate != null ? Fmt.dogAgeMonths(dog!.birthDate!) : null;
     _nameController = TextEditingController(text: dog?.name ?? '');
     _weightController = TextEditingController(text: dog?.weightKg == null ? '' : _trimNumber(dog!.weightKg!));
     _vetNotesController = TextEditingController(text: profile?.veterinaryNotes ?? '');
+    _ageYearsController = TextEditingController(text: estimatedMonths == null ? '' : '${estimatedMonths ~/ 12}');
+    _ageMonthsController = TextEditingController(text: estimatedMonths == null ? '' : '${estimatedMonths % 12}');
     _breed = dog?.breed ?? '';
-    _birthDate = dog?.birthDate;
+    _isMixed = dog?.isMixed ?? false;
+    _size = dog?.size;
+    _brachycephalic = dog?.isBrachycephalic ?? false;
+    _ageInput = estimated ? _AgeInput.estimate : _AgeInput.birthDate;
+    _birthDate = estimated ? null : dog?.birthDate;
     _sex = dog?.sex;
-    _neutered = dog?.neutered ?? false;
+    _neutered = dog?.neutered;
+    final codes = profile?.conditionCodes;
+    _conditionCodes = {...?codes};
+    _noConditions = codes != null && codes.isEmpty;
     _diseases = [...?profile?.diseases];
     _surgeries = [...?profile?.surgeries];
     _medications = [...?profile?.medications];
@@ -124,7 +171,51 @@ class _DogFormState extends ConsumerState<_DogForm> {
     _nameController.dispose();
     _weightController.dispose();
     _vetNotesController.dispose();
+    _ageYearsController.dispose();
+    _ageMonthsController.dispose();
     super.dispose();
+  }
+
+  int? get _estimatedMonths {
+    final years = int.tryParse(_ageYearsController.text.trim().isEmpty ? '0' : _ageYearsController.text.trim());
+    final months = int.tryParse(_ageMonthsController.text.trim().isEmpty ? '0' : _ageMonthsController.text.trim());
+    if (years == null || months == null) return null;
+    return years * 12 + months;
+  }
+
+  /// 추정 나이 → 생년월일. 나이를 바꾸지 않았으면 저장된 날짜를 그대로 쓴다.
+  DateTime? _resolveBirthDate() {
+    if (_ageInput == _AgeInput.birthDate) return _birthDate;
+    final months = _estimatedMonths;
+    if (months == null) return null;
+    final saved = widget.dog;
+    if (saved != null &&
+        saved.birthDateEstimated &&
+        saved.birthDate != null &&
+        Fmt.dogAgeMonths(saved.birthDate!) == months) {
+      return saved.birthDate;
+    }
+    final now = DateTime.now();
+    return DateTime(now.year, now.month - months, 1);
+  }
+
+  String? _validateAgeYears(String? value) {
+    final yearsText = value?.trim() ?? '';
+    final monthsText = _ageMonthsController.text.trim();
+    if (yearsText.isEmpty && monthsText.isEmpty) return '나이를 입력해 주세요.';
+    final years = int.tryParse(yearsText.isEmpty ? '0' : yearsText);
+    if (years == null || years > 30) return '30살 이하로 입력해 주세요.';
+    final total = _estimatedMonths;
+    if (total != null && total < 1) return '1개월 이상으로 입력해 주세요.';
+    return null;
+  }
+
+  String? _validateAgeMonths(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return null;
+    final months = int.tryParse(text);
+    if (months == null || months > 11) return '0~11개월';
+    return null;
   }
 
   static String _trimNumber(double value) => value % 1 == 0 ? value.toInt().toString() : value.toString();
@@ -178,7 +269,16 @@ class _DogFormState extends ConsumerState<_DogForm> {
   }
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
+    setState(() => _showErrors = true);
+    final fieldsValid = _formKey.currentState!.validate();
+    final catalogBreed = _catalogBreed;
+    final birthDate = _resolveBirthDate();
+    final choicesValid =
+        (catalogBreed != null || _size != null) && birthDate != null && _neutered != null && _conditionsAnswered;
+    if (!fieldsValid || !choicesValid) {
+      context.showMessage('표시된 필수 항목을 확인해 주세요.');
+      return;
+    }
     final userId = ref.read(currentUserIdProvider);
     if (userId == null) return;
 
@@ -186,8 +286,13 @@ class _DogFormState extends ConsumerState<_DogForm> {
     final repo = ref.read(dogRepositoryProvider);
     final draft = DogDraft(
       name: _nameController.text,
-      breed: _breed,
-      birthDate: _birthDate,
+      breed: catalogBreed?.name ?? _breed,
+      breedId: catalogBreed?.id,
+      isMixed: _isMixed,
+      size: catalogBreed?.size ?? _size,
+      isBrachycephalic: catalogBreed?.isBrachycephalic ?? _brachycephalic,
+      birthDate: birthDate,
+      birthDateEstimated: _ageInput == _AgeInput.estimate,
       sex: _sex,
       neutered: _neutered,
       weightKg: double.tryParse(_weightController.text.trim()),
@@ -198,6 +303,7 @@ class _DogFormState extends ConsumerState<_DogForm> {
       await repo.saveHealthProfile(
         DogHealthProfile(
           dogId: dog.id,
+          conditionCodes: _noConditions ? const [] : (_conditionCodes.toList()..sort()),
           diseases: _diseases,
           surgeries: _surgeries,
           medications: _medications,
@@ -285,38 +391,115 @@ class _DogFormState extends ConsumerState<_DogForm> {
               decoration: const InputDecoration(labelText: '이름 *', counterText: ''),
               validator: (value) => (value == null || value.trim().isEmpty) ? '이름을 입력해 주세요.' : null,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 4),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('믹스견이에요'),
+              subtitle: const Text('두 견종 이상이 섞였거나 견종을 잘 모르는 경우'),
+              value: _isMixed,
+              onChanged: (value) => setState(() => _isMixed = value),
+            ),
             Autocomplete<String>(
               initialValue: TextEditingValue(text: _breed),
               optionsBuilder: (value) {
                 final query = value.text.trim();
                 if (query.isEmpty) return const Iterable<String>.empty();
-                return _breedSuggestions.where((breed) => breed.contains(query));
+                return widget.breeds.map((breed) => breed.name).where((name) => name.contains(query));
               },
-              onSelected: (value) => _breed = value,
+              onSelected: (value) => setState(() => _breed = value),
               fieldViewBuilder: (context, controller, focusNode, onSubmitted) => TextFormField(
                 controller: controller,
                 focusNode: focusNode,
                 maxLength: 50,
-                onChanged: (value) => _breed = value,
-                decoration: const InputDecoration(labelText: '견종', hintText: '예: 말티즈', counterText: ''),
+                onChanged: (value) => setState(() => _breed = value),
+                decoration: InputDecoration(
+                  labelText: _isMixed ? '섞인 견종 (선택)' : '견종 *',
+                  hintText: _isMixed ? '예: 말티즈, 푸들' : '예: 말티즈',
+                  counterText: '',
+                  helperText: _breedHelperText,
+                ),
+                validator: (value) =>
+                    !_isMixed && (value == null || value.trim().isEmpty) ? '견종을 입력해 주세요. 잘 모르면 믹스견을 선택해 주세요.' : null,
               ),
+            ),
+            if (_catalogBreed == null) ...[
+              const SizedBox(height: 16),
+              const _FieldLabel('체구 *'),
+              const SizedBox(height: 8),
+              SegmentedButton<DogSize>(
+                emptySelectionAllowed: true,
+                showSelectedIcon: false,
+                segments: [for (final size in DogSize.values) ButtonSegment(value: size, label: Text(size.label))],
+                selected: {if (_size != null) _size!},
+                onSelectionChanged: (value) => setState(() => _size = value.firstOrNull),
+              ),
+              const SizedBox(height: 6),
+              _ChoiceHint(
+                errorText: _showErrors && _size == null ? '체구를 선택해 주세요.' : null,
+                hint: '다 자란 몸무게 기준 · ${DogSize.values.map((s) => '${s.label} ${s.weightHint}').join(' · ')}',
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('주둥이가 짧은 단두종이에요'),
+                subtitle: const Text('퍼그·시츄·불독처럼 코가 눌린 얼굴형'),
+                value: _brachycephalic,
+                onChanged: (value) => setState(() => _brachycephalic = value),
+              ),
+            ],
+            const SizedBox(height: 16),
+            const _FieldLabel('나이 *'),
+            const SizedBox(height: 8),
+            SegmentedButton<_AgeInput>(
+              showSelectedIcon: false,
+              segments: const [
+                ButtonSegment(value: _AgeInput.birthDate, label: Text('생년월일')),
+                ButtonSegment(value: _AgeInput.estimate, label: Text('추정 나이')),
+              ],
+              selected: {_ageInput},
+              onSelectionChanged: (value) => setState(() => _ageInput = value.first),
             ),
             const SizedBox(height: 12),
-            InkWell(
-              borderRadius: BorderRadius.circular(14),
-              onTap: _pickBirthDate,
-              child: InputDecorator(
-                decoration: InputDecoration(
-                  labelText: '생년월일',
-                  suffixIcon: const Icon(Icons.calendar_today_rounded, size: 20),
-                  helperText: _birthDate == null ? null : '현재 ${Fmt.dogAge(_birthDate!)}',
+            if (_ageInput == _AgeInput.birthDate)
+              InkWell(
+                borderRadius: BorderRadius.circular(14),
+                onTap: _pickBirthDate,
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: '생년월일',
+                    suffixIcon: const Icon(Icons.calendar_today_rounded, size: 20),
+                    helperText: _birthDate == null ? null : '현재 ${Fmt.dogAge(_birthDate!)}',
+                    errorText: _showErrors && _birthDate == null ? '생년월일을 선택해 주세요.' : null,
+                  ),
+                  child: Text(_birthDate == null ? '선택해 주세요' : Fmt.dateShort(_birthDate!)),
                 ),
-                child: Text(_birthDate == null ? '선택해 주세요' : Fmt.dateShort(_birthDate!)),
+              )
+            else
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _ageYearsController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+                      decoration: const InputDecoration(labelText: '나이', suffixText: '살'),
+                      validator: _validateAgeYears,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _ageMonthsController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+                      decoration: const InputDecoration(labelText: '개월 (선택)', suffixText: '개월'),
+                      validator: _validateAgeMonths,
+                    ),
+                  ),
+                ],
               ),
-            ),
             const SizedBox(height: 16),
-            Text('성별', style: TextStyle(fontWeight: FontWeight.w600, color: scheme.onSurfaceVariant)),
+            const _FieldLabel('성별'),
             const SizedBox(height: 8),
             SegmentedButton<DogSex>(
               emptySelectionAllowed: true,
@@ -325,20 +508,29 @@ class _DogFormState extends ConsumerState<_DogForm> {
               selected: {if (_sex != null) _sex!},
               onSelectionChanged: (value) => setState(() => _sex = value.firstOrNull),
             ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('중성화 수술을 했어요'),
-              value: _neutered,
-              onChanged: (value) => setState(() => _neutered = value),
+            const SizedBox(height: 16),
+            const _FieldLabel('중성화 *'),
+            const SizedBox(height: 8),
+            SegmentedButton<bool>(
+              emptySelectionAllowed: true,
+              showSelectedIcon: false,
+              segments: const [
+                ButtonSegment(value: true, label: Text('했어요')),
+                ButtonSegment(value: false, label: Text('안 했어요')),
+              ],
+              selected: {if (_neutered != null) _neutered!},
+              onSelectionChanged: (value) => setState(() => _neutered = value.firstOrNull),
             ),
+            if (_showErrors && _neutered == null) const _ChoiceHint(errorText: '중성화 여부를 선택해 주세요.'),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _weightController,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d{0,3}(\.\d{0,2})?'))],
-              decoration: const InputDecoration(labelText: '체중', suffixText: 'kg'),
+              decoration: const InputDecoration(labelText: '체중 *', suffixText: 'kg'),
               validator: (value) {
                 final text = value?.trim() ?? '';
-                if (text.isEmpty) return null;
+                if (text.isEmpty) return '체중을 입력해 주세요.';
                 final weight = double.tryParse(text);
                 if (weight == null || weight <= 0 || weight >= 150) return '올바른 체중을 입력해 주세요.';
                 return null;
@@ -348,14 +540,32 @@ class _DogFormState extends ConsumerState<_DogForm> {
             Text('건강 정보', style: theme.textTheme.titleMedium),
             const SizedBox(height: 4),
             Text(
-              '예약할 때 주의할 점을 알려 드리는 데 쓰여요. 정확하게 입력해 주세요.',
+              '운동 강도와 주의사항을 정하는 데 쓰여요. 정확하게 입력해 주세요.',
               style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant),
             ),
             const SizedBox(height: 12),
+            _ConditionPicker(
+              conditions: widget.conditions,
+              selected: _conditionCodes,
+              noConditions: _noConditions,
+              errorText: _showErrors && !_conditionsAnswered ? "해당하는 항목이나 '해당 없음'을 골라 주세요." : null,
+              onToggle: (code, selected) => setState(() {
+                if (selected) {
+                  _conditionCodes.add(code);
+                  _noConditions = false;
+                } else {
+                  _conditionCodes.remove(code);
+                }
+              }),
+              onNoConditions: (selected) => setState(() {
+                _noConditions = selected;
+                if (selected) _conditionCodes.clear();
+              }),
+            ),
             _HealthItemsEditor(
-              title: '기저질환',
-              emptyText: '등록된 질환이 없어요.',
-              nameLabel: '질환명',
+              title: '질환 상세',
+              emptyText: '적어 둔 진단명이 없어요.',
+              nameLabel: '진단명 (예: 슬개골 탈구)',
               detailLabel: '상태·단계 (선택)',
               items: _diseases,
               onChanged: (items) => setState(() => _diseases = items),
@@ -407,6 +617,115 @@ class _DogFormState extends ConsumerState<_DogForm> {
                     )
                   : Text(_isEdit ? '저장하기' : '등록하기'),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FieldLabel extends StatelessWidget {
+  const _FieldLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text,
+        style: TextStyle(fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurfaceVariant));
+  }
+}
+
+/// 선택형 입력 아래의 안내 또는 오류 문구 (오류가 있으면 오류를 보여 준다)
+class _ChoiceHint extends StatelessWidget {
+  const _ChoiceHint({this.errorText, this.hint});
+
+  final String? errorText;
+  final String? hint;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = errorText ?? hint;
+    if (text == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 6, left: 4),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 12, color: errorText != null ? scheme.error : scheme.onSurfaceVariant),
+      ),
+    );
+  }
+}
+
+/// 질병·주의사항 다중 선택. 아무것도 없으면 '해당 없음'을 명시적으로 고른다.
+class _ConditionPicker extends StatelessWidget {
+  const _ConditionPicker({
+    required this.conditions,
+    required this.selected,
+    required this.noConditions,
+    required this.onToggle,
+    required this.onNoConditions,
+    this.errorText,
+  });
+
+  final List<HealthCondition> conditions;
+  final Set<String> selected;
+  final bool noConditions;
+  final void Function(String code, bool selected) onToggle;
+  final ValueChanged<bool> onNoConditions;
+  final String? errorText;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final picked = [
+      for (final condition in conditions)
+        if (selected.contains(condition.code)) condition
+    ];
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AppCard(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        borderColor: errorText != null ? scheme.error : null,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('질병·주의사항 *', style: TextStyle(fontWeight: FontWeight.w700)),
+            const SizedBox(height: 4),
+            Text(
+              '진단받았거나 치료 중인 항목을 모두 골라 주세요.',
+              style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final condition in conditions)
+                  FilterChip(
+                    label: Text(condition.name),
+                    tooltip: condition.description,
+                    selected: selected.contains(condition.code),
+                    onSelected: (value) => onToggle(condition.code, value),
+                  ),
+                FilterChip(
+                  label: const Text('해당 없음'),
+                  selected: noConditions,
+                  onSelected: onNoConditions,
+                ),
+              ],
+            ),
+            for (final condition in picked)
+              if (condition.description != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    '${condition.name}: ${condition.description}',
+                    style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+                  ),
+                ),
+            if (errorText != null) _ChoiceHint(errorText: errorText),
           ],
         ),
       ),
