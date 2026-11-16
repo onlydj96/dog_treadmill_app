@@ -303,6 +303,35 @@ void main() {
       expect(find.textContaining('동의'), findsNothing);
       expect(find.textContaining('건을 분석하고 있어요'), findsNothing);
     });
+
+    testWidgets('최근 분석 카드: 좁은 화면(360dp)에서도 대칭성 줄이 넘치지 않는다', (tester) async {
+      // 테스트 폰트는 숫자까지 모든 글자를 정사각형으로 그려 실제보다 넓다 → 실제 기기에서 글자를 키운 경우보다 빡빡한 조건
+      tester.view
+        ..physicalSize = const Size(1080, 2340)
+        ..devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await pumpHealth(
+        tester,
+        consents: videoConsent(granted: true),
+        reports: [
+          AnalysisReport(
+            id: 'r1',
+            sessionId: 's1',
+            dogId: 'd1',
+            status: AnalysisStatus.completed,
+            createdAt: DateTime(2026, 11, 9, 10),
+            gaitMetrics: const GaitMetrics(symmetryIndex: 0.93, cadenceSpm: 172, rhythmScore: 0.9),
+            // 배지 문구가 가장 긴 단계
+            anomalyMetrics: const AnomalyMetrics(level: AnomalyLevel.normal),
+          ),
+        ],
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text('93'), findsOneWidget);
+      expect(find.text('좌우 대칭성'), findsOneWidget);
+      expect(find.text('특이사항 없음'), findsWidgets, reason: '요약 카드와 리포트 목록에 함께 보인다');
+    });
   });
 
   group('예약 상세: 무인 매장 셀프 체크인', () {

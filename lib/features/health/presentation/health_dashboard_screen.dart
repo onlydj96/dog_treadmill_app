@@ -216,23 +216,36 @@ class _LatestSummaryCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      gait?.symmetryIndex == null ? '-' : (gait!.symmetryIndex! * 100).toStringAsFixed(0),
-                      style: AppText.numeric(56, color: onColor, height: 1),
+                    // 좁은 화면·큰 글자에서는 「좌우 대칭성」이 단어 중간에서 끊기지 않고 숫자 아래 줄로 통째로 내려간다
+                    Expanded(
+                      child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.end,
+                        spacing: 12,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                gait?.symmetryIndex == null ? '-' : (gait!.symmetryIndex! * 100).toStringAsFixed(0),
+                                style: AppText.numeric(56, color: onColor, height: 1),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4, bottom: 8),
+                                child: Text('%', style: AppText.numeric(22, color: onColor)),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text('좌우 대칭성', style: TextStyle(color: onColor, fontWeight: FontWeight.w700)),
+                          ),
+                        ],
+                      ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4, bottom: 8),
-                      child: Text('%', style: AppText.numeric(22, color: onColor)),
-                    ),
-                    const SizedBox(width: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Text('좌우 대칭성', style: TextStyle(color: onColor, fontWeight: FontWeight.w700)),
-                    ),
-                    const Spacer(),
                     if (anomaly != null)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(left: 8, bottom: 8),
                         child: AnomalyLevelBadge(level: anomaly.level),
                       ),
                   ],
