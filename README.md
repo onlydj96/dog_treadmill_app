@@ -4,6 +4,7 @@
 반려견 등록·건강 정보, 트레드밀 예약, 실시간 운동 현황, AI 보행 분석 리포트, 운동 이력,
 월간 랭킹·배지·명예의 전당([docs/ranking.md](docs/ranking.md))을 제공합니다.
 실제 서버 없이 시연할 수 있는 [데모 앱(목업 서버)](#데모-앱-목업-서버)을 같은 저장소에 함께 둡니다.
+화면은 한국어(기본)와 English를 지원합니다([언어](#언어-한국어--english)).
 
 | 구분 | 사용 기술 |
 |---|---|
@@ -32,6 +33,20 @@ PawFit 로고([assets/logo](assets/logo))에서 뽑은 색을 씁니다.
 - 숫자·통계는 Outfit 폰트(OFL, `assets/fonts`), 한글은 각 플랫폼 시스템 폰트를 씁니다.
 - 라이트/다크 모드는 시스템 설정을 따릅니다. 색 정의는 [app_colors.dart](lib/core/theme/app_colors.dart), [app_theme.dart](lib/core/theme/app_theme.dart)에 있습니다.
 
+## 언어 (한국어 · English)
+
+실제 앱과 데모 앱 모두 한국어(기본)와 영어를 지원합니다. 마이페이지 › 설정 › **언어 (Language)** 또는
+로그인 화면 오른쪽 위 언어 버튼에서 바꾸고, 선택한 언어는 기기에 저장됩니다(로그인과 무관).
+
+- 화면 문구는 `lib/l10n/app_ko.arb`·`app_en.arb`에 있고 `flutter gen-l10n`이 `lib/l10n/generated/`를 만듭니다.
+  문구 추가 규칙, 키 이름, 영어 용어집은 [docs/i18n.md](docs/i18n.md)에 있습니다.
+- 서버 텍스트(지점·운동 프로그램·이용권 상품·공지·FAQ·견종·질병·배지·AI 리포트)는 같은 이름에 `_en`을 붙인
+  컬럼의 영어를 보여 주고, 비어 있으면 한국어를 보여 줍니다. 운영자가 새 콘텐츠를 넣을 때 영어 컬럼도 채워 주세요.
+- 알림은 DB 트리거가 문구 종류와 값(`data.msg`·`data.args`)을 함께 저장하고 앱이 현재 언어로 문구를 만듭니다.
+  언어를 바꾸면 지난 알림도 새 언어로 보입니다.
+- 영어 화면에서 가입하면 랭킹 닉네임도 영어로 자동 생성됩니다(예: `SunnyPaw382`).
+- iOS 권한 안내(카메라·사진 보관함)는 앱 설정이 아니라 기기 언어를 따릅니다(`ios/Runner/{ko,en}.lproj/InfoPlist.strings`).
+
 ## 구조
 
 ```
@@ -39,6 +54,7 @@ lib/
   main.dart      실제 앱 진입점 (Supabase)
   main_demo.dart 데모 앱 진입점 (목업 서버. Supabase·.env 없이 실행)
   core/        설정(env), 테마, 라우터, Supabase Provider, 공통 위젯·유틸
+  l10n/        다국어 문구(ARB: 한국어·English) · 언어 설정 · 생성 코드(generated/)
   features/
     auth/          로그인 · 회원가입(필수/선택 동의 분리)
     home/          홈 대시보드
@@ -60,7 +76,7 @@ supabase/
   functions/   delete-account (회원 탈퇴)
   tests/       pgTAP 테스트
   seed.sql     로컬 개발용 샘플 데이터 (이용권 상품·FAQ·공지, 랭킹 샘플 계정·운동 기록)
-docs/          개발계획서 · 기능명세서 · AI 서버 결과 저장 규격 · 랭킹·배지 규격
+docs/          개발계획서 · 기능명세서 · AI 서버 결과 저장 규격 · 랭킹·배지 규격 · 다국어 규칙(i18n.md)
 test/          단위·위젯 테스트, 로컬 Supabase 통합 테스트
 ```
 
@@ -216,3 +232,5 @@ VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
 - 번들 ID 변경 (현재 `com.example.dog_treadmill_app`), 스플래시 화면
 - 약관·개인정보 처리방침 전문 연결 (현재 회원가입 화면에는 요약 문구만 있음)
 - 원격 Auth의 이메일 인증을 켜는 경우 모바일 딥링크 리디렉션 설정
+- 영어 지원 마이그레이션(`20261117000100_english_content.sql`) 원격 적용(`npx supabase db push`) 후,
+  원격에 따로 넣은 이용권 상품·공지·FAQ의 영어 컬럼(`*_en`) 채우기
