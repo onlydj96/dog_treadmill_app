@@ -1,7 +1,9 @@
 # PawFit — 반려견 AI 헬스장 (보호자 앱)
 
 반려견 트레드밀 헬스장의 보호자용 모바일 앱입니다. 기획은 [DOCUMENT.md](DOCUMENT.md)를 따릅니다.
-반려견 등록·건강 정보, 트레드밀 예약, 실시간 운동 현황, AI 보행 분석 리포트, 운동 이력을 제공합니다.
+반려견 등록·건강 정보, 트레드밀 예약, 실시간 운동 현황, AI 보행 분석 리포트, 운동 이력,
+월간 랭킹·배지·명예의 전당([docs/ranking.md](docs/ranking.md))을 제공합니다.
+실제 서버 없이 시연할 수 있는 [데모 앱(목업 서버)](#데모-앱-목업-서버)을 같은 저장소에 함께 둡니다.
 
 | 구분 | 사용 기술 |
 |---|---|
@@ -34,6 +36,8 @@ PawFit 로고([assets/logo](assets/logo))에서 뽑은 색을 씁니다.
 
 ```
 lib/
+  main.dart      실제 앱 진입점 (Supabase)
+  main_demo.dart 데모 앱 진입점 (목업 서버. Supabase·.env 없이 실행)
   core/        설정(env), 테마, 라우터, Supabase Provider, 공통 위젯·유틸
   features/
     auth/          로그인 · 회원가입(필수/선택 동의 분리)
@@ -44,15 +48,19 @@ lib/
     health/        건강 대시보드 · AI 분석 리포트 · 영상 재생
     membership/    이용권 · 결제 내역
     notifications/ 알림(Realtime)
-    consents/      개인정보·영상 이용 동의 관리
+    consents/      개인정보·영상 이용·랭킹 참여 동의 관리
     mypage/        마이페이지 · 프로필/비밀번호 · 알림 설정
+    ranking/       월간 랭킹 · 지점 대항전 · 명예의 전당 · 배지함 · 응원 · 자랑하기 · 매장 랭킹 보드
     support/       공지 · FAQ · 1:1 문의
+  demo/        데모 앱 전용 (실제 앱은 import하지 않음)
+    mock_server/   목업 서버: 인메모리 테이블 · 예약/점수/랭킹 규칙 · 트레드밀·AI 서버 시뮬레이터 · 샘플 데이터
+    demo_*.dart    목업 저장소 · 데모 로그인 · Provider 교체 · DEMO 버튼과 데모 컨트롤
 supabase/
-  migrations/  스키마 · RLS · 예약/운동 RPC · 알림 트리거 · Storage · Realtime
+  migrations/  스키마 · RLS · 예약/운동 RPC · 알림 트리거 · Storage · Realtime · 랭킹 점수·배지·월간 마감
   functions/   delete-account (회원 탈퇴)
   tests/       pgTAP 테스트
-  seed.sql     로컬 개발용 샘플 데이터 (이용권 상품·FAQ·공지)
-docs/          AI 서버 결과 저장 규격
+  seed.sql     로컬 개발용 샘플 데이터 (이용권 상품·FAQ·공지, 랭킹 샘플 계정·운동 기록)
+docs/          개발계획서 · 기능명세서 · AI 서버 결과 저장 규격 · 랭킹·배지 규격
 test/          단위·위젯 테스트, 로컬 Supabase 통합 테스트
 ```
 
@@ -94,14 +102,47 @@ npx supabase status -o env
 
 로컬 Auth는 이메일 인증 없이 바로 가입됩니다. 원격 프로젝트에서 이메일 인증을 켜 두면 가입 후 "인증 메일을 보냈어요" 안내가 뜹니다.
 
+로컬 `seed.sql`에는 랭킹 샘플 보호자 6명(`sample1@pawfit.local` ~ `sample6@pawfit.local`, 비밀번호 `pawfit1234`)과
+지난달~오늘 운동 기록이 들어 있어, 로그인하면 순위표·배지함·명예의 전당을 바로 볼 수 있습니다.
+
+## 데모 앱 (목업 서버)
+
+실제 서버 없이 앱이 어떻게 돌아가는지 보여 주는 데모 앱입니다. 화면 코드는 실제 앱과 같고, 서버에 닿는 부분
+(저장소·로그인·Realtime)만 앱 안의 목업 서버로 바꿉니다. 인터넷·Supabase·`.env` 없이 실행되고 실제 데이터를 건드리지 않습니다.
+
+```bash
+flutter run -t lib/main_demo.dart          # 데모 앱
+flutter run --dart-define-from-file=.env   # 실제 앱 (기존과 같음)
+```
+
+VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
+
+| | 실제 앱 | 데모 앱 |
+|---|---|---|
+| 진입점 | `lib/main.dart` | `lib/main_demo.dart` |
+| 서버 | Supabase (원격·로컬) | `lib/demo/mock_server` (앱 메모리) |
+| Android 설치 | `com.example.dog_treadmill_app` · PawFit | `com.example.dog_treadmill_app.demo` · PawFit 데모 |
+| 데이터 | 실제 회원 데이터 | 샘플 데이터. 앱을 다시 켜면 처음 상태 |
+
+- **분리**: 실제 앱 코드는 `lib/demo/`를 import하지 않습니다(`test/demo/separation_test.dart`가 검사). 그래서 실제 앱 빌드에는 목업 서버·샘플 데이터가 들어가지 않습니다. Android는 진입점이 `main_demo.dart`면 패키지 이름을 바꿔(`android/app/build.gradle`) 한 기기에 두 앱을 함께 설치할 수 있습니다. iOS는 번들 ID를 나누지 않아 데모를 설치하면 실제 앱을 덮어씁니다.
+- **목업 서버**: 테이블은 실제와 같은 이름·컬럼의 JSON 행이라 모델의 `fromJson`을 그대로 씁니다. 예약·셀프 체크인·이용권 차감·점수·배지·순위·응원·닉네임 규칙과 오류 코드(`SLOT_FULL` 등)는 DB 함수를 옮긴 것이라 안내 문구도 실제와 같습니다.
+- **아직 연동 전인 장치 흉내**: 트레드밀 기기(체크인 3초 뒤 운동 시작, 매초 속도·거리 갱신, 기본 10배속)와 AI 서버(운동이 끝나고 8초 뒤 보행 분석 리포트)를 시뮬레이션합니다.
+- **데모 계정**: `demo@pawfit.local` / `pawfit1234` (보호자 이서연, 반려견 두부·망고). 로그인 화면의 「DEMO · 데모 계정으로 시작」을 누르면 바로 로그인됩니다. 회원가입도 목업 서버에 새 계정을 만듭니다.
+- **데모 컨트롤**: 화면에 떠 있는 DEMO 버튼(끌어서 옮길 수 있음)으로 운동 시작·일시정지·비상정지·바로 완료, 시뮬레이션 속도, AI 분석 바로 끝내기, 다른 보호자 응원 받기, 처음 상태로 되돌리기를 합니다.
+- **시연 순서 예**: 홈에서 곧 시작하는 예약 체크인 → 운동 탭 실시간 기록 → 끝나면 점수 알림과 배지 → 몇 초 뒤 AI 리포트 → 랭킹 점수 변화. 두부는 29번 운동한 상태라 데모에서 한 번 더 하면 「단골 러너」(30회) 배지를 받습니다.
+- **데모에 없는 것**: 운동 영상 재생(샘플 영상 없음), 결제(실제 앱도 준비 중), 푸시 알림. 올린 사진은 앱 메모리에만 있습니다.
+- **웹으로 공유**: `flutter build web -t lib/main_demo.dart`로 만든 `build/web`을 정적 호스팅에 올리면 링크로 시연할 수 있습니다.
+- **규칙을 바꿀 때**: DB 함수(예약·점수·랭킹 등)를 바꾸면 `lib/demo/mock_server/`의 같은 규칙도 고치고 `flutter test test/demo`로 확인합니다.
+
 ## 테스트
 
 | 명령 | 내용 |
 |---|---|
 | `flutter analyze` | 정적 분석 (strict-casts, strict-raw-types) |
-| `flutter test` | 단위·위젯 테스트 51개 (통합 테스트는 키가 없으면 건너뜀) |
-| `npx supabase test db` | pgTAP 54개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 셀프 체크인, 이용권 차감·복구, 운동 세션, 알림 설정 |
-| `flutter test test/integration --dart-define-from-file=<로컬 키 파일>` | 로컬 Supabase 대상 12개: 저장소 계층 전체, Realtime, Storage, Edge Function |
+| `flutter test` | 단위·위젯 테스트 96개 (통합 테스트는 키가 없으면 건너뜀) |
+| `flutter test test/demo` | 그중 데모 앱 17개: 목업 서버 규칙(예약·체크인·점수·배지·순위·응원·닉네임·인증), 데모 시연 흐름, 실제 앱↔데모 코드 분리 |
+| `npx supabase test db` | pgTAP 143개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 셀프 체크인, 이용권 차감·복구, 운동 세션, 알림 설정, 랭킹(점수 규칙·하루 1회·주간 보너스·한국 시간 월 경계·공개 범위·닉네임·응원·배지·무효 처리·월간 마감) |
+| `flutter test test/integration --dart-define-from-file=<로컬 키 파일>` | 로컬 Supabase 대상 21개: 저장소 계층 전체, Realtime, Storage(랭킹 공개 사진 포함), Edge Function, 랭킹 흐름 |
 
 통합 테스트 키 파일에는 `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`가 필요하며,
 안전을 위해 `localhost`/`127.0.0.1`이 아니면 실행하지 않습니다.
@@ -143,13 +184,14 @@ npx supabase status -o env
 ## 스키마 변경 사항 (DOCUMENT.md 5장 대비)
 
 - **추가 테이블**: `exercise_programs`(예약 시 프로그램 선택), `membership_plans`(이용권 상품), `notices`, `faqs`, `inquiries`
-- `users`: `managed_branch_id`(관리자 담당 지점), `notification_prefs`(알림 설정)
+- **랭킹 테이블**: `exercise_points`(점수 원장), `badges`·`dog_badges`, `ranking_cheers`, `monthly_awards`·`ranking_closings` ([docs/ranking.md](docs/ranking.md))
+- `users`: `managed_branch_id`(관리자 담당 지점), `notification_prefs`(알림 설정), `nickname`·`nickname_updated_at`·`ranking_show_photo`(랭킹)
 - `dogs`: `profile_image_url` → `profile_image_path`(비공개 버킷 경로, 서명 URL로 표시), `neutered`, `deleted_at`(소프트 삭제)
 - `bookings`: `branch_id`, `program_id`, `membership_id`, `note`, 취소 정보. 같은 트레드밀·같은 반려견의 시간 중복을 배제 제약조건으로 차단
 - `exercise_sessions`: `current_speed`, `target_duration_seconds`, `stop_reason`, `updated_at`(실시간 표시용)
 - `analysis_reports`: `care_notes`, `skeleton_video_path`, `report_pdf_path`, `error_message`, 검토자 정보, `completed_at`
 - `payments`: `order_id`, `method`, 환불 금액·일시. 금액은 원 단위 정수
-- `notifications`: `type`, `data`(딥링크용) / `data_consents`: 동의 유형 `terms`·`privacy`·`video_recording`·`ai_training`·`marketing`
+- `notifications`: `type`(`ranking` 포함), `data`(딥링크용) / `data_consents`: 동의 유형 `terms`·`privacy`·`video_recording`·`ai_training`·`ranking`·`marketing`
 
 ## 확인이 필요한 운영 정책 (현재 기본값)
 
@@ -166,6 +208,8 @@ npx supabase status -o env
 | 회원 탈퇴 시 결제 기록 | `user_id`만 비우고 보관 | `payments.user_id on delete set null` |
 | 반려견 삭제 | 소프트 삭제(이력 보존) | `dogs.deleted_at` |
 | 시간대 | Asia/Seoul (지점별 `timezone`) | `branches.timezone` |
+| 랭킹 점수 | 출석 10 + 달성 최대 10 + 거리 100m당 1(최대 20), 주 2회 운동 시 보너스 20. 5분 미만 0점, 반려견당 하루 1회, 중단 감점 없음 | `private.award_session_points` ([docs/ranking.md](docs/ranking.md)) |
+| 랭킹 수상 보상 | 배지·칭호·명예의 전당만 (경품 없음) | - |
 
 ## 배포 전 할 일
 

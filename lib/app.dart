@@ -9,7 +9,10 @@ import 'core/widgets/brand_mark.dart';
 const _locale = Locale('ko', 'KR');
 
 class DogGymApp extends ConsumerWidget {
-  const DogGymApp({super.key});
+  const DogGymApp({super.key, this.builder});
+
+  /// 모든 화면 위에 덧씌울 위젯 (데모 앱의 DEMO 표시·컨트롤 패널). 실제 앱은 쓰지 않는다.
+  final TransitionBuilder? builder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,6 +25,7 @@ class DogGymApp extends ConsumerWidget {
       supportedLocales: const [_locale],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       routerConfig: ref.watch(routerProvider),
+      builder: builder,
     );
   }
 }

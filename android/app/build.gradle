@@ -5,6 +5,10 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+// 데모 앱(목업 서버)은 `flutter run -t lib/main_demo.dart`처럼 진입점만 바꿔 빌드한다.
+// 그때는 패키지 이름·앱 이름을 바꿔 실제 앱과 한 기기에 따로 설치되게 한다.
+def isDemoBuild = (project.findProperty("target") ?: "").toString().replace("\\", "/").endsWith("lib/main_demo.dart")
+
 android {
     namespace = "com.example.dog_treadmill_app"
     compileSdk = flutter.compileSdkVersion
@@ -21,13 +25,15 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.dog_treadmill_app"
+        applicationId = isDemoBuild ? "com.example.dog_treadmill_app.demo" : "com.example.dog_treadmill_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // 홈 화면 앱 이름 (AndroidManifest의 @string/app_name)
+        resValue "string", "app_name", isDemoBuild ? "PawFit 데모" : "PawFit"
     }
 
     buildTypes {
