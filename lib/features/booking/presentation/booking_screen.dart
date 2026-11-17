@@ -10,6 +10,7 @@ import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../../dogs/data/dog.dart';
 import '../../dogs/presentation/widgets/dog_avatar.dart';
 import '../../dogs/providers.dart';
@@ -94,7 +95,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       refreshBookingData(ref);
       if (!mounted) return;
       context.showMessage(
-        membership != null ? '예약이 확정되었어요.' : '예약이 접수되었어요. 이용 당일 매장에서 결제해 주세요.',
+        membership != null ? context.l10n.bookingConfirmedToast : context.l10n.bookingReceivedToast,
       );
       context.pushReplacement(AppRoutes.bookingDetail(bookingId));
     } catch (error) {
@@ -115,6 +116,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     final branches = ref.watch(branchesProvider);
     final programs = ref.watch(programsProvider);
     final memberships = ref.watch(membershipsProvider).valueOrNull ?? const <Membership>[];
+    final l10n = context.l10n;
 
     final dogList = dogs.valueOrNull ?? const <Dog>[];
     final dogId = _dogId ?? ref.watch(activeDogIdProvider);
@@ -133,11 +135,11 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('운동 예약')),
+      appBar: AppBar(title: Text(l10n.bookingNewTitle)),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
-          const _StepHeader(number: 1, title: '반려견'),
+          _StepHeader(number: 1, title: l10n.bookingStepDog),
           AsyncValueView<List<Dog>>(
             value: dogs,
             onRetry: () => ref.invalidate(dogsProvider),
@@ -148,8 +150,11 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   child: AppCard(
                     child: Row(
                       children: [
-                        const Expanded(child: Text('예약하려면 먼저 반려견을 등록해 주세요.')),
-                        TextButton(onPressed: () => context.push(AppRoutes.dogNew), child: const Text('등록하기')),
+                        Expanded(child: Text(l10n.bookingNeedDogMessage)),
+                        TextButton(
+                          onPressed: () => context.push(AppRoutes.dogNew),
+                          child: Text(l10n.bookingNeedDogAction),
+                        ),
                       ],
                     ),
                   ),
@@ -181,7 +186,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             },
           ),
           if (dog != null) _RestrictionNotice(dogId: dog.id),
-          const _StepHeader(number: 2, title: '지점'),
+          _StepHeader(number: 2, title: l10n.bookingStepBranch),
           AsyncValueView<List<Branch>>(
             value: branches,
             onRetry: () => ref.invalidate(branchesProvider),
@@ -227,7 +232,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               ),
             ),
           ),
-          const _StepHeader(number: 3, title: '운동 프로그램'),
+          _StepHeader(number: 3, title: l10n.bookingStepProgram),
           AsyncValueView<List<ExerciseProgram>>(
             value: programs,
             onRetry: () => ref.invalidate(programsProvider),
@@ -251,7 +256,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               ),
             ),
           ),
-          const _StepHeader(number: 4, title: '날짜'),
+          _StepHeader(number: 4, title: l10n.bookingStepDate),
           DateStrip(
             selected: _date,
             onSelected: (date) => setState(() {
@@ -259,11 +264,11 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               _resetSlot();
             }),
           ),
-          const _StepHeader(number: 5, title: '시간'),
+          _StepHeader(number: 5, title: l10n.bookingStepTime),
           Padding(
             padding: kPagePadding,
             child: (branchId == null || program == null)
-                ? const _Hint(text: '지점과 운동 프로그램을 선택하면 예약 가능한 시간이 표시돼요.')
+                ? _Hint(text: l10n.bookingTimeHint)
                 : AsyncValueView<List<TimeSlot>>(
                     value: ref.watch(
                       availableSlotsProvider((branchId: branchId, programId: program.id, date: _date)),
@@ -276,7 +281,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                     ),
                   ),
           ),
-          const _StepHeader(number: 6, title: '결제'),
+          _StepHeader(number: 6, title: l10n.bookingStepPayment),
           Padding(
             padding: kPagePadding,
             child: Column(
@@ -299,11 +304,11 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(item.planName, style: const TextStyle(fontWeight: FontWeight.w800)),
-                                Text('~ ${Fmt.dateShort(item.expiresAt)}까지', style: const TextStyle(fontSize: 12.5)),
+                                Text(l10n.bookingPassValidUntil(Fmt.dateShort(item.expiresAt)), style: const TextStyle(fontSize: 12.5)),
                               ],
                             ),
                           ),
-                          Text('잔여 ${item.remainingSessions}회', style: const TextStyle(fontWeight: FontWeight.w700)),
+                          Text(l10n.bookingPassRemaining(item.remainingSessions), style: const TextStyle(fontWeight: FontWeight.w700)),
                         ],
                       ),
                     ),
@@ -318,16 +323,16 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                     _membershipTouched = true;
                     _membershipId = null;
                   }),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.storefront_rounded, color: AppColors.mintDeep),
-                      SizedBox(width: 12),
+                      const Icon(Icons.storefront_rounded, color: AppColors.mintDeep),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('현장 결제', style: TextStyle(fontWeight: FontWeight.w800)),
-                            Text('예약 대기로 접수되고, 이용 당일 매장에서 결제해요.', style: TextStyle(fontSize: 12.5)),
+                            Text(l10n.bookingPayOnSite, style: const TextStyle(fontWeight: FontWeight.w800)),
+                            Text(l10n.bookingPayOnSiteBody, style: const TextStyle(fontSize: 12.5)),
                           ],
                         ),
                       ),
@@ -337,7 +342,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               ],
             ),
           ),
-          const _StepHeader(number: 7, title: '메모 (선택)'),
+          _StepHeader(number: 7, title: l10n.bookingStepNote),
           Padding(
             padding: kPagePadding,
             child: TextField(
@@ -345,23 +350,25 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               maxLength: 500,
               maxLines: 3,
               minLines: 2,
-              decoration: const InputDecoration(hintText: '반려견에 대해 남겨 둘 내용을 적어 주세요. (예: 낯선 소리에 예민해요)'),
+              decoration: InputDecoration(hintText: l10n.bookingNoteHint),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 4, 20, 0),
-            child: _Hint(
-              text: '무인 매장이에요. 이용 당일 예약 시작 15분 전부터 앱에서 체크인하고, 배정된 트레드밀에서 운동을 시작해 주세요.\n'
-                  '예약 시작 1시간 전까지 앱에서 변경·취소할 수 있어요. 이용권으로 예약한 경우 취소하면 횟수가 복구돼요.',
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+            child: _Hint(text: l10n.bookingSelfServiceHint),
           ),
         ],
       ),
       bottomNavigationBar: _SummaryBar(
         summary: (dog != null && program != null && _slot != null)
-            ? '${dog.name} · ${Fmt.date(_slot!.start)} ${Fmt.time(_slot!.start)}\n'
-                '${program.name} ${program.durationMinutes}분 · ${membership != null ? '이용권 1회 차감' : '현장 결제'}'
-            : '반려견, 지점, 프로그램, 시간을 선택해 주세요.',
+            ? l10n.bookingSummary(
+                dog.name,
+                Fmt.dateTime(_slot!.start),
+                program.name,
+                l10n.bookingDurationMinutes(program.durationMinutes),
+                membership != null ? l10n.bookingSummaryPayWithPass : l10n.bookingPayOnSite,
+              )
+            : l10n.bookingSummaryIncomplete,
         submitting: _submitting,
         onSubmit: onSubmit,
       ),
@@ -451,16 +458,16 @@ class _AppPaymentOption extends StatelessWidget {
         children: [
           const Icon(Icons.smartphone_rounded, color: AppColors.mintDeep),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('앱 결제', style: TextStyle(fontWeight: FontWeight.w800)),
-                Text('카드·간편결제로 바로 결제하고 예약을 확정해요.', style: TextStyle(fontSize: 12.5)),
+                Text(context.l10n.bookingAppPaymentTitle, style: const TextStyle(fontWeight: FontWeight.w800)),
+                Text(context.l10n.bookingAppPaymentBody, style: const TextStyle(fontSize: 12.5)),
               ],
             ),
           ),
-          StatusBadge(label: '준비 중', tone: Theme.of(context).colorScheme.neutralTone, dense: true),
+          StatusBadge(label: context.l10n.bookingComingSoon, tone: Theme.of(context).colorScheme.neutralTone, dense: true),
         ],
       ),
     );
@@ -506,7 +513,7 @@ class _ProgramCard extends StatelessWidget {
             children: [
               const Icon(Icons.timer_outlined, size: 16),
               const SizedBox(width: 4),
-              Text('${program.durationMinutes}분', style: AppText.numeric(14, weight: FontWeight.w600)),
+              Text(context.l10n.bookingDurationMinutes(program.durationMinutes), style: AppText.numeric(14, weight: FontWeight.w600)),
               if (program.targetSpeedKmh != null) ...[
                 const SizedBox(width: 14),
                 const Icon(Icons.speed_rounded, size: 16),
@@ -545,8 +552,7 @@ class _RestrictionNotice extends ConsumerWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                '운동 제한 사항: ${restrictions.map((e) => e.name).join(', ')}\n'
-                '무인 매장이라 보호자가 직접 확인해야 해요. 제한 사항에 맞는 프로그램을 고르고, 운동하는 동안 곁에서 지켜봐 주세요.',
+                context.l10n.bookingRestrictionNotice(restrictions.map((e) => e.name).join(', ')),
                 style: TextStyle(color: scheme.cautionTone.foreground, fontSize: 13, height: 1.5),
               ),
             ),
@@ -610,7 +616,7 @@ class _SummaryBar extends StatelessWidget {
                         dimension: 22,
                         child: CircularProgressIndicator(strokeWidth: 2.4),
                       )
-                    : const Text('예약하기'),
+                    : Text(context.l10n.bookingSubmit),
               ),
             ],
           ),

@@ -1,17 +1,21 @@
 import '../../../core/utils/json.dart';
+import '../../../l10n/l10n.dart';
 import '../../dogs/data/dog.dart';
 
 class Branch {
   const Branch({
     required this.id,
-    required this.name,
-    required this.address,
+    required String name,
+    required String address,
     required this.opensAt,
     required this.closesAt,
     required this.slotMinutes,
     this.phone,
     this.is24Hours = false,
-  });
+    this.nameEn,
+    this.addressEn,
+  })  : _name = name,
+        _address = address;
 
   factory Branch.fromJson(Json json) => Branch(
         id: json.str('id'),
@@ -22,12 +26,24 @@ class Branch {
         closesAt: _hhmm(json.strOrNull('closes_at')),
         slotMinutes: json.intOr('slot_minutes', 30),
         is24Hours: json.boolOr('is_24_hours'),
+        nameEn: json.strOrNull('name_en'),
+        addressEn: json.strOrNull('address_en'),
       );
 
   final String id;
-  final String name;
-  final String address;
+  final String _name;
+  final String _address;
+
+  /// 영어 값 (DB: branches.name_en / address_en). 없으면 한국어 값을 쓴다.
+  final String? nameEn;
+  final String? addressEn;
   final String? phone;
+
+  /// 현재 언어의 지점명
+  String get name => L10n.pick(_name, nameEn);
+
+  /// 현재 언어의 주소
+  String get address => L10n.pick(_address, addressEn);
 
   /// "10:00"
   final String opensAt;
@@ -37,7 +53,7 @@ class Branch {
   /// 24시간 운영 (DB: branches.is_24_hours). 자정을 넘기는 예약도 받는다.
   final bool is24Hours;
 
-  String get hoursLabel => is24Hours ? '24시간' : '$opensAt ~ $closesAt';
+  String get hoursLabel => is24Hours ? L10n.current.bookingHours24 : '$opensAt ~ $closesAt';
 
   static String _hhmm(String? time) {
     if (time == null || time.length < 5) return '-';
@@ -60,14 +76,19 @@ class Treadmill {
 }
 
 enum ProgramIntensity {
-  low('low', '저강도'),
-  medium('medium', '중강도'),
-  high('high', '고강도');
+  low('low'),
+  medium('medium'),
+  high('high');
 
-  const ProgramIntensity(this.dbValue, this.label);
+  const ProgramIntensity(this.dbValue);
 
   final String dbValue;
-  final String label;
+
+  String get label => switch (this) {
+        ProgramIntensity.low => L10n.current.bookingIntensityLow,
+        ProgramIntensity.medium => L10n.current.bookingIntensityMedium,
+        ProgramIntensity.high => L10n.current.bookingIntensityHigh,
+      };
 
   static ProgramIntensity fromDb(String? value) =>
       values.firstWhere((e) => e.dbValue == value, orElse: () => ProgramIntensity.medium);
@@ -76,12 +97,15 @@ enum ProgramIntensity {
 class ExerciseProgram {
   const ExerciseProgram({
     required this.id,
-    required this.name,
+    required String name,
     required this.durationMinutes,
     required this.intensity,
-    this.description,
+    String? description,
     this.targetSpeedKmh,
-  });
+    this.nameEn,
+    this.descriptionEn,
+  })  : _name = name,
+        _description = description;
 
   factory ExerciseProgram.fromJson(Json json) => ExerciseProgram(
         id: json.str('id'),
@@ -90,11 +114,23 @@ class ExerciseProgram {
         durationMinutes: json.intOr('duration_minutes'),
         targetSpeedKmh: json.dblOrNull('target_speed_kmh'),
         intensity: ProgramIntensity.fromDb(json.strOrNull('intensity')),
+        nameEn: json.strOrNull('name_en'),
+        descriptionEn: json.strOrNull('description_en'),
       );
 
   final String id;
-  final String name;
-  final String? description;
+  final String _name;
+  final String? _description;
+
+  /// 영어 값 (DB: exercise_programs.name_en / description_en). 없으면 한국어 값을 쓴다.
+  final String? nameEn;
+  final String? descriptionEn;
+
+  /// 현재 언어의 프로그램명
+  String get name => L10n.pick(_name, nameEn);
+
+  /// 현재 언어의 설명
+  String? get description => L10n.pickOrNull(_description, descriptionEn);
   final int durationMinutes;
   final double? targetSpeedKmh;
   final ProgramIntensity intensity;
@@ -127,17 +163,25 @@ class TimeSlot {
 typedef SlotQuery = ({String branchId, String programId, DateTime date});
 
 enum BookingStatus {
-  pending('pending', '예약 대기'),
-  confirmed('confirmed', '예약 확정'),
-  checkedIn('checked_in', '체크인 완료'),
-  completed('completed', '이용 완료'),
-  cancelled('cancelled', '취소'),
-  noShow('no_show', '미방문');
+  pending('pending'),
+  confirmed('confirmed'),
+  checkedIn('checked_in'),
+  completed('completed'),
+  cancelled('cancelled'),
+  noShow('no_show');
 
-  const BookingStatus(this.dbValue, this.label);
+  const BookingStatus(this.dbValue);
 
   final String dbValue;
-  final String label;
+
+  String get label => switch (this) {
+        BookingStatus.pending => L10n.current.bookingStatusPending,
+        BookingStatus.confirmed => L10n.current.bookingStatusConfirmed,
+        BookingStatus.checkedIn => L10n.current.bookingStatusCheckedIn,
+        BookingStatus.completed => L10n.current.bookingStatusCompleted,
+        BookingStatus.cancelled => L10n.current.bookingStatusCancelled,
+        BookingStatus.noShow => L10n.current.bookingStatusNoShow,
+      };
 
   static BookingStatus fromDb(String value) =>
       values.firstWhere((e) => e.dbValue == value, orElse: () => BookingStatus.pending);

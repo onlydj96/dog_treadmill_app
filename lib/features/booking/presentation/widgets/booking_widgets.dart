@@ -6,6 +6,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/error_messages.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/common.dart';
+import '../../../../l10n/l10n.dart';
 import '../../data/booking_models.dart';
 import '../../providers.dart';
 
@@ -25,11 +26,12 @@ class _CheckInButtonState extends ConsumerState<CheckInButton> {
   Future<void> _checkIn() async {
     final booking = widget.booking;
     final machine = booking.treadmill?.deviceName;
+    final l10n = context.l10n;
     final confirmed = await confirmDialog(
       context,
-      title: '체크인할까요?',
-      message: '매장에 도착했을 때 체크인해 주세요.${machine == null ? '' : '\n배정된 트레드밀: $machine'}',
-      confirmLabel: '체크인',
+      title: l10n.bookingCheckInTitle,
+      message: machine == null ? l10n.bookingCheckInMessage : l10n.bookingCheckInMessageWithMachine(machine),
+      confirmLabel: l10n.bookingCheckInAction,
     );
     if (!confirmed || !mounted) return;
     setState(() => _busy = true);
@@ -37,7 +39,7 @@ class _CheckInButtonState extends ConsumerState<CheckInButton> {
       await ref.read(bookingRepositoryProvider).checkIn(booking.id);
       refreshBookingData(ref, bookingId: booking.id);
       if (mounted) {
-        context.showMessage(machine == null ? '체크인했어요.' : '체크인했어요. 트레드밀 $machine에서 운동을 시작해 주세요.');
+        context.showMessage(machine == null ? l10n.bookingCheckedIn : l10n.bookingCheckedInWithMachine(machine));
       }
     } catch (error) {
       if (mounted) context.showMessage(friendlyError(error));
@@ -53,7 +55,7 @@ class _CheckInButtonState extends ConsumerState<CheckInButton> {
       icon: _busy
           ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2.2))
           : const Icon(Icons.how_to_reg_rounded),
-      label: const Text('체크인'),
+      label: Text(context.l10n.bookingCheckInAction),
     );
   }
 }
@@ -109,7 +111,7 @@ class BookingCard extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  '${start.month}월',
+                  Fmt.month(start),
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w700,
@@ -136,7 +138,7 @@ class BookingCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        booking.program?.name ?? '트레드밀 운동',
+                        booking.program?.name ?? context.l10n.bookingDefaultProgramName,
                         style: theme.textTheme.titleMedium,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -166,6 +168,13 @@ class BookingCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 날짜 칩의 접근성 문구 (예: "3월 5일 수요일, 오늘")
+String _dateLabel(BuildContext context, DateTime date, {required bool isToday}) {
+  final l10n = context.l10n;
+  final label = l10n.bookingDateSemantics(Fmt.month(date), date.day, Fmt.weekday(date));
+  return isToday ? l10n.bookingDateSemanticsToday(label) : label;
 }
 
 /// 2주간의 날짜 선택 스트립
@@ -204,7 +213,7 @@ class DateStrip extends StatelessWidget {
             container: true,
             button: true,
             selected: isSelected,
-            label: '${date.month}월 ${date.day}일 ${Fmt.weekday(date)}요일${index == 0 ? ', 오늘' : ''}',
+            label: _dateLabel(context, date, isToday: index == 0),
             excludeSemantics: true,
             child: Material(
               color: isSelected ? scheme.primary : scheme.surfaceContainerLowest,
@@ -221,7 +230,7 @@ class DateStrip extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        index == 0 ? '오늘' : Fmt.weekday(date),
+                        index == 0 ? context.l10n.bookingToday : Fmt.weekday(date),
                         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: foreground),
                       ),
                       const SizedBox(height: 4),
@@ -258,13 +267,19 @@ class SlotGrid extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
-          child: Text('선택한 날짜에 예약 가능한 시간이 없어요.', style: TextStyle(color: scheme.onSurfaceVariant)),
+          child: Text(context.l10n.bookingSlotsEmpty, style: TextStyle(color: scheme.onSurfaceVariant)),
         ),
       );
     }
 
     // 24시간 지점은 하루 48칸이라 시간대별로 나눠 보여 준다. 비어 있는 시간대는 숨긴다.
-    const periods = [('새벽', 0, 6), ('오전', 6, 12), ('오후', 12, 18), ('저녁', 18, 24)];
+    final l10n = context.l10n;
+    final periods = [
+      (l10n.bookingPeriodDawn, 0, 6),
+      (l10n.bookingPeriodMorning, 6, 12),
+      (l10n.bookingPeriodAfternoon, 12, 18),
+      (l10n.bookingPeriodEvening, 18, 24),
+    ];
 
     Widget group(String title, List<TimeSlot> items) {
       if (items.isEmpty) return const SizedBox.shrink();
@@ -343,7 +358,9 @@ class _SlotCell extends StatelessWidget {
       button: true,
       enabled: enabled,
       selected: selected,
-      label: '${Fmt.time(slot.start)}, ${enabled ? '잔여 ${slot.availableCount}대' : '마감'}',
+      label: enabled
+          ? context.l10n.bookingSlotSemanticsAvailable(Fmt.time(slot.start), slot.availableCount)
+          : context.l10n.bookingSlotSemanticsFull(Fmt.time(slot.start)),
       excludeSemantics: true,
       child: Material(
         color: selected
@@ -365,7 +382,7 @@ class _SlotCell extends StatelessWidget {
                 Text(label, style: AppText.numeric(16, color: foreground)),
                 const SizedBox(height: 2),
                 Text(
-                  enabled ? '잔여 ${slot.availableCount}' : '마감',
+                  enabled ? context.l10n.bookingSlotLeft(slot.availableCount) : context.l10n.bookingSlotFull,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,

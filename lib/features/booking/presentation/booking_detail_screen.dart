@@ -10,6 +10,7 @@ import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/brand_mark.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../data/booking_models.dart';
 import '../providers.dart';
 import 'widgets/booking_widgets.dart';
@@ -23,7 +24,7 @@ class BookingDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booking = ref.watch(bookingDetailProvider(bookingId));
     return Scaffold(
-      appBar: AppBar(title: const Text('예약 상세')),
+      appBar: AppBar(title: Text(context.l10n.bookingDetailTitle)),
       body: AsyncValueView<Booking>(
         value: booking,
         onRetry: () => ref.invalidate(bookingDetailProvider(bookingId)),
@@ -77,7 +78,7 @@ class _Header extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              '${booking.program?.name ?? '트레드밀 운동'} · ${booking.dog?.name ?? ''}',
+              '${booking.program?.name ?? context.l10n.bookingDefaultProgramName} · ${booking.dog?.name ?? ''}',
               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
             ),
           ],
@@ -105,7 +106,7 @@ class _StatusSteps extends StatelessWidget {
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                status == BookingStatus.cancelled ? '취소된 예약이에요.' : '방문하지 않아 미방문 처리된 예약이에요.',
+                status == BookingStatus.cancelled ? context.l10n.bookingNoteCancelled : context.l10n.bookingNoteNoShow,
               ),
             ),
           ],
@@ -113,11 +114,12 @@ class _StatusSteps extends StatelessWidget {
       );
     }
 
-    const steps = [
-      (BookingStatus.pending, '접수'),
-      (BookingStatus.confirmed, '확정'),
-      (BookingStatus.checkedIn, '체크인'),
-      (BookingStatus.completed, '이용 완료'),
+    final l10n = context.l10n;
+    final steps = [
+      (BookingStatus.pending, l10n.bookingStepReceived),
+      (BookingStatus.confirmed, l10n.bookingStepConfirmed),
+      (BookingStatus.checkedIn, l10n.bookingStepCheckedIn),
+      (BookingStatus.completed, l10n.bookingStepCompleted),
     ];
     final currentIndex = steps.indexWhere((s) => s.$1 == status);
 
@@ -170,32 +172,39 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final branch = booking.branch;
     final program = booking.program;
+    final l10n = context.l10n;
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InfoRow(icon: Icons.pets_rounded, label: '반려견', value: booking.dog?.name ?? '-'),
+          InfoRow(icon: Icons.pets_rounded, label: l10n.bookingInfoDog, value: booking.dog?.name ?? '-'),
           InfoRow(
             icon: Icons.storefront_rounded,
-            label: '지점',
+            label: l10n.bookingInfoLocation,
             value: branch == null ? '-' : '${branch.name}\n${branch.address}',
           ),
-          InfoRow(icon: Icons.directions_run_rounded, label: '트레드밀', value: booking.treadmill?.deviceName ?? '-'),
+          InfoRow(
+            icon: Icons.directions_run_rounded,
+            label: l10n.bookingInfoTreadmill,
+            value: booking.treadmill?.deviceName ?? '-',
+          ),
           InfoRow(
             icon: Icons.fitness_center_rounded,
-            label: '프로그램',
-            value: program == null ? '-' : '${program.name} · ${program.durationMinutes}분 · ${program.intensity.label}',
+            label: l10n.bookingInfoProgram,
+            value: program == null
+                ? '-'
+                : [program.name, l10n.bookingDurationMinutes(program.durationMinutes), program.intensity.label].join(' · '),
           ),
           InfoRow(
             icon: Icons.confirmation_number_outlined,
-            label: '결제',
-            value: booking.usesMembership ? '이용권 1회 사용' : '현장 결제',
+            label: l10n.bookingInfoPayment,
+            value: booking.usesMembership ? l10n.bookingPayWithPass : l10n.bookingPayOnSite,
           ),
-          if (booking.note != null) InfoRow(icon: Icons.edit_note_rounded, label: '메모', value: booking.note!),
+          if (booking.note != null) InfoRow(icon: Icons.edit_note_rounded, label: l10n.bookingInfoNote, value: booking.note!),
           if (booking.status == BookingStatus.cancelled)
             InfoRow(
               icon: Icons.block_rounded,
-              label: '취소',
+              label: l10n.bookingInfoCancellation,
               value: [
                 if (booking.cancelledAt != null) Fmt.dateTime(booking.cancelledAt!),
                 if (booking.cancelReason != null) booking.cancelReason!,
@@ -229,7 +238,7 @@ class _ActionsState extends ConsumerState<_Actions> {
     try {
       await ref.read(bookingRepositoryProvider).cancelBooking(widget.booking.id, reason: reason);
       refreshBookingData(ref, bookingId: widget.booking.id);
-      if (mounted) context.showMessage('예약을 취소했어요.');
+      if (mounted) context.showMessage(context.l10n.bookingCancelledToast);
     } catch (error) {
       if (mounted) context.showMessage(friendlyError(error));
     } finally {
@@ -245,7 +254,7 @@ class _ActionsState extends ConsumerState<_Actions> {
     );
     if (changed == true && mounted) {
       refreshBookingData(ref, bookingId: widget.booking.id);
-      context.showMessage('예약 시간을 변경했어요.');
+      context.showMessage(context.l10n.bookingRescheduledToast);
     }
   }
 
@@ -258,7 +267,7 @@ class _ActionsState extends ConsumerState<_Actions> {
       return FilledButton.icon(
         onPressed: () => context.push(AppRoutes.exerciseHistory),
         icon: const Icon(Icons.insights_rounded),
-        label: const Text('운동 기록 보기'),
+        label: Text(context.l10n.bookingViewWorkoutHistory),
       );
     }
 
@@ -266,16 +275,13 @@ class _ActionsState extends ConsumerState<_Actions> {
 
     final hintStyle = TextStyle(color: scheme.onSurfaceVariant, fontSize: 13, height: 1.5);
     final machine = booking.treadmill?.deviceName;
-    final atMachine = machine == null ? '배정된 트레드밀에서' : '트레드밀 $machine에서';
-    final payOnSite = booking.usesMembership ? '' : '\n현장 결제 예약이라 이용 전에 매장에서 결제해 주세요.';
+    final l10n = context.l10n;
+    final atMachine = machine == null ? l10n.bookingAtAssignedMachine : l10n.bookingAtMachine(machine);
+    final payOnSite = booking.usesMembership ? '' : l10n.bookingPayOnSiteNotice;
 
     // 무인 매장: 체크인 후 보호자가 트레드밀 기기에서 직접 운동을 시작한다.
     if (booking.status == BookingStatus.checkedIn) {
-      return Text(
-        '체크인했어요. $atMachine 운동을 시작하고, 운동하는 동안 반려견 곁을 지켜 주세요. '
-        '운동이 시작되면 운동 탭에서 실시간으로 볼 수 있어요.$payOnSite',
-        style: hintStyle,
-      );
+      return Text(l10n.bookingGuideCheckedIn(atMachine, payOnSite), style: hintStyle);
     }
 
     final now = DateTime.now();
@@ -285,16 +291,16 @@ class _ActionsState extends ConsumerState<_Actions> {
 
     final String guide;
     if (ended) {
-      guide = '예약 시간이 지나 체크인할 수 없어요.';
+      guide = l10n.bookingGuideEnded;
     } else if (canCheckIn) {
-      guide = '매장에 도착하면 체크인하고 $atMachine 운동을 시작해 주세요.$payOnSite';
+      guide = l10n.bookingGuideCheckInOpen(atMachine, payOnSite);
     } else if (canModify) {
-      guide = '예약 시작 1시간 전까지 변경·취소할 수 있어요.'
-          '${booking.usesMembership ? ' 취소하면 이용권 횟수가 복구돼요.' : ''}\n'
-          '이용 당일 ${Fmt.time(booking.checkInOpensAt)}부터 앱에서 체크인할 수 있어요.';
+      final opensAt = Fmt.time(booking.checkInOpensAt);
+      guide = booking.usesMembership
+          ? l10n.bookingGuideModifiableWithPass(opensAt)
+          : l10n.bookingGuideModifiable(opensAt);
     } else {
-      guide = '${Fmt.time(booking.checkInOpensAt)}부터 앱에서 체크인할 수 있어요.\n'
-          '예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요.';
+      guide = l10n.bookingGuideLocked(Fmt.time(booking.checkInOpensAt));
     }
 
     return Column(
@@ -310,14 +316,14 @@ class _ActionsState extends ConsumerState<_Actions> {
               Expanded(
                 child: OutlinedButton(
                   onPressed: _busy ? null : _cancel,
-                  child: const Text('예약 취소'),
+                  child: Text(l10n.bookingCancelAction),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: FilledButton(
                   onPressed: _busy ? null : _reschedule,
-                  child: const Text('시간 변경'),
+                  child: Text(l10n.bookingRescheduleAction),
                 ),
               ),
             ],
@@ -331,7 +337,7 @@ class _ActionsState extends ConsumerState<_Actions> {
             alignment: Alignment.centerLeft,
             child: TextButton(
               onPressed: () => context.push(AppRoutes.inquiryNew),
-              child: const Text('1:1 문의하기'),
+              child: Text(l10n.bookingInquiryAction),
             ),
           ),
       ],
@@ -347,12 +353,18 @@ class _CancelReasonSheet extends StatefulWidget {
 }
 
 class _CancelReasonSheetState extends State<_CancelReasonSheet> {
-  static const _reasons = ['일정이 변경되었어요', '반려견 컨디션이 좋지 않아요', '다른 시간으로 다시 예약할게요', '기타'];
-  String _selected = _reasons.first;
+  int _selected = 0;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final reasons = [
+      l10n.bookingCancelReasonSchedule,
+      l10n.bookingCancelReasonCondition,
+      l10n.bookingCancelReasonRebook,
+      l10n.bookingCancelReasonOther,
+    ];
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
@@ -360,27 +372,27 @@ class _CancelReasonSheetState extends State<_CancelReasonSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('예약을 취소할까요?', style: theme.textTheme.titleLarge),
+            Text(l10n.bookingCancelSheetTitle, style: theme.textTheme.titleLarge),
             const SizedBox(height: 4),
-            Text('취소 사유를 선택해 주세요.', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
+            Text(l10n.bookingCancelSheetSubtitle, style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
               runSpacing: 8,
               children: [
-                for (final reason in _reasons)
+                for (var i = 0; i < reasons.length; i++)
                   ChoiceChip(
-                    label: Text(reason),
-                    selected: _selected == reason,
-                    onSelected: (_) => setState(() => _selected = reason),
+                    label: Text(reasons[i]),
+                    selected: _selected == i,
+                    onSelected: (_) => setState(() => _selected = i),
                   ),
               ],
             ),
             const SizedBox(height: 20),
             FilledButton(
-              onPressed: () => Navigator.of(context).pop(_selected),
+              onPressed: () => Navigator.of(context).pop(reasons[_selected]),
               style: FilledButton.styleFrom(backgroundColor: AppColors.coral),
-              child: const Text('예약 취소하기'),
+              child: Text(l10n.bookingCancelConfirmAction),
             ),
           ],
         ),
@@ -446,12 +458,12 @@ class _RescheduleSheetState extends ConsumerState<_RescheduleSheet> {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
-              child: Text('예약 시간 변경', style: theme.textTheme.titleLarge),
+              child: Text(context.l10n.bookingRescheduleTitle, style: theme.textTheme.titleLarge),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
               child: Text(
-                '현재 ${Fmt.dateTime(booking.startAt)} · ${booking.branch?.name ?? ''}',
+                context.l10n.bookingRescheduleCurrent(Fmt.dateTime(booking.startAt), booking.branch?.name ?? ''),
                 style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
               ),
             ),
@@ -467,7 +479,7 @@ class _RescheduleSheetState extends ConsumerState<_RescheduleSheet> {
               child: SingleChildScrollView(
                 padding: kPagePadding,
                 child: programId == null
-                    ? const Text('프로그램 정보가 없어 시간을 변경할 수 없어요. 1:1 문의로 알려 주세요.')
+                    ? Text(context.l10n.bookingRescheduleNoProgram)
                     : AsyncValueView<List<TimeSlot>>(
                         value: ref.watch(availableSlotsProvider(
                           (branchId: booking.branchId, programId: programId, date: _date),
@@ -490,7 +502,11 @@ class _RescheduleSheetState extends ConsumerState<_RescheduleSheet> {
                         dimension: 22,
                         child: CircularProgressIndicator(strokeWidth: 2.4),
                       )
-                    : Text(_slot == null ? '변경할 시간을 선택해 주세요' : '${Fmt.time(_slot!.start)} 예약으로 변경'),
+                    : Text(
+                        _slot == null
+                            ? context.l10n.bookingReschedulePick
+                            : context.l10n.bookingRescheduleSubmit(Fmt.time(_slot!.start)),
+                      ),
               ),
             ),
           ],

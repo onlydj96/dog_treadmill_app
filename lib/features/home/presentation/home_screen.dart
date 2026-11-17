@@ -9,6 +9,7 @@ import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/brand_mark.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../../booking/presentation/widgets/booking_widgets.dart';
 import '../../booking/providers.dart';
 import '../../consents/data/consent_repository.dart';
@@ -110,7 +111,7 @@ class _HomeHeader extends ConsumerWidget {
         const BrandWordmark(),
         const Spacer(),
         IconButton(
-          tooltip: '알림',
+          tooltip: context.l10n.homeNotificationsTooltip,
           onPressed: () => context.push(AppRoutes.notifications),
           icon: Badge(
             isLabelVisible: unread > 0,
@@ -133,14 +134,16 @@ class _Greeting extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final profile = ref.watch(currentUserProfileProvider).valueOrNull;
-    final name = profile?.displayName ?? '보호자';
+    final name = profile?.displayName ?? context.l10n.commonOwnerFallbackName;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('$name님, 안녕하세요', style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(context.l10n.homeGreeting(name), style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 2),
         Text(
-          dog == null ? '반려견을 등록하고 시작해 볼까요?' : '오늘도 ${josa(dog!.name, '와', '과')} 건강하게 걸어요',
+          dog == null
+              ? context.l10n.homeGreetingNoDog
+              : context.l10n.homeGreetingWithDog(particle(dog!.name, '와', '과')),
           style: theme.textTheme.headlineSmall,
         ),
       ],
@@ -170,7 +173,7 @@ class _DogHeroCard extends ConsumerWidget {
     return Semantics(
       container: true,
       button: true,
-      onTapHint: '${dog.name} 정보 보기',
+      onTapHint: context.l10n.homeDogTapHint(dog.name),
       child: IntersectionBackdrop(
         child: InkWell(
           onTap: () => context.push(AppRoutes.dogDetail(dog.id)),
@@ -191,12 +194,12 @@ class _DogHeroCard extends ConsumerWidget {
                               style: theme.textTheme.titleLarge?.copyWith(color: Colors.white, fontSize: 22)),
                           const SizedBox(height: 2),
                           Text(
-                            dog.summary.isEmpty ? '프로필을 완성해 주세요' : dog.summary,
+                            dog.summary.isEmpty ? context.l10n.homeProfileIncomplete : dog.summary,
                             style: const TextStyle(color: AppColors.mintLight, fontWeight: FontWeight.w600),
                           ),
                           if (overallRank != null) ...[
                             const SizedBox(height: 6),
-                            RankingTitleChip(text: '이번 달 전체 ${overallRank.rank}위'),
+                            RankingTitleChip(text: context.l10n.homeRankOverallThisMonth(overallRank.rank)),
                           ],
                         ],
                       ),
@@ -212,7 +215,7 @@ class _DogHeroCard extends ConsumerWidget {
                           minimumSize: const Size(0, 36),
                         ),
                         icon: const Icon(Icons.swap_horiz_rounded, size: 18),
-                        label: const Text('전환'),
+                        label: Text(context.l10n.homeSwitchDog),
                       ),
                   ],
                 ),
@@ -221,17 +224,23 @@ class _DogHeroCard extends ConsumerWidget {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Expanded(child: HeroNumber(label: '이번 달 운동', value: '${monthTotals.count}', unit: '회')),
                     Expanded(
                       child: HeroNumber(
-                        label: '이번 달 거리',
+                        label: context.l10n.homeStatMonthWorkouts,
+                        value: '${monthTotals.count}',
+                        unit: context.l10n.homeUnitTimes,
+                      ),
+                    ),
+                    Expanded(
+                      child: HeroNumber(
+                        label: context.l10n.homeStatMonthDistance,
                         value: (monthTotals.meters / 1000).toStringAsFixed(1),
                         unit: 'km',
                       ),
                     ),
                     Expanded(
                       child: HeroNumber(
-                        label: '최근 좌우 대칭',
+                        label: context.l10n.homeStatLatestSymmetry,
                         value: symmetry == null ? '-' : (symmetry * 100).toStringAsFixed(0),
                         unit: symmetry == null ? null : '%',
                       ),
@@ -261,11 +270,11 @@ class _NoDogCard extends StatelessWidget {
           children: [
             const DogAvatar(dog: null, size: 56),
             const SizedBox(height: 16),
-            Text('반려견을 등록해 주세요', style: theme.textTheme.titleLarge?.copyWith(color: Colors.white)),
+            Text(context.l10n.homeNoDogTitle, style: theme.textTheme.titleLarge?.copyWith(color: Colors.white)),
             const SizedBox(height: 6),
-            const Text(
-              '건강 정보와 운동 제한 사항을 함께 등록하면\n예약할 때 주의할 점을 알려 드려요.',
-              style: TextStyle(color: AppColors.mintLight, height: 1.5),
+            Text(
+              context.l10n.homeNoDogBody,
+              style: const TextStyle(color: AppColors.mintLight, height: 1.5),
             ),
             const SizedBox(height: 18),
             FilledButton.icon(
@@ -276,7 +285,7 @@ class _NoDogCard extends StatelessWidget {
                 minimumSize: const Size(0, 48),
               ),
               icon: const Icon(Icons.add_rounded),
-              label: const Text('반려견 등록하기'),
+              label: Text(context.l10n.homeNoDogAction),
             ),
           ],
         ),
@@ -298,7 +307,7 @@ class _LiveSessionBanner extends ConsumerWidget {
       child: Semantics(
         container: true,
         button: true,
-        onTapHint: '실시간 운동 현황 보기',
+        onTapHint: context.l10n.homeLiveTapHint,
         child: Material(
           color: AppColors.mintDeep,
           borderRadius: BorderRadius.circular(20),
@@ -349,8 +358,8 @@ class _QuickActions extends StatelessWidget {
         Expanded(
           flex: 5,
           child: _ActionTile(
-            label: '운동 예약',
-            caption: '빈 시간 확인',
+            label: context.l10n.homeQuickBook,
+            caption: context.l10n.homeQuickBookCaption,
             icon: Icons.add_circle_rounded,
             background: AppColors.mintDeep,
             foreground: Colors.white,
@@ -361,8 +370,8 @@ class _QuickActions extends StatelessWidget {
         Expanded(
           flex: 4,
           child: _ActionTile(
-            label: 'AI 리포트',
-            caption: '보행 분석',
+            label: context.l10n.homeQuickReport,
+            caption: context.l10n.homeQuickReportCaption,
             icon: Icons.auto_awesome_rounded,
             background: scheme.tertiaryContainer,
             foreground: scheme.onTertiaryContainer,
@@ -373,8 +382,8 @@ class _QuickActions extends StatelessWidget {
         Expanded(
           flex: 4,
           child: _ActionTile(
-            label: '운동 기록',
-            caption: '전체 이력',
+            label: context.l10n.homeQuickHistory,
+            caption: context.l10n.homeQuickHistoryCaption,
             icon: Icons.insights_rounded,
             background: scheme.primaryContainer,
             foreground: scheme.onPrimaryContainer,
@@ -441,7 +450,11 @@ class _NextBookingSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionHeader(title: '다음 예약', actionLabel: '예약 내역', onAction: () => context.go(AppRoutes.booking)),
+        SectionHeader(
+          title: context.l10n.homeNextBookingTitle,
+          actionLabel: context.l10n.homeNextBookingAll,
+          onAction: () => context.go(AppRoutes.booking),
+        ),
         next.when(
           skipLoadingOnRefresh: true,
           loading: () => const LoadingView(padding: EdgeInsets.all(16)),
@@ -451,8 +464,8 @@ class _NextBookingSection extends ConsumerWidget {
             if (booking == null) {
               return InlineEmptyCard(
                 icon: Icons.event_busy_rounded,
-                message: '예정된 예약이 없어요.',
-                actionLabel: '예약하기',
+                message: context.l10n.homeNextBookingEmpty,
+                actionLabel: context.l10n.homeNextBookingEmptyAction,
                 onAction: () => context.push(AppRoutes.bookingNew),
               );
             }
@@ -490,8 +503,8 @@ class _RankingSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SectionHeader(
-          title: '${Fmt.month(month)} 랭킹',
-          actionLabel: '전체 랭킹',
+          title: context.l10n.homeRankingTitle(Fmt.month(month)),
+          actionLabel: context.l10n.homeRankingAll,
           onAction: () => context.push(AppRoutes.ranking),
         ),
         ranking.when(
@@ -502,17 +515,19 @@ class _RankingSection extends ConsumerWidget {
             onRetry: () => ref.invalidate(myRankingProvider(DogMonth(dog.id, month))),
           ),
           data: (mine) {
+            final l10n = context.l10n;
             final overall = mine.overall;
             final (title, caption) = switch (overall) {
-              null => ('이번 달 첫 운동을 기다리고 있어요', '운동을 마치면 점수가 쌓이고 바로 랭킹에 올라요.'),
+              null => (l10n.homeRankingWaitingTitle, l10n.homeRankingWaitingCaption),
               _ when !mine.participating => (
-                  '참여하면 전체 ${overall.rank}위예요',
-                  '랭킹에 참여하고 ${josa(dog.name, '를', '을')} 자랑해 보세요.',
+                  l10n.homeRankingJoinTitle(overall.rank),
+                  l10n.homeRankingJoinCaption(particle(dog.name, '를', '을')),
                 ),
               _ => (
-                  '${dog.name} · 전체 ${overall.rank}위',
-                  '${Fmt.points(mine.points)} · '
-                      '${overall.pointsToNext == null ? '1위를 지키고 있어요!' : '${overall.pointsToNext}점 더 받으면 순위가 올라요'}',
+                  l10n.homeRankingMineTitle(dog.name, overall.rank),
+                  overall.pointsToNext == null
+                      ? l10n.homeRankingHoldingFirst(Fmt.points(mine.points))
+                      : l10n.homeRankingPointsToNext(Fmt.points(mine.points), overall.pointsToNext!),
                 ),
             };
             final otherRanks = mine.ranks.where((r) => r.scope != RankingScope.all).toList();
@@ -560,7 +575,7 @@ class _RankingSection extends ConsumerWidget {
                           ),
                         if (mine.streakWeeks >= 2)
                           StatusBadge(
-                            label: '${mine.streakWeeks}주 연속 운동',
+                            label: context.l10n.homeRankingStreak(mine.streakWeeks),
                             tone: scheme.cautionTone,
                             icon: Icons.local_fire_department_rounded,
                             dense: true,
@@ -610,7 +625,7 @@ class _RankingSection extends ConsumerWidget {
                     OutlinedButton.icon(
                       onPressed: () => showRankingSettingsSheet(context),
                       icon: const Icon(Icons.emoji_events_outlined),
-                      label: const Text('랭킹 참여하기'),
+                      label: Text(context.l10n.homeRankingJoinAction),
                     ),
                   ],
                 ],
@@ -634,7 +649,11 @@ class _RecentExerciseSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionHeader(title: '최근 운동', actionLabel: '전체 기록', onAction: () => context.push(AppRoutes.exerciseHistory)),
+        SectionHeader(
+          title: context.l10n.homeRecentTitle,
+          actionLabel: context.l10n.homeRecentAll,
+          onAction: () => context.push(AppRoutes.exerciseHistory),
+        ),
         sessions.when(
           skipLoadingOnRefresh: true,
           loading: () => const LoadingView(padding: EdgeInsets.all(16)),
@@ -643,9 +662,9 @@ class _RecentExerciseSection extends ConsumerWidget {
           data: (list) {
             final ExerciseSession? latest = list.firstOrNull;
             if (latest == null) {
-              return const InlineEmptyCard(
+              return InlineEmptyCard(
                 icon: Icons.insights_rounded,
-                message: '아직 운동 기록이 없어요. 첫 운동을 예약해 보세요!',
+                message: context.l10n.homeRecentEmpty,
               );
             }
             return ExerciseRecordTile(
@@ -673,7 +692,11 @@ class _AnalysisSummarySection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionHeader(title: 'AI 보행 분석', actionLabel: '건강 리포트', onAction: () => context.go(AppRoutes.health)),
+        SectionHeader(
+          title: context.l10n.homeAnalysisTitle,
+          actionLabel: context.l10n.homeAnalysisAction,
+          onAction: () => context.go(AppRoutes.health),
+        ),
         reports.when(
           skipLoadingOnRefresh: true,
           loading: () => const LoadingView(padding: EdgeInsets.all(16)),
@@ -688,11 +711,11 @@ class _AnalysisSummarySection extends ConsumerWidget {
               return InlineEmptyCard(
                 icon: Icons.auto_awesome_rounded,
                 message: pending != null
-                    ? '최근 운동 영상을 분석하고 있어요. 완료되면 알려 드릴게요.'
+                    ? context.l10n.homeAnalysisPending
                     : needsConsent
-                        ? '운동 영상 촬영에 동의하면 AI 보행 분석 리포트를 받을 수 있어요.'
-                        : '운동을 마치면 AI 보행 분석 리포트가 여기에 표시돼요.',
-                actionLabel: needsConsent ? '동의하기' : null,
+                        ? context.l10n.homeAnalysisNeedsConsent
+                        : context.l10n.homeAnalysisEmpty,
+                actionLabel: needsConsent ? context.l10n.homeAnalysisConsentAction : null,
                 onAction: needsConsent ? () => context.push(AppRoutes.consents) : null,
                 color: scheme.tertiaryContainer,
                 foregroundColor: scheme.onTertiaryContainer,
@@ -724,7 +747,7 @@ class _AnalysisSummarySection extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: StatValue(
-                          label: '좌우 대칭성',
+                          label: context.l10n.homeAnalysisSymmetry,
                           value: gait?.symmetryIndex == null ? '-' : (gait!.symmetryIndex! * 100).toStringAsFixed(0),
                           unit: gait?.symmetryIndex == null ? null : '%',
                           valueSize: 30,
@@ -734,9 +757,9 @@ class _AnalysisSummarySection extends ConsumerWidget {
                       ),
                       Expanded(
                         child: StatValue(
-                          label: '분당 걸음 수',
+                          label: context.l10n.homeAnalysisCadence,
                           value: gait?.cadenceSpm?.toStringAsFixed(0) ?? '-',
-                          unit: gait?.cadenceSpm == null ? null : '보',
+                          unit: gait?.cadenceSpm == null ? null : context.l10n.homeUnitSteps,
                           valueSize: 30,
                           color: scheme.onTertiaryContainer,
                           labelColor: scheme.onTertiaryContainer.withValues(alpha: 0.75),
@@ -775,7 +798,11 @@ class _NoticesSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionHeader(title: '공지사항', actionLabel: '전체보기', onAction: () => context.push(AppRoutes.notices)),
+        SectionHeader(
+          title: context.l10n.homeNoticesTitle,
+          actionLabel: context.l10n.homeNoticesAll,
+          onAction: () => context.push(AppRoutes.notices),
+        ),
         AppCard(
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Column(
