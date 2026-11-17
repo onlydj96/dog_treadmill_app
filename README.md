@@ -155,9 +155,9 @@ VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
 | 명령 | 내용 |
 |---|---|
 | `flutter analyze` | 정적 분석 (strict-casts, strict-raw-types) |
-| `flutter test` | 단위·위젯 테스트 96개 (통합 테스트는 키가 없으면 건너뜀) |
-| `flutter test test/demo` | 그중 데모 앱 17개: 목업 서버 규칙(예약·체크인·점수·배지·순위·응원·닉네임·인증), 데모 시연 흐름, 실제 앱↔데모 코드 분리 |
-| `npx supabase test db` | pgTAP 143개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 셀프 체크인, 이용권 차감·복구, 운동 세션, 알림 설정, 랭킹(점수 규칙·하루 1회·주간 보너스·한국 시간 월 경계·공개 범위·닉네임·응원·배지·무효 처리·월간 마감) |
+| `flutter test` | 단위·위젯 테스트 159개(영어 화면 포함) (통합 테스트는 키가 없으면 건너뜀) |
+| `flutter test test/demo` | 그중 데모 앱 34개: 목업 서버 규칙(예약·체크인·점수·배지·순위·응원·닉네임·인증), 데모 시연 흐름, 실제 앱↔데모 코드 분리 |
+| `npx supabase test db` | pgTAP 205개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 셀프 체크인, 이용권 차감·복구, 운동 세션, 알림 설정, 랭킹(점수 규칙·하루 1회·주간 보너스·한국 시간 월 경계·공개 범위·닉네임·응원·배지·무효 처리·월간 마감, 영어 콘텐츠·영어 라벨·알림 msg/args·영어 닉네임) |
 | `flutter test test/integration --dart-define-from-file=<로컬 키 파일>` | 로컬 Supabase 대상 21개: 저장소 계층 전체, Realtime, Storage(랭킹 공개 사진 포함), Edge Function, 랭킹 흐름 |
 
 통합 테스트 키 파일에는 `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`가 필요하며,
