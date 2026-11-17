@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/supabase/supabase_providers.dart';
 import '../../consents/data/consent.dart';
+import '../../../l10n/l10n.dart';
 
 class AuthRepository {
   AuthRepository(this._client);
@@ -30,6 +31,7 @@ class AuthRepository {
       data: {
         'name': name.trim(),
         'phone': phone.trim(),
+        'locale': L10n.language.name,
         'consents': [
           for (final entry in consents.entries)
             {

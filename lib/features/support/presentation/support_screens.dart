@@ -10,6 +10,7 @@ import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
 import '../data/support_repository.dart';
+import '../../../l10n/l10n.dart';
 
 /// 공지사항
 class NoticesScreen extends ConsumerWidget {
@@ -19,13 +20,13 @@ class NoticesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('공지사항')),
+      appBar: AppBar(title: Text(context.l10n.noticeTitle)),
       body: AsyncValueView<List<Notice>>(
         value: ref.watch(noticesProvider),
         onRetry: () => ref.invalidate(noticesProvider),
         data: (notices) {
           if (notices.isEmpty) {
-            return const EmptyState(icon: Icons.campaign_outlined, title: '등록된 공지사항이 없어요');
+            return EmptyState(icon: Icons.campaign_outlined, title: context.l10n.noticeEmpty);
           }
           return ListView.separated(
             padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
@@ -72,7 +73,7 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('자주 묻는 질문')),
+      appBar: AppBar(title: Text(context.l10n.faqTitle)),
       body: AsyncValueView<List<Faq>>(
         value: ref.watch(faqsProvider),
         onRetry: () => ref.invalidate(faqsProvider),
@@ -87,7 +88,7 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
                 runSpacing: 8,
                 children: [
                   ChoiceChip(
-                    label: const Text('전체'),
+                    label: Text(context.l10n.faqAll),
                     selected: _category == null,
                     onSelected: (_) => setState(() => _category = null),
                   ),
@@ -127,7 +128,7 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
               OutlinedButton.icon(
                 onPressed: () => context.push(AppRoutes.inquiryNew),
                 icon: const Icon(Icons.support_agent_rounded),
-                label: const Text('원하는 답이 없나요? 1:1 문의하기'),
+                label: Text(context.l10n.faqAskInquiry),
               ),
             ],
           );
@@ -145,23 +146,23 @@ class InquiryListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('1:1 문의')),
+      appBar: AppBar(title: Text(context.l10n.inquiryTitle)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push(AppRoutes.inquiryNew),
         backgroundColor: AppColors.mintDeep,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.edit_rounded),
-        label: const Text('문의하기', style: TextStyle(fontWeight: FontWeight.w700)),
+        label: Text(context.l10n.inquiryNew, style: const TextStyle(fontWeight: FontWeight.w700)),
       ),
       body: AsyncValueView<List<Inquiry>>(
         value: ref.watch(inquiriesProvider),
         onRetry: () => ref.invalidate(inquiriesProvider),
         data: (inquiries) {
           if (inquiries.isEmpty) {
-            return const EmptyState(
+            return EmptyState(
               icon: Icons.support_agent_rounded,
-              title: '문의 내역이 없어요',
-              message: '궁금한 점을 남겨 주시면 확인 후 답변드릴게요.',
+              title: context.l10n.inquiryEmptyTitle,
+              message: context.l10n.inquiryEmptyMessage,
             );
           }
           return ListView.separated(
@@ -187,7 +188,7 @@ class InquiryListScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          '${inquiry.category.label} · ${Fmt.dateShort(inquiry.createdAt)}',
+                          [inquiry.category.label, Fmt.dateShort(inquiry.createdAt)].join(' · '),
                           style: const TextStyle(fontSize: 12.5),
                         ),
                       ],
@@ -209,7 +210,7 @@ class InquiryListScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('답변', style: TextStyle(fontWeight: FontWeight.w800, color: scheme.primary)),
+                            Text(context.l10n.inquiryAnswerLabel, style: TextStyle(fontWeight: FontWeight.w800, color: scheme.primary)),
                             const SizedBox(height: 6),
                             Text(inquiry.answer!, style: const TextStyle(height: 1.6)),
                             if (inquiry.answeredAt != null) ...[
@@ -270,7 +271,7 @@ class _InquiryFormScreenState extends ConsumerState<InquiryFormScreen> {
           );
       ref.invalidate(inquiriesProvider);
       if (mounted) {
-        context.showMessage('문의를 접수했어요. 답변이 등록되면 문의 내역에서 확인할 수 있어요.');
+        context.showMessage(context.l10n.inquiryCreated);
         context.pop();
       }
     } catch (error) {
@@ -283,13 +284,13 @@ class _InquiryFormScreenState extends ConsumerState<InquiryFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('문의하기')),
+      appBar: AppBar(title: Text(context.l10n.inquiryNew)),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
           children: [
-            Text('문의 유형', style: Theme.of(context).textTheme.titleSmall),
+            Text(context.l10n.inquiryTypeLabel, style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
@@ -307,8 +308,8 @@ class _InquiryFormScreenState extends ConsumerState<InquiryFormScreen> {
             TextFormField(
               controller: _titleController,
               maxLength: 100,
-              decoration: const InputDecoration(labelText: '제목'),
-              validator: (value) => (value == null || value.trim().isEmpty) ? '제목을 입력해 주세요.' : null,
+              decoration: InputDecoration(labelText: context.l10n.inquiryTitleLabel),
+              validator: (value) => (value == null || value.trim().isEmpty) ? context.l10n.inquiryTitleRequired : null,
             ),
             const SizedBox(height: 8),
             TextFormField(
@@ -316,8 +317,8 @@ class _InquiryFormScreenState extends ConsumerState<InquiryFormScreen> {
               maxLength: 2000,
               minLines: 6,
               maxLines: 12,
-              decoration: const InputDecoration(labelText: '내용', alignLabelWithHint: true),
-              validator: (value) => (value == null || value.trim().isEmpty) ? '내용을 입력해 주세요.' : null,
+              decoration: InputDecoration(labelText: context.l10n.inquiryBodyLabel, alignLabelWithHint: true),
+              validator: (value) => (value == null || value.trim().isEmpty) ? context.l10n.inquiryBodyRequired : null,
             ),
             const SizedBox(height: 16),
             FilledButton(
@@ -327,7 +328,7 @@ class _InquiryFormScreenState extends ConsumerState<InquiryFormScreen> {
                       dimension: 22,
                       child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
                     )
-                  : const Text('문의 접수'),
+                  : Text(context.l10n.inquirySubmit),
             ),
           ],
         ),

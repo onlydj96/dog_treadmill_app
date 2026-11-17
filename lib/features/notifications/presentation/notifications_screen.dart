@@ -12,6 +12,7 @@ import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
 import '../data/notification_repository.dart';
+import '../../../l10n/l10n.dart';
 
 /// 알림 (예약·운동·분석 알림, 실시간 반영)
 class NotificationsScreen extends ConsumerStatefulWidget {
@@ -82,9 +83,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('알림'),
+        title: Text(context.l10n.notificationTitle),
         actions: [
-          if (unread > 0) TextButton(onPressed: _markAllRead, child: const Text('모두 읽음')),
+          if (unread > 0) TextButton(onPressed: _markAllRead, child: Text(context.l10n.notificationMarkAllRead)),
           const SizedBox(width: 8),
         ],
       ),
@@ -94,10 +95,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         data: (all) {
           final items = all.where((n) => !_dismissed.contains(n.id)).toList();
           if (items.isEmpty) {
-            return const EmptyState(
+            return EmptyState(
               icon: Icons.notifications_none_rounded,
-              title: '새 알림이 없어요',
-              message: '예약 확정, 운동 시작·완료, AI 분석 결과, 배지·랭킹 소식을 알려 드려요.',
+              title: context.l10n.notificationEmptyTitle,
+              message: context.l10n.notificationEmptyMessage,
             );
           }
           return ListView.separated(
@@ -146,7 +147,7 @@ class _NotificationTile extends StatelessWidget {
     return Semantics(
       container: true,
       button: true,
-      label: notification.isRead ? null : '읽지 않은 알림',
+      label: notification.isRead ? null : context.l10n.notificationUnreadLabel,
       child: InkWell(
         onTap: onTap,
         child: Container(

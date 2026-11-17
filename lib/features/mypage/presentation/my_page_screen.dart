@@ -19,7 +19,12 @@ class MyPageScreen extends ConsumerWidget {
   const MyPageScreen({super.key});
 
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
-    final confirmed = await confirmDialog(context, title: '로그아웃', message: '로그아웃할까요?', confirmLabel: '로그아웃');
+    final confirmed = await confirmDialog(
+      context,
+      title: context.l10n.myPageLogOut,
+      message: context.l10n.myPageLogOutMessage,
+      confirmLabel: context.l10n.myPageLogOut,
+    );
     if (!confirmed) return;
     try {
       await ref.read(authRepositoryProvider).signOut();
@@ -31,10 +36,9 @@ class MyPageScreen extends ConsumerWidget {
   Future<void> _deleteAccount(BuildContext context, WidgetRef ref) async {
     final confirmed = await confirmDialog(
       context,
-      title: '회원 탈퇴',
-      message: '탈퇴하면 반려견 정보, 예약, 운동·분석 기록과 남은 이용권이 모두 삭제되며 복구할 수 없어요. '
-          '결제 기록은 관련 법령에 따라 일정 기간 보관됩니다.\n\n정말 탈퇴할까요?',
-      confirmLabel: '탈퇴하기',
+      title: context.l10n.myPageDeleteAccount,
+      message: context.l10n.myPageDeleteMessage,
+      confirmLabel: context.l10n.myPageDeleteConfirm,
       destructive: true,
     );
     if (!confirmed) return;
@@ -54,7 +58,7 @@ class MyPageScreen extends ConsumerWidget {
     final dogs = ref.watch(dogsProvider).valueOrNull ?? const [];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('마이페이지')),
+      appBar: AppBar(title: Text(context.l10n.myPageTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
         children: [
@@ -66,7 +70,7 @@ class MyPageScreen extends ConsumerWidget {
                   radius: 28,
                   backgroundColor: AppColors.mintMist,
                   child: Text(
-                    (profile?.displayName ?? '보').characters.first,
+                    (profile?.displayName ?? context.l10n.commonOwnerFallbackName).characters.first,
                     style: const TextStyle(color: AppColors.mintDeep, fontWeight: FontWeight.w800, fontSize: 22),
                   ),
                 ),
@@ -75,7 +79,10 @@ class MyPageScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${profile?.displayName ?? '보호자'}님', style: theme.textTheme.titleMedium),
+                      Text(
+                        context.l10n.myPageGreeting(profile?.displayName ?? context.l10n.commonOwnerFallbackName),
+                        style: theme.textTheme.titleMedium,
+                      ),
                       if (profile != null && profile.nickname.isNotEmpty)
                         Text(
                           '@${profile.nickname}',
@@ -92,7 +99,7 @@ class MyPageScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          SectionHeader(title: '내 반려견', actionLabel: '관리', onAction: () => context.push(AppRoutes.dogs)),
+          SectionHeader(title: context.l10n.myPageMyDogs, actionLabel: context.l10n.commonManage, onAction: () => context.push(AppRoutes.dogs)),
           SizedBox(
             height: 96,
             child: ListView(
@@ -136,7 +143,7 @@ class MyPageScreen extends ConsumerWidget {
                           child: Icon(Icons.add_rounded, color: scheme.onSurfaceVariant),
                         ),
                         const SizedBox(height: 6),
-                        Text('추가', style: TextStyle(color: scheme.onSurfaceVariant)),
+                        Text(context.l10n.commonAdd, style: TextStyle(color: scheme.onSurfaceVariant)),
                       ],
                     ),
                   ),
@@ -146,27 +153,27 @@ class MyPageScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 20),
           _MenuGroup(
-            title: '이용 내역',
+            title: context.l10n.myPageUsageGroup,
             items: [
-              _MenuItem(Icons.confirmation_number_outlined, '이용권 및 멤버십', () => context.push(AppRoutes.membership)),
-              _MenuItem(Icons.receipt_long_outlined, '결제·환불 내역', () => context.push(AppRoutes.payments)),
-              _MenuItem(Icons.event_note_outlined, '예약 내역', () => context.go(AppRoutes.booking)),
-              _MenuItem(Icons.insights_outlined, '운동 누적 기록', () => context.push(AppRoutes.exerciseHistory)),
+              _MenuItem(Icons.confirmation_number_outlined, context.l10n.myPageMembership, () => context.push(AppRoutes.membership)),
+              _MenuItem(Icons.receipt_long_outlined, context.l10n.myPagePayments, () => context.push(AppRoutes.payments)),
+              _MenuItem(Icons.event_note_outlined, context.l10n.myPageBookings, () => context.go(AppRoutes.booking)),
+              _MenuItem(Icons.insights_outlined, context.l10n.myPageWorkoutHistory, () => context.push(AppRoutes.exerciseHistory)),
             ],
           ),
           _MenuGroup(
-            title: '랭킹',
+            title: context.l10n.myPageRankingGroup,
             items: [
-              _MenuItem(Icons.leaderboard_outlined, '월간 랭킹·명예의 전당', () => context.push(AppRoutes.ranking)),
-              _MenuItem(Icons.badge_outlined, '랭킹 참여·닉네임 설정', () => showRankingSettingsSheet(context)),
+              _MenuItem(Icons.leaderboard_outlined, context.l10n.myPageRankingHall, () => context.push(AppRoutes.ranking)),
+              _MenuItem(Icons.badge_outlined, context.l10n.myPageRankingSettings, () => showRankingSettingsSheet(context)),
             ],
           ),
           _MenuGroup(
-            title: '설정',
+            title: context.l10n.myPageSettingsGroup,
             items: [
-              _MenuItem(Icons.manage_accounts_outlined, '프로필 및 로그인 계정', () => context.push(AppRoutes.profileEdit)),
-              _MenuItem(Icons.notifications_outlined, '알림 설정', () => context.push(AppRoutes.notificationSettings)),
-              _MenuItem(Icons.privacy_tip_outlined, '개인정보 및 영상 이용 동의', () => context.push(AppRoutes.consents)),
+              _MenuItem(Icons.manage_accounts_outlined, context.l10n.myPageProfile, () => context.push(AppRoutes.profileEdit)),
+              _MenuItem(Icons.notifications_outlined, context.l10n.notificationSettingsTitle, () => context.push(AppRoutes.notificationSettings)),
+              _MenuItem(Icons.privacy_tip_outlined, context.l10n.consentScreenTitle, () => context.push(AppRoutes.consents)),
               _MenuItem(
                 Icons.language_rounded,
                 context.l10n.languageMenuTitle,
@@ -176,11 +183,11 @@ class MyPageScreen extends ConsumerWidget {
             ],
           ),
           _MenuGroup(
-            title: '고객지원',
+            title: context.l10n.myPageSupportGroup,
             items: [
-              _MenuItem(Icons.campaign_outlined, '공지사항', () => context.push(AppRoutes.notices)),
-              _MenuItem(Icons.help_outline_rounded, '자주 묻는 질문', () => context.push(AppRoutes.faq)),
-              _MenuItem(Icons.support_agent_rounded, '1:1 문의', () => context.push(AppRoutes.inquiries)),
+              _MenuItem(Icons.campaign_outlined, context.l10n.noticeTitle, () => context.push(AppRoutes.notices)),
+              _MenuItem(Icons.help_outline_rounded, context.l10n.faqTitle, () => context.push(AppRoutes.faq)),
+              _MenuItem(Icons.support_agent_rounded, context.l10n.inquiryTitle, () => context.push(AppRoutes.inquiries)),
             ],
           ),
           const SizedBox(height: 8),
@@ -190,13 +197,13 @@ class MyPageScreen extends ConsumerWidget {
               TextButton(
                 onPressed: () => _signOut(context, ref),
                 style: TextButton.styleFrom(foregroundColor: scheme.onSurfaceVariant),
-                child: const Text('로그아웃'),
+                child: Text(context.l10n.myPageLogOut),
               ),
               Text('|', style: TextStyle(color: scheme.outlineVariant)),
               TextButton(
                 onPressed: () => _deleteAccount(context, ref),
                 style: TextButton.styleFrom(foregroundColor: scheme.onSurfaceVariant),
-                child: const Text('회원 탈퇴'),
+                child: Text(context.l10n.myPageDeleteAccount),
               ),
             ],
           ),

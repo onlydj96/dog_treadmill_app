@@ -739,6 +739,864 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'운영자 판단에 의한 중단'**
   String get serverStopReasonByStaff;
+
+  /// No description provided for @authTagline.
+  ///
+  /// In ko, this message translates to:
+  /// **'트레드밀 예약부터 AI 보행 분석까지,\n우리 아이의 건강한 걸음을 함께 기록해요.'**
+  String get authTagline;
+
+  /// No description provided for @authEmail.
+  ///
+  /// In ko, this message translates to:
+  /// **'이메일'**
+  String get authEmail;
+
+  /// No description provided for @authPassword.
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호'**
+  String get authPassword;
+
+  /// No description provided for @authShowPassword.
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호 보기'**
+  String get authShowPassword;
+
+  /// No description provided for @authHidePassword.
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호 숨기기'**
+  String get authHidePassword;
+
+  /// No description provided for @authLogIn.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인'**
+  String get authLogIn;
+
+  /// No description provided for @authNoAccount.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 회원이 아니신가요?'**
+  String get authNoAccount;
+
+  /// No description provided for @authSignUp.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원가입'**
+  String get authSignUp;
+
+  /// No description provided for @signupTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원가입'**
+  String get signupTitle;
+
+  /// No description provided for @signupOwnerSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'보호자 정보'**
+  String get signupOwnerSection;
+
+  /// No description provided for @signupName.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름'**
+  String get signupName;
+
+  /// No description provided for @signupPhone.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴대전화 번호'**
+  String get signupPhone;
+
+  /// No description provided for @signupLoginSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인 정보'**
+  String get signupLoginSection;
+
+  /// No description provided for @signupPasswordHelper.
+  ///
+  /// In ko, this message translates to:
+  /// **'영문과 숫자를 포함해 8자 이상'**
+  String get signupPasswordHelper;
+
+  /// No description provided for @signupConfirmPassword.
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호 확인'**
+  String get signupConfirmPassword;
+
+  /// No description provided for @signupPasswordMismatch.
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호가 일치하지 않아요.'**
+  String get signupPasswordMismatch;
+
+  /// No description provided for @signupRequiredConsent.
+  ///
+  /// In ko, this message translates to:
+  /// **'필수 약관에 동의해 주세요.'**
+  String get signupRequiredConsent;
+
+  /// No description provided for @signupVerifyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증 메일을 보냈어요'**
+  String get signupVerifyTitle;
+
+  /// No description provided for @signupVerifyBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{email}으로 보낸 메일의 링크를 눌러 가입을 완료한 뒤 로그인해 주세요.'**
+  String signupVerifyBody(String email);
+
+  /// No description provided for @signupSubmit.
+  ///
+  /// In ko, this message translates to:
+  /// **'가입하기'**
+  String get signupSubmit;
+
+  /// No description provided for @signupAgreeAll.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 동의'**
+  String get signupAgreeAll;
+
+  /// No description provided for @signupAgreeAllDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'선택 항목을 포함한 모든 항목에 동의합니다.'**
+  String get signupAgreeAllDesc;
+
+  /// No description provided for @signupRequiredTag.
+  ///
+  /// In ko, this message translates to:
+  /// **'[필수] '**
+  String get signupRequiredTag;
+
+  /// No description provided for @signupOptionalTag.
+  ///
+  /// In ko, this message translates to:
+  /// **'[선택] '**
+  String get signupOptionalTag;
+
+  /// No description provided for @consentTermsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'서비스 이용약관'**
+  String get consentTermsTitle;
+
+  /// No description provided for @consentTermsDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'PawFit 서비스 이용에 관한 약관입니다.'**
+  String get consentTermsDesc;
+
+  /// No description provided for @consentPrivacyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'개인정보 수집·이용'**
+  String get consentPrivacyTitle;
+
+  /// No description provided for @consentPrivacyDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 식별, 예약·결제 처리, 고객 상담을 위해 이름·연락처·이메일과 반려견 정보를 수집합니다.'**
+  String get consentPrivacyDesc;
+
+  /// No description provided for @consentVideoTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 영상 촬영 및 AI 분석'**
+  String get consentVideoTitle;
+
+  /// No description provided for @consentVideoDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'트레드밀 운동 중 반려견의 정면·측면 영상을 촬영해 관절·보행 분석 리포트를 만듭니다. 동의하지 않으면 AI 분석 리포트가 제공되지 않습니다.'**
+  String get consentVideoDesc;
+
+  /// No description provided for @consentAiTrainingTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 학습 데이터 활용'**
+  String get consentAiTrainingTitle;
+
+  /// No description provided for @consentAiTrainingDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'촬영 영상과 관절 좌표를 비식별화해 AI 모델 개선에 활용합니다. 동의하지 않아도 서비스 이용에는 제한이 없습니다.'**
+  String get consentAiTrainingDesc;
+
+  /// No description provided for @consentRankingTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'랭킹 참여 (닉네임·반려견 공개)'**
+  String get consentRankingTitle;
+
+  /// No description provided for @consentRankingDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'월간 랭킹과 명예의 전당에 닉네임, 반려견 이름·견종·사진, 운동 점수를 다른 회원에게 보여줍니다. 실명·이메일·연락처는 공개되지 않으며, 철회하면 바로 랭킹에서 빠집니다.'**
+  String get consentRankingDesc;
+
+  /// No description provided for @consentMarketingTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'마케팅 정보 수신'**
+  String get consentMarketingTitle;
+
+  /// No description provided for @consentMarketingDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'이벤트와 혜택 소식을 알림으로 받습니다.'**
+  String get consentMarketingDesc;
+
+  /// No description provided for @consentScreenTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'개인정보 및 영상 이용 동의'**
+  String get consentScreenTitle;
+
+  /// No description provided for @consentIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'동의 항목은 언제든 변경할 수 있으며, 변경 이력은 안전하게 보관됩니다.'**
+  String get consentIntro;
+
+  /// No description provided for @consentRequiredNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'필수 항목은 서비스 제공에 꼭 필요해 철회할 수 없어요. 철회를 원하면 회원 탈퇴를 진행해 주세요.'**
+  String get consentRequiredNote;
+
+  /// No description provided for @consentWithdrawVideoTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'영상 촬영 동의를 철회할까요?'**
+  String get consentWithdrawVideoTitle;
+
+  /// No description provided for @consentWithdrawVideoMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'철회하면 다음 운동부터 AI 보행 분석 리포트가 제공되지 않아요. 이미 받은 리포트는 그대로 볼 수 있어요.'**
+  String get consentWithdrawVideoMessage;
+
+  /// No description provided for @consentWithdrawVideoConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'철회'**
+  String get consentWithdrawVideoConfirm;
+
+  /// No description provided for @consentLeaveRankingTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'랭킹에서 나갈까요?'**
+  String get consentLeaveRankingTitle;
+
+  /// No description provided for @consentLeaveRankingMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'순위표와 명예의 전당에서 닉네임과 반려견 정보가 바로 가려져요. 점수와 배지는 그대로 쌓여요.'**
+  String get consentLeaveRankingMessage;
+
+  /// No description provided for @consentLeaveRankingConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'나가기'**
+  String get consentLeaveRankingConfirm;
+
+  /// No description provided for @consentGranted.
+  ///
+  /// In ko, this message translates to:
+  /// **'동의'**
+  String get consentGranted;
+
+  /// No description provided for @consentNotGranted.
+  ///
+  /// In ko, this message translates to:
+  /// **'미동의'**
+  String get consentNotGranted;
+
+  /// No description provided for @consentStatusLine.
+  ///
+  /// In ko, this message translates to:
+  /// **'{state} · {date} · v{version}'**
+  String consentStatusLine(String state, String date, String version);
+
+  /// No description provided for @myPageTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이페이지'**
+  String get myPageTitle;
+
+  /// No description provided for @myPageGreeting.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name}님'**
+  String myPageGreeting(String name);
+
+  /// No description provided for @myPageMyDogs.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 반려견'**
+  String get myPageMyDogs;
+
+  /// No description provided for @myPageUsageGroup.
+  ///
+  /// In ko, this message translates to:
+  /// **'이용 내역'**
+  String get myPageUsageGroup;
+
+  /// No description provided for @myPageMembership.
+  ///
+  /// In ko, this message translates to:
+  /// **'이용권 및 멤버십'**
+  String get myPageMembership;
+
+  /// No description provided for @myPagePayments.
+  ///
+  /// In ko, this message translates to:
+  /// **'결제·환불 내역'**
+  String get myPagePayments;
+
+  /// No description provided for @myPageBookings.
+  ///
+  /// In ko, this message translates to:
+  /// **'예약 내역'**
+  String get myPageBookings;
+
+  /// No description provided for @myPageWorkoutHistory.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 누적 기록'**
+  String get myPageWorkoutHistory;
+
+  /// No description provided for @myPageRankingGroup.
+  ///
+  /// In ko, this message translates to:
+  /// **'랭킹'**
+  String get myPageRankingGroup;
+
+  /// No description provided for @myPageRankingHall.
+  ///
+  /// In ko, this message translates to:
+  /// **'월간 랭킹·명예의 전당'**
+  String get myPageRankingHall;
+
+  /// No description provided for @myPageRankingSettings.
+  ///
+  /// In ko, this message translates to:
+  /// **'랭킹 참여·닉네임 설정'**
+  String get myPageRankingSettings;
+
+  /// No description provided for @myPageSettingsGroup.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정'**
+  String get myPageSettingsGroup;
+
+  /// No description provided for @myPageProfile.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 및 로그인 계정'**
+  String get myPageProfile;
+
+  /// No description provided for @myPageSupportGroup.
+  ///
+  /// In ko, this message translates to:
+  /// **'고객지원'**
+  String get myPageSupportGroup;
+
+  /// No description provided for @myPageLogOut.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃'**
+  String get myPageLogOut;
+
+  /// No description provided for @myPageLogOutMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃할까요?'**
+  String get myPageLogOutMessage;
+
+  /// No description provided for @myPageDeleteAccount.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 탈퇴'**
+  String get myPageDeleteAccount;
+
+  /// No description provided for @myPageDeleteMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'탈퇴하면 반려견 정보, 예약, 운동·분석 기록과 남은 이용권이 모두 삭제되며 복구할 수 없어요. 결제 기록은 관련 법령에 따라 일정 기간 보관됩니다.\n\n정말 탈퇴할까요?'**
+  String get myPageDeleteMessage;
+
+  /// No description provided for @myPageDeleteConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'탈퇴하기'**
+  String get myPageDeleteConfirm;
+
+  /// No description provided for @profileEditTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 및 로그인 계정'**
+  String get profileEditTitle;
+
+  /// No description provided for @profileEditProfileSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필'**
+  String get profileEditProfileSection;
+
+  /// No description provided for @profileEditSave.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 저장'**
+  String get profileEditSave;
+
+  /// No description provided for @profileEditSaved.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필을 저장했어요.'**
+  String get profileEditSaved;
+
+  /// No description provided for @profileEditLoginSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인 계정'**
+  String get profileEditLoginSection;
+
+  /// No description provided for @profileEditNewPassword.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 비밀번호'**
+  String get profileEditNewPassword;
+
+  /// No description provided for @profileEditConfirmNewPassword.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 비밀번호 확인'**
+  String get profileEditConfirmNewPassword;
+
+  /// No description provided for @profileEditChangePassword.
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호 변경'**
+  String get profileEditChangePassword;
+
+  /// No description provided for @profileEditPasswordChanged.
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호를 변경했어요.'**
+  String get profileEditPasswordChanged;
+
+  /// No description provided for @notificationSettingsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 설정'**
+  String get notificationSettingsTitle;
+
+  /// No description provided for @notificationSettingsBooking.
+  ///
+  /// In ko, this message translates to:
+  /// **'예약 알림'**
+  String get notificationSettingsBooking;
+
+  /// No description provided for @notificationSettingsBookingDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'예약 확정·취소, 미방문 처리'**
+  String get notificationSettingsBookingDesc;
+
+  /// No description provided for @notificationSettingsExercise.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 알림'**
+  String get notificationSettingsExercise;
+
+  /// No description provided for @notificationSettingsExerciseDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 시작·완료·중단'**
+  String get notificationSettingsExerciseDesc;
+
+  /// No description provided for @notificationSettingsAnalysis.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 분석 알림'**
+  String get notificationSettingsAnalysis;
+
+  /// No description provided for @notificationSettingsAnalysisDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'보행 분석 리포트 도착'**
+  String get notificationSettingsAnalysisDesc;
+
+  /// No description provided for @notificationSettingsRanking.
+  ///
+  /// In ko, this message translates to:
+  /// **'랭킹 알림'**
+  String get notificationSettingsRanking;
+
+  /// No description provided for @notificationSettingsRankingDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'배지 획득, 응원, 월간 순위 확정'**
+  String get notificationSettingsRankingDesc;
+
+  /// No description provided for @notificationSettingsMarketing.
+  ///
+  /// In ko, this message translates to:
+  /// **'이벤트·혜택 알림'**
+  String get notificationSettingsMarketing;
+
+  /// No description provided for @notificationSettingsMarketingDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'마케팅 정보 수신 동의에서 설정할 수 있어요.'**
+  String get notificationSettingsMarketingDesc;
+
+  /// No description provided for @notificationTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'알림'**
+  String get notificationTitle;
+
+  /// No description provided for @notificationMarkAllRead.
+  ///
+  /// In ko, this message translates to:
+  /// **'모두 읽음'**
+  String get notificationMarkAllRead;
+
+  /// No description provided for @notificationEmptyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 알림이 없어요'**
+  String get notificationEmptyTitle;
+
+  /// No description provided for @notificationEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'예약 확정, 운동 시작·완료, AI 분석 결과, 배지·랭킹 소식을 알려 드려요.'**
+  String get notificationEmptyMessage;
+
+  /// No description provided for @notificationUnreadLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'읽지 않은 알림'**
+  String get notificationUnreadLabel;
+
+  /// No description provided for @notificationBookingConfirmedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'예약이 확정되었어요'**
+  String get notificationBookingConfirmedTitle;
+
+  /// No description provided for @notificationBookingConfirmedBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog} · {when} 예약이 확정되었습니다.'**
+  String notificationBookingConfirmedBody(String dog, String when);
+
+  /// No description provided for @notificationBookingCancelledTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'예약이 취소되었어요'**
+  String get notificationBookingCancelledTitle;
+
+  /// No description provided for @notificationBookingCancelledBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog} · {when} 예약이 헬스장 사정으로 취소되었습니다.'**
+  String notificationBookingCancelledBody(String dog, String when);
+
+  /// No description provided for @notificationBookingNoShowTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'미방문 처리되었어요'**
+  String get notificationBookingNoShowTitle;
+
+  /// No description provided for @notificationBookingNoShowBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog} · {when} 예약이 미방문으로 처리되었습니다.'**
+  String notificationBookingNoShowBody(String dog, String when);
+
+  /// No description provided for @notificationExerciseStartedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동을 시작했어요'**
+  String get notificationExerciseStartedTitle;
+
+  /// No description provided for @notificationExerciseStartedBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 트레드밀 운동이 시작되었습니다. 실시간 현황을 확인해 보세요.'**
+  String notificationExerciseStartedBody(String dog);
+
+  /// No description provided for @notificationExerciseCompletedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동을 완료했어요'**
+  String get notificationExerciseCompletedTitle;
+
+  /// No description provided for @notificationExerciseCompletedBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 운동이 끝났어요. 운동 기록을 확인해 보세요.'**
+  String notificationExerciseCompletedBody(String dog);
+
+  /// No description provided for @notificationExerciseCompletedPointsBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 운동이 끝났어요. {points}을 받았어요! 운동 기록을 확인해 보세요.'**
+  String notificationExerciseCompletedPointsBody(String dog, String points);
+
+  /// No description provided for @notificationExerciseStoppedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동이 중단되었어요'**
+  String get notificationExerciseStoppedTitle;
+
+  /// No description provided for @notificationExerciseStoppedBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 운동이 중단되었습니다. 사유: {reason}'**
+  String notificationExerciseStoppedBody(String dog, String reason);
+
+  /// No description provided for @notificationAnalysisCompletedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 보행 분석 리포트가 도착했어요'**
+  String get notificationAnalysisCompletedTitle;
+
+  /// No description provided for @notificationAnalysisCompletedBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 운동 분석 결과를 확인해 보세요.'**
+  String notificationAnalysisCompletedBody(String dog);
+
+  /// No description provided for @notificationAnalysisFailedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 분석을 완료하지 못했어요'**
+  String get notificationAnalysisFailedTitle;
+
+  /// No description provided for @notificationAnalysisFailedBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 영상 분석 중 문제가 발생했습니다. 헬스장에서 확인 후 다시 분석합니다.'**
+  String notificationAnalysisFailedBody(String dog);
+
+  /// No description provided for @notificationBadgeEarnedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 배지를 받았어요'**
+  String get notificationBadgeEarnedTitle;
+
+  /// No description provided for @notificationBadgeEarnedBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 「{badge}」 배지가 도착했어요. 배지함에서 확인해 보세요.'**
+  String notificationBadgeEarnedBody(String dog, String badge);
+
+  /// No description provided for @notificationCheerReceivedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'응원이 도착했어요'**
+  String get notificationCheerReceivedTitle;
+
+  /// No description provided for @notificationCheerReceivedBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{nickname}님이 {dog} 응원했어요.'**
+  String notificationCheerReceivedBody(String nickname, String dog);
+
+  /// No description provided for @notificationCheerReceivedAnonymousBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 보호자가 {dog} 응원했어요.'**
+  String notificationCheerReceivedAnonymousBody(String dog);
+
+  /// No description provided for @notificationMonthlyAwardTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{month} 랭킹 시상대에 올랐어요'**
+  String notificationMonthlyAwardTitle(String month);
+
+  /// No description provided for @notificationMonthlyAwardBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog} {month} 랭킹 {summary}에 올랐어요. 명예의 전당에서 확인해 보세요.'**
+  String notificationMonthlyAwardBody(String dog, String month, String summary);
+
+  /// No description provided for @notificationMonthlyAwardItem.
+  ///
+  /// In ko, this message translates to:
+  /// **'{label} {rank}위'**
+  String notificationMonthlyAwardItem(String label, int rank);
+
+  /// No description provided for @noticeTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'공지사항'**
+  String get noticeTitle;
+
+  /// No description provided for @noticeEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록된 공지사항이 없어요'**
+  String get noticeEmpty;
+
+  /// No description provided for @faqTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'자주 묻는 질문'**
+  String get faqTitle;
+
+  /// No description provided for @faqAll.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체'**
+  String get faqAll;
+
+  /// No description provided for @faqAskInquiry.
+  ///
+  /// In ko, this message translates to:
+  /// **'원하는 답이 없나요? 1:1 문의하기'**
+  String get faqAskInquiry;
+
+  /// No description provided for @inquiryTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'1:1 문의'**
+  String get inquiryTitle;
+
+  /// No description provided for @inquiryNew.
+  ///
+  /// In ko, this message translates to:
+  /// **'문의하기'**
+  String get inquiryNew;
+
+  /// No description provided for @inquiryEmptyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'문의 내역이 없어요'**
+  String get inquiryEmptyTitle;
+
+  /// No description provided for @inquiryEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'궁금한 점을 남겨 주시면 확인 후 답변드릴게요.'**
+  String get inquiryEmptyMessage;
+
+  /// No description provided for @inquiryAnswerLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'답변'**
+  String get inquiryAnswerLabel;
+
+  /// No description provided for @inquiryTypeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'문의 유형'**
+  String get inquiryTypeLabel;
+
+  /// No description provided for @inquiryCategoryBooking.
+  ///
+  /// In ko, this message translates to:
+  /// **'예약'**
+  String get inquiryCategoryBooking;
+
+  /// No description provided for @inquiryCategoryPayment.
+  ///
+  /// In ko, this message translates to:
+  /// **'결제·이용권'**
+  String get inquiryCategoryPayment;
+
+  /// No description provided for @inquiryCategoryExercise.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동'**
+  String get inquiryCategoryExercise;
+
+  /// No description provided for @inquiryCategoryAnalysis.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 분석'**
+  String get inquiryCategoryAnalysis;
+
+  /// No description provided for @inquiryCategoryAccount.
+  ///
+  /// In ko, this message translates to:
+  /// **'계정'**
+  String get inquiryCategoryAccount;
+
+  /// No description provided for @inquiryCategoryEtc.
+  ///
+  /// In ko, this message translates to:
+  /// **'기타'**
+  String get inquiryCategoryEtc;
+
+  /// No description provided for @inquiryTitleLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'제목'**
+  String get inquiryTitleLabel;
+
+  /// No description provided for @inquiryTitleRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'제목을 입력해 주세요.'**
+  String get inquiryTitleRequired;
+
+  /// No description provided for @inquiryBodyLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'내용'**
+  String get inquiryBodyLabel;
+
+  /// No description provided for @inquiryBodyRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'내용을 입력해 주세요.'**
+  String get inquiryBodyRequired;
+
+  /// No description provided for @inquirySubmit.
+  ///
+  /// In ko, this message translates to:
+  /// **'문의 접수'**
+  String get inquirySubmit;
+
+  /// No description provided for @inquiryCreated.
+  ///
+  /// In ko, this message translates to:
+  /// **'문의를 접수했어요. 답변이 등록되면 문의 내역에서 확인할 수 있어요.'**
+  String get inquiryCreated;
+
+  /// No description provided for @inquiryStatusAnswered.
+  ///
+  /// In ko, this message translates to:
+  /// **'답변 완료'**
+  String get inquiryStatusAnswered;
+
+  /// No description provided for @inquiryStatusClosed.
+  ///
+  /// In ko, this message translates to:
+  /// **'종료'**
+  String get inquiryStatusClosed;
+
+  /// No description provided for @inquiryStatusPending.
+  ///
+  /// In ko, this message translates to:
+  /// **'답변 대기'**
+  String get inquiryStatusPending;
 }
 
 class _AppLocalizationsDelegate

@@ -11,6 +11,7 @@ import '../../profile/data/user_repository.dart';
 import '../../ranking/providers.dart';
 import '../data/consent.dart';
 import '../data/consent_repository.dart';
+import '../../../l10n/l10n.dart';
 
 /// 개인정보 및 영상 이용 동의 관리 (문서 3.5, 8장: 영상 촬영 동의와 AI 학습 동의 분리)
 class ConsentScreen extends ConsumerStatefulWidget {
@@ -30,18 +31,18 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
     if (!granted && type == ConsentType.videoRecording) {
       final confirmed = await confirmDialog(
         context,
-        title: '영상 촬영 동의를 철회할까요?',
-        message: '철회하면 다음 운동부터 AI 보행 분석 리포트가 제공되지 않아요. 이미 받은 리포트는 그대로 볼 수 있어요.',
-        confirmLabel: '철회',
+        title: context.l10n.consentWithdrawVideoTitle,
+        message: context.l10n.consentWithdrawVideoMessage,
+        confirmLabel: context.l10n.consentWithdrawVideoConfirm,
         destructive: true,
       );
       if (!confirmed) return;
     } else if (!granted && type == ConsentType.ranking) {
       final confirmed = await confirmDialog(
         context,
-        title: '랭킹에서 나갈까요?',
-        message: '순위표와 명예의 전당에서 닉네임과 반려견 정보가 바로 가려져요. 점수와 배지는 그대로 쌓여요.',
-        confirmLabel: '나가기',
+        title: context.l10n.consentLeaveRankingTitle,
+        message: context.l10n.consentLeaveRankingMessage,
+        confirmLabel: context.l10n.consentLeaveRankingConfirm,
         destructive: true,
       );
       if (!confirmed) return;
@@ -73,7 +74,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('개인정보 및 영상 이용 동의')),
+      appBar: AppBar(title: Text(context.l10n.consentScreenTitle)),
       body: AsyncValueView<Map<ConsentType, DataConsent>>(
         value: ref.watch(consentsProvider),
         onRetry: () => ref.invalidate(consentsProvider),
@@ -81,7 +82,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
           children: [
             Text(
-              '동의 항목은 언제든 변경할 수 있으며, 변경 이력은 안전하게 보관됩니다.',
+              context.l10n.consentIntro,
               style: TextStyle(color: scheme.onSurfaceVariant, height: 1.5),
             ),
             const SizedBox(height: 16),
@@ -97,7 +98,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               ),
             const SizedBox(height: 8),
             Text(
-              '필수 항목은 서비스 제공에 꼭 필요해 철회할 수 없어요. 철회를 원하면 회원 탈퇴를 진행해 주세요.',
+              context.l10n.consentRequiredNote,
               style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant, height: 1.5),
             ),
           ],
@@ -132,7 +133,7 @@ class _ConsentCard extends StatelessWidget {
           Row(
             children: [
               StatusBadge(
-                label: type.isRequired ? '필수' : '선택',
+                label: type.isRequired ? context.l10n.commonRequired : context.l10n.commonOptional,
                 tone: type.isRequired
                     ? const StatusTone(foreground: Colors.white, background: AppColors.mintDeep)
                     : scheme.neutralTone,
@@ -156,7 +157,11 @@ class _ConsentCard extends StatelessWidget {
           if (consent != null) ...[
             const SizedBox(height: 8),
             Text(
-              '${granted ? '동의' : '미동의'} · ${Fmt.dateShort(consent!.respondedAt)} · v${consent!.version}',
+              context.l10n.consentStatusLine(
+                granted ? context.l10n.consentGranted : context.l10n.consentNotGranted,
+                Fmt.dateShort(consent!.respondedAt),
+                consent!.version,
+              ),
               style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
             ),
           ],

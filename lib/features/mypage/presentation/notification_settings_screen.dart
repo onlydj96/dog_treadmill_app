@@ -9,6 +9,7 @@ import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
 import '../../profile/data/app_user.dart';
 import '../../profile/data/user_repository.dart';
+import '../../../l10n/l10n.dart';
 
 /// 알림 설정 — 끈 항목은 서버에서 알림을 만들지 않는다 (private.notify_user)
 class NotificationSettingsScreen extends ConsumerWidget {
@@ -17,7 +18,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('알림 설정')),
+      appBar: AppBar(title: Text(context.l10n.notificationSettingsTitle)),
       body: AsyncValueView<AppUser?>(
         value: ref.watch(currentUserProfileProvider),
         onRetry: () => ref.invalidate(currentUserProfileProvider),
@@ -66,29 +67,29 @@ class _PrefsFormState extends ConsumerState<_PrefsForm> {
             children: [
               SwitchListTile(
                 secondary: const Icon(Icons.event_available_outlined),
-                title: const Text('예약 알림', style: TextStyle(fontWeight: FontWeight.w600)),
-                subtitle: const Text('예약 확정·취소, 미방문 처리'),
+                title: Text(context.l10n.notificationSettingsBooking, style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text(context.l10n.notificationSettingsBookingDesc),
                 value: _prefs.booking,
                 onChanged: (value) => _update(_prefs.copyWith(booking: value)),
               ),
               SwitchListTile(
                 secondary: const Icon(Icons.directions_run_rounded),
-                title: const Text('운동 알림', style: TextStyle(fontWeight: FontWeight.w600)),
-                subtitle: const Text('운동 시작·완료·중단'),
+                title: Text(context.l10n.notificationSettingsExercise, style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text(context.l10n.notificationSettingsExerciseDesc),
                 value: _prefs.exercise,
                 onChanged: (value) => _update(_prefs.copyWith(exercise: value)),
               ),
               SwitchListTile(
                 secondary: const Icon(Icons.auto_awesome_outlined),
-                title: const Text('AI 분석 알림', style: TextStyle(fontWeight: FontWeight.w600)),
-                subtitle: const Text('보행 분석 리포트 도착'),
+                title: Text(context.l10n.notificationSettingsAnalysis, style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text(context.l10n.notificationSettingsAnalysisDesc),
                 value: _prefs.analysis,
                 onChanged: (value) => _update(_prefs.copyWith(analysis: value)),
               ),
               SwitchListTile(
                 secondary: const Icon(Icons.emoji_events_outlined),
-                title: const Text('랭킹 알림', style: TextStyle(fontWeight: FontWeight.w600)),
-                subtitle: const Text('배지 획득, 응원, 월간 순위 확정'),
+                title: Text(context.l10n.notificationSettingsRanking, style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text(context.l10n.notificationSettingsRankingDesc),
                 value: _prefs.ranking,
                 onChanged: (value) => _update(_prefs.copyWith(ranking: value)),
               ),
@@ -99,8 +100,8 @@ class _PrefsFormState extends ConsumerState<_PrefsForm> {
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: Icon(Icons.campaign_outlined, color: scheme.onSurfaceVariant),
-          title: const Text('이벤트·혜택 알림'),
-          subtitle: const Text('마케팅 정보 수신 동의에서 설정할 수 있어요.'),
+          title: Text(context.l10n.notificationSettingsMarketing),
+          subtitle: Text(context.l10n.notificationSettingsMarketingDesc),
           trailing: const Icon(Icons.chevron_right_rounded),
           onTap: () => context.push(AppRoutes.consents),
         ),

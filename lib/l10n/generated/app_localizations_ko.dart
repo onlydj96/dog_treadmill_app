@@ -364,4 +364,479 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get serverStopReasonByStaff => '운영자 판단에 의한 중단';
+
+  @override
+  String get authTagline => '트레드밀 예약부터 AI 보행 분석까지,\n우리 아이의 건강한 걸음을 함께 기록해요.';
+
+  @override
+  String get authEmail => '이메일';
+
+  @override
+  String get authPassword => '비밀번호';
+
+  @override
+  String get authShowPassword => '비밀번호 보기';
+
+  @override
+  String get authHidePassword => '비밀번호 숨기기';
+
+  @override
+  String get authLogIn => '로그인';
+
+  @override
+  String get authNoAccount => '아직 회원이 아니신가요?';
+
+  @override
+  String get authSignUp => '회원가입';
+
+  @override
+  String get signupTitle => '회원가입';
+
+  @override
+  String get signupOwnerSection => '보호자 정보';
+
+  @override
+  String get signupName => '이름';
+
+  @override
+  String get signupPhone => '휴대전화 번호';
+
+  @override
+  String get signupLoginSection => '로그인 정보';
+
+  @override
+  String get signupPasswordHelper => '영문과 숫자를 포함해 8자 이상';
+
+  @override
+  String get signupConfirmPassword => '비밀번호 확인';
+
+  @override
+  String get signupPasswordMismatch => '비밀번호가 일치하지 않아요.';
+
+  @override
+  String get signupRequiredConsent => '필수 약관에 동의해 주세요.';
+
+  @override
+  String get signupVerifyTitle => '인증 메일을 보냈어요';
+
+  @override
+  String signupVerifyBody(String email) {
+    return '$email으로 보낸 메일의 링크를 눌러 가입을 완료한 뒤 로그인해 주세요.';
+  }
+
+  @override
+  String get signupSubmit => '가입하기';
+
+  @override
+  String get signupAgreeAll => '전체 동의';
+
+  @override
+  String get signupAgreeAllDesc => '선택 항목을 포함한 모든 항목에 동의합니다.';
+
+  @override
+  String get signupRequiredTag => '[필수] ';
+
+  @override
+  String get signupOptionalTag => '[선택] ';
+
+  @override
+  String get consentTermsTitle => '서비스 이용약관';
+
+  @override
+  String get consentTermsDesc => 'PawFit 서비스 이용에 관한 약관입니다.';
+
+  @override
+  String get consentPrivacyTitle => '개인정보 수집·이용';
+
+  @override
+  String get consentPrivacyDesc =>
+      '회원 식별, 예약·결제 처리, 고객 상담을 위해 이름·연락처·이메일과 반려견 정보를 수집합니다.';
+
+  @override
+  String get consentVideoTitle => '운동 영상 촬영 및 AI 분석';
+
+  @override
+  String get consentVideoDesc =>
+      '트레드밀 운동 중 반려견의 정면·측면 영상을 촬영해 관절·보행 분석 리포트를 만듭니다. 동의하지 않으면 AI 분석 리포트가 제공되지 않습니다.';
+
+  @override
+  String get consentAiTrainingTitle => 'AI 학습 데이터 활용';
+
+  @override
+  String get consentAiTrainingDesc =>
+      '촬영 영상과 관절 좌표를 비식별화해 AI 모델 개선에 활용합니다. 동의하지 않아도 서비스 이용에는 제한이 없습니다.';
+
+  @override
+  String get consentRankingTitle => '랭킹 참여 (닉네임·반려견 공개)';
+
+  @override
+  String get consentRankingDesc =>
+      '월간 랭킹과 명예의 전당에 닉네임, 반려견 이름·견종·사진, 운동 점수를 다른 회원에게 보여줍니다. 실명·이메일·연락처는 공개되지 않으며, 철회하면 바로 랭킹에서 빠집니다.';
+
+  @override
+  String get consentMarketingTitle => '마케팅 정보 수신';
+
+  @override
+  String get consentMarketingDesc => '이벤트와 혜택 소식을 알림으로 받습니다.';
+
+  @override
+  String get consentScreenTitle => '개인정보 및 영상 이용 동의';
+
+  @override
+  String get consentIntro => '동의 항목은 언제든 변경할 수 있으며, 변경 이력은 안전하게 보관됩니다.';
+
+  @override
+  String get consentRequiredNote =>
+      '필수 항목은 서비스 제공에 꼭 필요해 철회할 수 없어요. 철회를 원하면 회원 탈퇴를 진행해 주세요.';
+
+  @override
+  String get consentWithdrawVideoTitle => '영상 촬영 동의를 철회할까요?';
+
+  @override
+  String get consentWithdrawVideoMessage =>
+      '철회하면 다음 운동부터 AI 보행 분석 리포트가 제공되지 않아요. 이미 받은 리포트는 그대로 볼 수 있어요.';
+
+  @override
+  String get consentWithdrawVideoConfirm => '철회';
+
+  @override
+  String get consentLeaveRankingTitle => '랭킹에서 나갈까요?';
+
+  @override
+  String get consentLeaveRankingMessage =>
+      '순위표와 명예의 전당에서 닉네임과 반려견 정보가 바로 가려져요. 점수와 배지는 그대로 쌓여요.';
+
+  @override
+  String get consentLeaveRankingConfirm => '나가기';
+
+  @override
+  String get consentGranted => '동의';
+
+  @override
+  String get consentNotGranted => '미동의';
+
+  @override
+  String consentStatusLine(String state, String date, String version) {
+    return '$state · $date · v$version';
+  }
+
+  @override
+  String get myPageTitle => '마이페이지';
+
+  @override
+  String myPageGreeting(String name) {
+    return '$name님';
+  }
+
+  @override
+  String get myPageMyDogs => '내 반려견';
+
+  @override
+  String get myPageUsageGroup => '이용 내역';
+
+  @override
+  String get myPageMembership => '이용권 및 멤버십';
+
+  @override
+  String get myPagePayments => '결제·환불 내역';
+
+  @override
+  String get myPageBookings => '예약 내역';
+
+  @override
+  String get myPageWorkoutHistory => '운동 누적 기록';
+
+  @override
+  String get myPageRankingGroup => '랭킹';
+
+  @override
+  String get myPageRankingHall => '월간 랭킹·명예의 전당';
+
+  @override
+  String get myPageRankingSettings => '랭킹 참여·닉네임 설정';
+
+  @override
+  String get myPageSettingsGroup => '설정';
+
+  @override
+  String get myPageProfile => '프로필 및 로그인 계정';
+
+  @override
+  String get myPageSupportGroup => '고객지원';
+
+  @override
+  String get myPageLogOut => '로그아웃';
+
+  @override
+  String get myPageLogOutMessage => '로그아웃할까요?';
+
+  @override
+  String get myPageDeleteAccount => '회원 탈퇴';
+
+  @override
+  String get myPageDeleteMessage =>
+      '탈퇴하면 반려견 정보, 예약, 운동·분석 기록과 남은 이용권이 모두 삭제되며 복구할 수 없어요. 결제 기록은 관련 법령에 따라 일정 기간 보관됩니다.\n\n정말 탈퇴할까요?';
+
+  @override
+  String get myPageDeleteConfirm => '탈퇴하기';
+
+  @override
+  String get profileEditTitle => '프로필 및 로그인 계정';
+
+  @override
+  String get profileEditProfileSection => '프로필';
+
+  @override
+  String get profileEditSave => '프로필 저장';
+
+  @override
+  String get profileEditSaved => '프로필을 저장했어요.';
+
+  @override
+  String get profileEditLoginSection => '로그인 계정';
+
+  @override
+  String get profileEditNewPassword => '새 비밀번호';
+
+  @override
+  String get profileEditConfirmNewPassword => '새 비밀번호 확인';
+
+  @override
+  String get profileEditChangePassword => '비밀번호 변경';
+
+  @override
+  String get profileEditPasswordChanged => '비밀번호를 변경했어요.';
+
+  @override
+  String get notificationSettingsTitle => '알림 설정';
+
+  @override
+  String get notificationSettingsBooking => '예약 알림';
+
+  @override
+  String get notificationSettingsBookingDesc => '예약 확정·취소, 미방문 처리';
+
+  @override
+  String get notificationSettingsExercise => '운동 알림';
+
+  @override
+  String get notificationSettingsExerciseDesc => '운동 시작·완료·중단';
+
+  @override
+  String get notificationSettingsAnalysis => 'AI 분석 알림';
+
+  @override
+  String get notificationSettingsAnalysisDesc => '보행 분석 리포트 도착';
+
+  @override
+  String get notificationSettingsRanking => '랭킹 알림';
+
+  @override
+  String get notificationSettingsRankingDesc => '배지 획득, 응원, 월간 순위 확정';
+
+  @override
+  String get notificationSettingsMarketing => '이벤트·혜택 알림';
+
+  @override
+  String get notificationSettingsMarketingDesc => '마케팅 정보 수신 동의에서 설정할 수 있어요.';
+
+  @override
+  String get notificationTitle => '알림';
+
+  @override
+  String get notificationMarkAllRead => '모두 읽음';
+
+  @override
+  String get notificationEmptyTitle => '새 알림이 없어요';
+
+  @override
+  String get notificationEmptyMessage =>
+      '예약 확정, 운동 시작·완료, AI 분석 결과, 배지·랭킹 소식을 알려 드려요.';
+
+  @override
+  String get notificationUnreadLabel => '읽지 않은 알림';
+
+  @override
+  String get notificationBookingConfirmedTitle => '예약이 확정되었어요';
+
+  @override
+  String notificationBookingConfirmedBody(String dog, String when) {
+    return '$dog · $when 예약이 확정되었습니다.';
+  }
+
+  @override
+  String get notificationBookingCancelledTitle => '예약이 취소되었어요';
+
+  @override
+  String notificationBookingCancelledBody(String dog, String when) {
+    return '$dog · $when 예약이 헬스장 사정으로 취소되었습니다.';
+  }
+
+  @override
+  String get notificationBookingNoShowTitle => '미방문 처리되었어요';
+
+  @override
+  String notificationBookingNoShowBody(String dog, String when) {
+    return '$dog · $when 예약이 미방문으로 처리되었습니다.';
+  }
+
+  @override
+  String get notificationExerciseStartedTitle => '운동을 시작했어요';
+
+  @override
+  String notificationExerciseStartedBody(String dog) {
+    return '$dog의 트레드밀 운동이 시작되었습니다. 실시간 현황을 확인해 보세요.';
+  }
+
+  @override
+  String get notificationExerciseCompletedTitle => '운동을 완료했어요';
+
+  @override
+  String notificationExerciseCompletedBody(String dog) {
+    return '$dog의 운동이 끝났어요. 운동 기록을 확인해 보세요.';
+  }
+
+  @override
+  String notificationExerciseCompletedPointsBody(String dog, String points) {
+    return '$dog의 운동이 끝났어요. $points을 받았어요! 운동 기록을 확인해 보세요.';
+  }
+
+  @override
+  String get notificationExerciseStoppedTitle => '운동이 중단되었어요';
+
+  @override
+  String notificationExerciseStoppedBody(String dog, String reason) {
+    return '$dog의 운동이 중단되었습니다. 사유: $reason';
+  }
+
+  @override
+  String get notificationAnalysisCompletedTitle => 'AI 보행 분석 리포트가 도착했어요';
+
+  @override
+  String notificationAnalysisCompletedBody(String dog) {
+    return '$dog의 운동 분석 결과를 확인해 보세요.';
+  }
+
+  @override
+  String get notificationAnalysisFailedTitle => 'AI 분석을 완료하지 못했어요';
+
+  @override
+  String notificationAnalysisFailedBody(String dog) {
+    return '$dog의 영상 분석 중 문제가 발생했습니다. 헬스장에서 확인 후 다시 분석합니다.';
+  }
+
+  @override
+  String get notificationBadgeEarnedTitle => '새 배지를 받았어요';
+
+  @override
+  String notificationBadgeEarnedBody(String dog, String badge) {
+    return '$dog의 「$badge」 배지가 도착했어요. 배지함에서 확인해 보세요.';
+  }
+
+  @override
+  String get notificationCheerReceivedTitle => '응원이 도착했어요';
+
+  @override
+  String notificationCheerReceivedBody(String nickname, String dog) {
+    return '$nickname님이 $dog 응원했어요.';
+  }
+
+  @override
+  String notificationCheerReceivedAnonymousBody(String dog) {
+    return '다른 보호자가 $dog 응원했어요.';
+  }
+
+  @override
+  String notificationMonthlyAwardTitle(String month) {
+    return '$month 랭킹 시상대에 올랐어요';
+  }
+
+  @override
+  String notificationMonthlyAwardBody(
+      String dog, String month, String summary) {
+    return '$dog $month 랭킹 $summary에 올랐어요. 명예의 전당에서 확인해 보세요.';
+  }
+
+  @override
+  String notificationMonthlyAwardItem(String label, int rank) {
+    return '$label $rank위';
+  }
+
+  @override
+  String get noticeTitle => '공지사항';
+
+  @override
+  String get noticeEmpty => '등록된 공지사항이 없어요';
+
+  @override
+  String get faqTitle => '자주 묻는 질문';
+
+  @override
+  String get faqAll => '전체';
+
+  @override
+  String get faqAskInquiry => '원하는 답이 없나요? 1:1 문의하기';
+
+  @override
+  String get inquiryTitle => '1:1 문의';
+
+  @override
+  String get inquiryNew => '문의하기';
+
+  @override
+  String get inquiryEmptyTitle => '문의 내역이 없어요';
+
+  @override
+  String get inquiryEmptyMessage => '궁금한 점을 남겨 주시면 확인 후 답변드릴게요.';
+
+  @override
+  String get inquiryAnswerLabel => '답변';
+
+  @override
+  String get inquiryTypeLabel => '문의 유형';
+
+  @override
+  String get inquiryCategoryBooking => '예약';
+
+  @override
+  String get inquiryCategoryPayment => '결제·이용권';
+
+  @override
+  String get inquiryCategoryExercise => '운동';
+
+  @override
+  String get inquiryCategoryAnalysis => 'AI 분석';
+
+  @override
+  String get inquiryCategoryAccount => '계정';
+
+  @override
+  String get inquiryCategoryEtc => '기타';
+
+  @override
+  String get inquiryTitleLabel => '제목';
+
+  @override
+  String get inquiryTitleRequired => '제목을 입력해 주세요.';
+
+  @override
+  String get inquiryBodyLabel => '내용';
+
+  @override
+  String get inquiryBodyRequired => '내용을 입력해 주세요.';
+
+  @override
+  String get inquirySubmit => '문의 접수';
+
+  @override
+  String get inquiryCreated => '문의를 접수했어요. 답변이 등록되면 문의 내역에서 확인할 수 있어요.';
+
+  @override
+  String get inquiryStatusAnswered => '답변 완료';
+
+  @override
+  String get inquiryStatusClosed => '종료';
+
+  @override
+  String get inquiryStatusPending => '답변 대기';
 }
