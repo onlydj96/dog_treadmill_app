@@ -136,18 +136,21 @@ class Payment {
     required this.amount,
     required this.status,
     required this.createdAt,
-    this.orderName,
+    String? orderName,
+    String? orderNameEn,
     this.method,
     this.refundedAmount = 0,
     this.paidAt,
     this.refundedAt,
-  });
+  })  : _orderName = orderName,
+        _orderNameEn = orderNameEn;
 
   factory Payment.fromJson(Json json) => Payment(
         id: json.str('id'),
         amount: json.intOr('amount'),
         status: PaymentStatus.fromDb(json.str('status')),
         orderName: json.strOrNull('order_name'),
+        orderNameEn: json.strOrNull('order_name_en'),
         method: json.strOrNull('method'),
         refundedAmount: json.intOr('refunded_amount'),
         paidAt: json.dateTimeOrNull('paid_at'),
@@ -158,10 +161,14 @@ class Payment {
   final String id;
   final int amount;
   final PaymentStatus status;
-  final String? orderName;
+  final String? _orderName;
+  final String? _orderNameEn;
   final String? method;
   final int refundedAmount;
   final DateTime? paidAt;
   final DateTime? refundedAt;
   final DateTime createdAt;
+
+  /// 주문명 (영어 화면이면 order_name_en, 없으면 기본 값)
+  String? get orderName => L10n.pickOrNull(_orderName, _orderNameEn);
 }

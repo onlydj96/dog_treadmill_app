@@ -27,3 +27,63 @@ String localizedCancelReason(String reason) {
   final index = cancelReasonPresets(lookupAppLocalizations(AppLanguage.ko.locale)).indexOf(reason.trim());
   return index < 0 ? reason : cancelReasonPresets(L10n.current)[index];
 }
+
+/// 결제 수단(payments.method)을 현재 언어로 바꾼다. 저장값은 한국어 표시값이나 PG 코드 그대로다.
+/// 한국어 값은 한국어 화면에서 저장된 글자 그대로 보여 주고(예: '현장결제'), 모르는 값은 그대로 둔다.
+String localizedPaymentMethod(String method) {
+  final l = L10n.current;
+  final key = method.trim();
+  if (!L10n.isEnglish && _koreanPaymentMethods.containsKey(key)) return method;
+  final label = switch (_koreanPaymentMethods[key] ?? _paymentMethodCodes[key.toLowerCase()]) {
+    'Card' => l.serverPaymentMethodCard,
+    'CreditCard' => l.serverPaymentMethodCreditCard,
+    'DebitCard' => l.serverPaymentMethodDebitCard,
+    'EasyPay' => l.serverPaymentMethodEasyPay,
+    'KakaoPay' => l.serverPaymentMethodKakaoPay,
+    'NaverPay' => l.serverPaymentMethodNaverPay,
+    'TossPay' => l.serverPaymentMethodTossPay,
+    'Payco' => l.serverPaymentMethodPayco,
+    'SamsungPay' => l.serverPaymentMethodSamsungPay,
+    'ApplePay' => l.serverPaymentMethodApplePay,
+    'Transfer' => l.serverPaymentMethodTransfer,
+    'VirtualAccount' => l.serverPaymentMethodVirtualAccount,
+    'Mobile' => l.serverPaymentMethodMobile,
+    'Onsite' => l.serverPaymentMethodOnsite,
+    'Pass' => l.serverPaymentMethodPass,
+    _ => null,
+  };
+  return label ?? method;
+}
+
+const _koreanPaymentMethods = <String, String>{
+  '카드': 'Card',
+  '신용카드': 'CreditCard',
+  '체크카드': 'DebitCard',
+  '간편결제': 'EasyPay',
+  '카카오페이': 'KakaoPay',
+  '네이버페이': 'NaverPay',
+  '토스페이': 'TossPay',
+  '페이코': 'Payco',
+  '삼성페이': 'SamsungPay',
+  '애플페이': 'ApplePay',
+  '계좌이체': 'Transfer',
+  '가상계좌': 'VirtualAccount',
+  '휴대폰': 'Mobile',
+  '현장 결제': 'Onsite',
+  '현장결제': 'Onsite',
+  '이용권': 'Pass',
+};
+
+const _paymentMethodCodes = <String, String>{
+  'card': 'Card',
+  'kakaopay': 'KakaoPay',
+  'naverpay': 'NaverPay',
+  'tosspay': 'TossPay',
+  'payco': 'Payco',
+  'samsungpay': 'SamsungPay',
+  'applepay': 'ApplePay',
+  'transfer': 'Transfer',
+  'virtual_account': 'VirtualAccount',
+  'mobile': 'Mobile',
+  'onsite': 'Onsite',
+};

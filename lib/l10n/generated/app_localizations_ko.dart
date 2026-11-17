@@ -2873,4 +2873,49 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get demoFinishNow => '바로 완료';
+
+  @override
+  String get serverPaymentMethodCard => '카드';
+
+  @override
+  String get serverPaymentMethodCreditCard => '신용카드';
+
+  @override
+  String get serverPaymentMethodDebitCard => '체크카드';
+
+  @override
+  String get serverPaymentMethodEasyPay => '간편결제';
+
+  @override
+  String get serverPaymentMethodKakaoPay => '카카오페이';
+
+  @override
+  String get serverPaymentMethodNaverPay => '네이버페이';
+
+  @override
+  String get serverPaymentMethodTossPay => '토스페이';
+
+  @override
+  String get serverPaymentMethodPayco => '페이코';
+
+  @override
+  String get serverPaymentMethodSamsungPay => '삼성페이';
+
+  @override
+  String get serverPaymentMethodApplePay => '애플페이';
+
+  @override
+  String get serverPaymentMethodTransfer => '계좌이체';
+
+  @override
+  String get serverPaymentMethodVirtualAccount => '가상계좌';
+
+  @override
+  String get serverPaymentMethodMobile => '휴대폰';
+
+  @override
+  String get serverPaymentMethodOnsite => '현장 결제';
+
+  @override
+  String get serverPaymentMethodPass => '이용권';
 }

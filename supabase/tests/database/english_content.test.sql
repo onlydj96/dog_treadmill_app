@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(62);
+select plan(63);
 
 -- 로컬 seed.sql의 랭킹 샘플(운동 기록·지난달 마감)과 섞이지 않게 랭킹 데이터를 비우고 시작한다.
 -- 테스트 전체가 한 트랜잭션이라 끝나면 되돌아간다.
@@ -26,13 +26,24 @@ select is(
     'badges.description_en', 'badges.name_en',
     'branches.address_en', 'branches.name_en',
     'breeds.name_en',
+    'exercise_plans.notes_en', 'exercise_plans.program_name_en',
     'exercise_programs.description_en', 'exercise_programs.name_en',
     'faqs.answer_en', 'faqs.category_en', 'faqs.question_en',
     'health_conditions.description_en', 'health_conditions.name_en',
     'membership_plans.description_en', 'membership_plans.name_en',
-    'notices.body_en', 'notices.title_en'
+    'notices.body_en', 'notices.title_en',
+    'payments.order_name_en'
   ],
   '사람이 읽는 텍스트 컬럼마다 영어 컬럼(같은 이름 + _en)이 있다');
+
+select is(
+  (select count(*)::int from information_schema.columns
+   where table_schema = 'public' and is_nullable = 'YES' and data_type = 'text'
+     and (table_name, column_name) in
+       (('exercise_plans', 'program_name_en'), ('exercise_plans', 'notes_en'), ('payments', 'order_name_en'))),
+  3,
+  '운동 계획·결제의 영어 컬럼은 text이고 비워 둘 수 있다');
+
 
 -- ---------------------------------------------------------------------
 -- 2~11: 운영 기준 데이터의 영어 값 (catalog_en과 같은 문구)

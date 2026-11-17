@@ -383,19 +383,15 @@ class MockSeed {
       ..insert('exercise_plans', {
         'dog_id': DemoAccount.tofuId,
         'program_name': '관절 케어 걷기',
-        'program_name__en': 'Joint Care Walk',
+        'program_name_en': 'Joint Care Walk',
         'target_duration_seconds': 20 * 60,
         'target_speed': 2.6,
         'restrictions': [
-          {'name': '경사 없이 평지로'},
-          {'name': '점프 금지'},
-        ],
-        'restrictions__en': [
-          {'name': 'Flat surface, no incline'},
-          {'name': 'No jumping'},
+          {'name': '경사 없이 평지로', 'name_en': 'Flat surface, no incline'},
+          {'name': '점프 금지', 'name_en': 'No jumping'},
         ],
         'notes': '주 2~3회, 처음 3분과 마지막 3분은 더 천천히 걸어요.',
-        'notes__en': 'Two to three times a week. Walk more slowly for the first and last 3 minutes.',
+        'notes_en': 'Two to three times a week. Walk more slowly for the first and last 3 minutes.',
         'is_active': true,
         'created_at': iso(_daysAgo(60)),
       });
@@ -421,7 +417,7 @@ class MockSeed {
         'amount': price,
         'status': 'paid',
         'order_name': planName,
-        'order_name__en': planNameEn,
+        'order_name_en': planNameEn,
         'method': method,
         'refunded_amount': 0,
         'paid_at': iso(startsAt),

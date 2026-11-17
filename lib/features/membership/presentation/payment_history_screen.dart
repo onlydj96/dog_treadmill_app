@@ -7,6 +7,7 @@ import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
 import '../../../l10n/l10n.dart';
+import '../../../l10n/server_text.dart';
 import '../data/membership_models.dart';
 import '../providers.dart';
 
@@ -74,7 +75,7 @@ class _PaymentTile extends StatelessWidget {
                 Text(payment.orderName ?? context.l10n.paymentDefaultOrderName, style: const TextStyle(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 2),
                 Text(
-                  [Fmt.dateShort(date), if (payment.method != null) payment.method!].join(' · '),
+                  [Fmt.dateShort(date), if (payment.method != null) localizedPaymentMethod(payment.method!)].join(' · '),
                   style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant),
                 ),
                 if (payment.refundedAmount > 0)

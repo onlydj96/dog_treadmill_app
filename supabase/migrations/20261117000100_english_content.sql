@@ -79,6 +79,21 @@ comment on column public.analysis_reports.summary_en is
 comment on column public.analysis_reports.care_notes_en is
   '운동 관리 참고사항(영어, 문자열 배열). 비어 있으면 영어 화면에서도 care_notes를 보여 준다';
 
+-- AI·운영자 운동 계획 (exercise_plans)
+alter table public.exercise_plans
+  add column program_name_en text,
+  add column notes_en text;
+comment on column public.exercise_plans.program_name_en is '운동 계획 프로그램 이름(영어). null이면 영어 화면에서도 program_name을 보여 준다';
+comment on column public.exercise_plans.notes_en is '운동 계획 메모(영어). null이면 영어 화면에서도 notes를 보여 준다';
+comment on column public.exercise_plans.restrictions is
+  '운동 제한 사항 목록(jsonb 배열). 각 항목은 {"name": "...", "name_en": "..."} 형태로, name_en이 없으면 영어 화면에서도 name을 보여 준다';
+
+-- 결제 (payments): 주문명은 구매 시점의 이름이 복사되므로 영어 값도 같이 복사한다.
+-- payments.method는 한국어 표시값·PG 코드를 그대로 저장하고, 앱이 현재 언어로 바꿔 보여 준다 (localizedPaymentMethod).
+alter table public.payments
+  add column order_name_en text;
+comment on column public.payments.order_name_en is '주문명(영어). null이면 영어 화면에서도 order_name을 보여 준다';
+
 -- ---------------------------------------------------------------------
 -- 2. 운영 기준 데이터의 영어 값
 --    지점·운동 프로그램(20261110000200), 견종·질환(20261113000100), 배지(20261116000100)
