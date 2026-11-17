@@ -2873,4 +2873,195 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get demoFinishNow => '바로 완료';
+
+  @override
+  String get keypointNose => '코';
+
+  @override
+  String get keypointWithers => '기갑(어깨 위)';
+
+  @override
+  String get keypointTailBase => '꼬리 시작점';
+
+  @override
+  String get keypointLeftElbow => '왼쪽 앞다리 팔꿈치';
+
+  @override
+  String get keypointLeftCarpus => '왼쪽 앞발목';
+
+  @override
+  String get keypointLeftFrontPaw => '왼쪽 앞발';
+
+  @override
+  String get keypointRightElbow => '오른쪽 앞다리 팔꿈치';
+
+  @override
+  String get keypointRightCarpus => '오른쪽 앞발목';
+
+  @override
+  String get keypointRightFrontPaw => '오른쪽 앞발';
+
+  @override
+  String get keypointLeftStifle => '왼쪽 뒷다리 무릎';
+
+  @override
+  String get keypointLeftHock => '왼쪽 뒷발목(비절)';
+
+  @override
+  String get keypointLeftHindPaw => '왼쪽 뒷발';
+
+  @override
+  String get keypointRightStifle => '오른쪽 뒷다리 무릎';
+
+  @override
+  String get keypointRightHock => '오른쪽 뒷발목(비절)';
+
+  @override
+  String get keypointRightHindPaw => '오른쪽 뒷발';
+
+  @override
+  String get analysisReportTitle => 'AI 분석 리포트';
+
+  @override
+  String analysisModelVersion(String version) {
+    return '모델 $version';
+  }
+
+  @override
+  String get analysisStatDuration => '운동 시간';
+
+  @override
+  String get analysisStatDistance => '이동 거리';
+
+  @override
+  String get analysisStatAvgSpeed => '평균 속도';
+
+  @override
+  String get analysisPendingFailedTitle => '분석을 완료하지 못했어요';
+
+  @override
+  String get analysisPendingTitle => '운동 영상을 분석하고 있어요';
+
+  @override
+  String get analysisPendingFailedMessage =>
+      '영상 품질이나 촬영 각도 문제로 분석하지 못했어요. 헬스장에서 확인 후 다시 분석해 드릴게요.';
+
+  @override
+  String get analysisPendingMessage =>
+      '관절 움직임과 보행 패턴을 분석 중이에요. 완료되면 알림으로 알려 드릴게요.';
+
+  @override
+  String get analysisSummaryTitle => '분석 결과 요약';
+
+  @override
+  String get analysisAnomalySection => '이상 움직임 탐지';
+
+  @override
+  String analysisConfidenceValue(String percent) {
+    return '분석 신뢰도 $percent%';
+  }
+
+  @override
+  String get analysisPatternDiffCaption => '평소 보행 패턴과의 차이';
+
+  @override
+  String get analysisScaleSimilar => '비슷함';
+
+  @override
+  String get analysisScaleDifferent => '차이 큼';
+
+  @override
+  String get analysisNoAnomaly => '평소와 다른 관절 패턴이 발견되지 않았어요.';
+
+  @override
+  String analysisVsBaseline(String value) {
+    return '기준선 대비 $value';
+  }
+
+  @override
+  String analysisStepsCount(int count) {
+    return '$count보';
+  }
+
+  @override
+  String get analysisStrideTime => '걸음걸이 주기';
+
+  @override
+  String get analysisUnitSeconds => '초';
+
+  @override
+  String get analysisGaitVariability => '보행 변동성';
+
+  @override
+  String get analysisFrontSymmetry => '앞다리 대칭';
+
+  @override
+  String get analysisHindSymmetry => '뒷다리 대칭';
+
+  @override
+  String get analysisGaitSection => '보행 패턴 분석';
+
+  @override
+  String get analysisRhythmScore => '보행 리듬 점수';
+
+  @override
+  String analysisJointSection(int count) {
+    return '관절 움직임 분석 · $count개 관절';
+  }
+
+  @override
+  String get analysisLegendNear => '왼쪽 다리 (카메라 쪽)';
+
+  @override
+  String get analysisLegendFar => '오른쪽 다리';
+
+  @override
+  String get analysisColJoint => '관절';
+
+  @override
+  String get analysisColRom => '가동 범위';
+
+  @override
+  String get analysisColVsBaseline => '기준선 대비';
+
+  @override
+  String analysisAngleRange(String min, String max) {
+    return '각도 $min°~$max°';
+  }
+
+  @override
+  String get analysisPatternDiff => '패턴 차이';
+
+  @override
+  String analysisCompareTitle(String date) {
+    return '이전 운동 대비 변화 ($date)';
+  }
+
+  @override
+  String get analysisVideoSkeleton => '스켈레톤 영상';
+
+  @override
+  String get analysisVideoSection => '운동 영상';
+
+  @override
+  String get analysisCareNotes => '운동 관리 참고사항';
+
+  @override
+  String get healthNoChange => '변화 없음';
+
+  @override
+  String get healthBaselineLabel => '기준선';
+
+  @override
+  String get healthSkeletonSemantics => '측면에서 본 반려견 관절 도식';
+
+  @override
+  String healthSkeletonSemanticsFlagged(String details) {
+    return '측면에서 본 반려견 관절 도식, $details';
+  }
+
+  @override
+  String healthJointLevel(String joint, String level) {
+    return '$joint $level';
+  }
 }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/common.dart';
+import '../../../../l10n/l10n.dart';
 import '../../data/analysis_models.dart';
 import '../../data/dog_keypoints.dart';
 
@@ -71,7 +72,7 @@ class DeltaText extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     if (delta.abs() <= neutralThreshold) {
-      return Text('변화 없음', style: TextStyle(fontSize: fontSize, color: scheme.onSurfaceVariant));
+      return Text(context.l10n.healthNoChange, style: TextStyle(fontSize: fontSize, color: scheme.onSurfaceVariant));
     }
     final improved = higherIsBetter ? delta > 0 : delta < 0;
     final color = neutral
@@ -203,12 +204,14 @@ class SkeletonDiagram extends StatelessWidget {
     );
     final flagged = [
       for (final MapEntry(:key, :value) in markers.entries)
-        if (value != AnomalyLevel.normal) '${DogKeypoint.fromKey(key)?.label ?? key} ${value.label}',
+        if (value != AnomalyLevel.normal) context.l10n.healthJointLevel(DogKeypoint.fromKey(key)?.label ?? key, value.label),
     ];
 
     return Semantics(
       image: true,
-      label: '측면에서 본 반려견 관절 도식${flagged.isEmpty ? '' : ', ${flagged.join(', ')}'}',
+      label: flagged.isEmpty
+          ? context.l10n.healthSkeletonSemantics
+          : context.l10n.healthSkeletonSemanticsFlagged(flagged.join(', ')),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(18),
         child: AspectRatio(
@@ -660,7 +663,7 @@ class TrendChart extends StatelessWidget {
                   label: HorizontalLineLabel(
                     show: true,
                     alignment: Alignment.topRight,
-                    labelResolver: (_) => '기준선',
+                    labelResolver: (_) => context.l10n.healthBaselineLabel,
                     style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: scheme.secondary),
                   ),
                 ),

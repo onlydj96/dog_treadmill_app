@@ -6,6 +6,7 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
+import '../../../l10n/l10n.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
 import '../../dogs/providers.dart';
@@ -23,7 +24,7 @@ class AnalysisReportScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('AI 분석 리포트')),
+      appBar: AppBar(title: Text(context.l10n.analysisReportTitle)),
       body: AsyncValueView<AnalysisReport>(
         value: ref.watch(reportDetailProvider(reportId)),
         onRetry: () => ref.invalidate(reportDetailProvider(reportId)),
@@ -94,7 +95,7 @@ class _ReportHeader extends ConsumerWidget {
               AnalysisStatusBadge(status: report.status, dense: true),
               const Spacer(),
               if (report.modelVersion != null)
-                Text('모델 ${report.modelVersion}', style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
+                Text(context.l10n.analysisModelVersion(report.modelVersion!), style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
             ],
           ),
           const SizedBox(height: 12),
@@ -110,10 +111,10 @@ class _ReportHeader extends ConsumerWidget {
             const SizedBox(height: 14),
             Row(
               children: [
-                Expanded(child: StatValue(label: '운동 시간', value: Fmt.timer(session.durationSeconds), valueSize: 18)),
+                Expanded(child: StatValue(label: context.l10n.analysisStatDuration, value: Fmt.timer(session.durationSeconds), valueSize: 18)),
                 Expanded(
                   child: StatValue(
-                    label: '이동 거리',
+                    label: context.l10n.analysisStatDistance,
                     value: (session.distanceMeters / 1000).toStringAsFixed(2),
                     unit: 'km',
                     valueSize: 18,
@@ -121,7 +122,7 @@ class _ReportHeader extends ConsumerWidget {
                 ),
                 Expanded(
                   child: StatValue(
-                    label: '평균 속도',
+                    label: context.l10n.analysisStatAvgSpeed,
                     value: session.averageSpeed?.toStringAsFixed(1) ?? '-',
                     unit: 'km/h',
                     valueSize: 18,
@@ -148,10 +149,10 @@ class _PendingState extends StatelessWidget {
       child: EmptyState(
         compact: true,
         icon: failed ? Icons.error_outline_rounded : Icons.auto_awesome_rounded,
-        title: failed ? '분석을 완료하지 못했어요' : '운동 영상을 분석하고 있어요',
+        title: failed ? context.l10n.analysisPendingFailedTitle : context.l10n.analysisPendingTitle,
         message: failed
-            ? '영상 품질이나 촬영 각도 문제로 분석하지 못했어요. 헬스장에서 확인 후 다시 분석해 드릴게요.'
-            : '관절 움직임과 보행 패턴을 분석 중이에요. 완료되면 알림으로 알려 드릴게요.',
+            ? context.l10n.analysisPendingFailedMessage
+            : context.l10n.analysisPendingMessage,
       ),
     );
   }
@@ -175,7 +176,7 @@ class _SummaryCard extends StatelessWidget {
             children: [
               Icon(Icons.auto_awesome_rounded, size: 18, color: scheme.onTertiaryContainer),
               const SizedBox(width: 6),
-              Text('분석 결과 요약', style: TextStyle(fontWeight: FontWeight.w800, color: scheme.onTertiaryContainer)),
+              Text(context.l10n.analysisSummaryTitle, style: TextStyle(fontWeight: FontWeight.w800, color: scheme.onTertiaryContainer)),
             ],
           ),
           const SizedBox(height: 10),
@@ -198,7 +199,7 @@ class _AnomalySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SectionHeader(title: '이상 움직임 탐지'),
+        SectionHeader(title: context.l10n.analysisAnomalySection),
         AppCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,14 +210,14 @@ class _AnomalySection extends StatelessWidget {
                   const Spacer(),
                   if (anomaly.confidence != null)
                     Text(
-                      '분석 신뢰도 ${(anomaly.confidence! * 100).toStringAsFixed(0)}%',
+                      context.l10n.analysisConfidenceValue((anomaly.confidence! * 100).toStringAsFixed(0)),
                       style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: scheme.onSurfaceVariant),
                     ),
                 ],
               ),
               if (score != null) ...[
                 const SizedBox(height: 16),
-                Text('평소 보행 패턴과의 차이', style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant)),
+                Text(context.l10n.analysisPatternDiffCaption, style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant)),
                 const SizedBox(height: 8),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(999),
@@ -233,9 +234,9 @@ class _AnomalySection extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Text('비슷함', style: TextStyle(fontSize: 11.5, color: scheme.onSurfaceVariant)),
+                    Text(context.l10n.analysisScaleSimilar, style: TextStyle(fontSize: 11.5, color: scheme.onSurfaceVariant)),
                     const Spacer(),
-                    Text('차이 큼', style: TextStyle(fontSize: 11.5, color: scheme.onSurfaceVariant)),
+                    Text(context.l10n.analysisScaleDifferent, style: TextStyle(fontSize: 11.5, color: scheme.onSurfaceVariant)),
                   ],
                 ),
               ],
@@ -278,7 +279,7 @@ class _AnomalySection extends StatelessWidget {
                   ),
               ] else ...[
                 const SizedBox(height: 12),
-                const Text('평소와 다른 관절 패턴이 발견되지 않았어요.'),
+                Text(context.l10n.analysisNoAnomaly),
               ],
               if (anomaly.notes.isNotEmpty) ...[
                 const Divider(height: 24),
@@ -312,6 +313,7 @@ class _GaitSection extends StatelessWidget {
       bool neutral = false,
       double scale = 1,
       String suffix = '',
+      bool stepsSuffix = false,
     }) {
       if (value == null || base == null) return null;
       return DeltaText(
@@ -319,43 +321,45 @@ class _GaitSection extends StatelessWidget {
         higherIsBetter: higherIsBetter,
         neutral: neutral,
         neutralThreshold: 0.5,
-        format: (v) => '기준선 대비 ${v.toStringAsFixed(scale == 1 ? 0 : 1)}$suffix',
+        format: (v) => context.l10n.analysisVsBaseline(
+          stepsSuffix ? context.l10n.analysisStepsCount(v.round()) : '${v.toStringAsFixed(scale == 1 ? 0 : 1)}$suffix',
+        ),
         fontSize: 11.5,
       );
     }
 
     final tiles = <Widget>[
       MetricTile(
-        label: '좌우 대칭성',
+        label: context.l10n.healthSymmetry,
         value: gait.symmetryIndex == null ? '-' : (gait.symmetryIndex! * 100).toStringAsFixed(0),
         unit: '%',
         delta: baselineDelta(gait.symmetryIndex, baseline?.symmetryIndex, scale: 100, suffix: '%p'),
       ),
       MetricTile(
-        label: '분당 걸음 수',
+        label: context.l10n.healthCadence,
         value: gait.cadenceSpm?.toStringAsFixed(0) ?? '-',
-        unit: '보',
-        delta: baselineDelta(gait.cadenceSpm, baseline?.cadenceSpm, neutral: true, suffix: '보'),
+        unit: context.l10n.homeUnitSteps,
+        delta: baselineDelta(gait.cadenceSpm, baseline?.cadenceSpm, neutral: true, stepsSuffix: true),
       ),
       MetricTile(
-        label: '걸음걸이 주기',
+        label: context.l10n.analysisStrideTime,
         value: gait.strideTimeS?.toStringAsFixed(2) ?? '-',
-        unit: '초',
+        unit: context.l10n.analysisUnitSeconds,
       ),
       MetricTile(
-        label: '보행 변동성',
+        label: context.l10n.analysisGaitVariability,
         value: gait.strideTimeCv == null ? '-' : (gait.strideTimeCv! * 100).toStringAsFixed(1),
         unit: '%',
         delta:
             baselineDelta(gait.strideTimeCv, baseline?.strideTimeCv, higherIsBetter: false, scale: 100, suffix: '%p'),
       ),
       MetricTile(
-        label: '앞다리 대칭',
+        label: context.l10n.analysisFrontSymmetry,
         value: gait.frontSymmetry == null ? '-' : (gait.frontSymmetry! * 100).toStringAsFixed(0),
         unit: '%',
       ),
       MetricTile(
-        label: '뒷다리 대칭',
+        label: context.l10n.analysisHindSymmetry,
         value: gait.hindSymmetry == null ? '-' : (gait.hindSymmetry! * 100).toStringAsFixed(0),
         unit: '%',
       ),
@@ -364,7 +368,7 @@ class _GaitSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SectionHeader(title: '보행 패턴 분석'),
+        SectionHeader(title: context.l10n.analysisGaitSection),
         LayoutBuilder(
           builder: (context, constraints) {
             final width = (constraints.maxWidth - 10) / 2;
@@ -381,7 +385,7 @@ class _GaitSection extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const Expanded(child: Text('보행 리듬 점수', style: TextStyle(fontWeight: FontWeight.w700))),
+                Expanded(child: Text(context.l10n.analysisRhythmScore, style: const TextStyle(fontWeight: FontWeight.w700))),
                 Text(
                   (gait.rhythmScore! * 100).toStringAsFixed(0),
                   style: AppText.numeric(22, color: Theme.of(context).colorScheme.onSurface),
@@ -423,7 +427,7 @@ class _JointSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionHeader(title: '관절 움직임 분석 · ${joints.keypointCount ?? DogKeypoint.values.length}개 관절'),
+        SectionHeader(title: context.l10n.analysisJointSection(joints.keypointCount ?? DogKeypoint.values.length)),
         AppCard(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -431,13 +435,13 @@ class _JointSection extends StatelessWidget {
             children: [
               SkeletonDiagram(markers: markers),
               const SizedBox(height: 12),
-              const Wrap(
+              Wrap(
                 spacing: 16,
                 runSpacing: 4,
                 alignment: WrapAlignment.center,
                 children: [
-                  _Legend(label: '왼쪽 다리 (카메라 쪽)'),
-                  _Legend(label: '오른쪽 다리', faded: true),
+                  _Legend(label: context.l10n.analysisLegendNear),
+                  _Legend(label: context.l10n.analysisLegendFar, faded: true),
                 ],
               ),
               if (markers.isNotEmpty) ...[
@@ -475,15 +479,15 @@ class _JointSection extends StatelessWidget {
                 const Divider(height: 28),
                 Row(
                   children: [
-                    Expanded(child: Text('관절', style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant))),
+                    Expanded(child: Text(context.l10n.analysisColJoint, style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant))),
                     SizedBox(
                       width: 64,
-                      child: Text('가동 범위',
+                      child: Text(context.l10n.analysisColRom,
                           textAlign: TextAlign.end, style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
                     ),
                     SizedBox(
                       width: 84,
-                      child: Text('기준선 대비',
+                      child: Text(context.l10n.analysisColVsBaseline,
                           textAlign: TextAlign.end, style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
                     ),
                   ],
@@ -505,7 +509,7 @@ class _JointSection extends StatelessWidget {
                               Text(joint.label, style: const TextStyle(fontWeight: FontWeight.w600)),
                               if (joint.minAngleDeg != null && joint.maxAngleDeg != null)
                                 Text(
-                                  '각도 ${joint.minAngleDeg!.toStringAsFixed(0)}°~${joint.maxAngleDeg!.toStringAsFixed(0)}°',
+                                  context.l10n.analysisAngleRange(joint.minAngleDeg!.toStringAsFixed(0), joint.maxAngleDeg!.toStringAsFixed(0)),
                                   style: TextStyle(fontSize: 11.5, color: scheme.onSurfaceVariant),
                                 ),
                             ],
@@ -597,16 +601,16 @@ class _ComparisonSection extends ConsumerWidget {
     String percent(double v) => '${(v * 100).toStringAsFixed(0)}%';
     String percentPoint(double v) => '${(v * 100).toStringAsFixed(1)}%p';
     final rows = <_ComparisonRow>[
-      _ComparisonRow('좌우 대칭성', now?.symmetryIndex, before?.symmetryIndex,
+      _ComparisonRow(context.l10n.healthSymmetry, now?.symmetryIndex, before?.symmetryIndex,
           higherIsBetter: true, value: percent, delta: percentPoint, threshold: 0.005),
-      _ComparisonRow('분당 걸음 수', now?.cadenceSpm, before?.cadenceSpm,
-          value: (v) => v.toStringAsFixed(0), delta: (v) => '${v.toStringAsFixed(0)}보', threshold: 0.5),
-      _ComparisonRow('보행 변동성', now?.strideTimeCv, before?.strideTimeCv,
+      _ComparisonRow(context.l10n.healthCadence, now?.cadenceSpm, before?.cadenceSpm,
+          value: (v) => v.toStringAsFixed(0), delta: (v) => context.l10n.analysisStepsCount(v.round()), threshold: 0.5),
+      _ComparisonRow(context.l10n.analysisGaitVariability, now?.strideTimeCv, before?.strideTimeCv,
           higherIsBetter: false,
           value: (v) => '${(v * 100).toStringAsFixed(1)}%',
           delta: percentPoint,
           threshold: 0.0005),
-      _ComparisonRow('패턴 차이', report.anomalyMetrics?.anomalyScore, previous.anomalyMetrics?.anomalyScore,
+      _ComparisonRow(context.l10n.analysisPatternDiff, report.anomalyMetrics?.anomalyScore, previous.anomalyMetrics?.anomalyScore,
           higherIsBetter: false,
           value: (v) => (v * 100).toStringAsFixed(0),
           delta: (v) => (v * 100).toStringAsFixed(0),
@@ -620,7 +624,7 @@ class _ComparisonSection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SectionHeader(title: '이전 운동 대비 변화 (${Fmt.monthDay(previous.exerciseDate)})'),
+          SectionHeader(title: context.l10n.analysisCompareTitle(Fmt.monthDay(previous.exerciseDate))),
           AppCard(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
             child: Column(
@@ -695,7 +699,7 @@ class _VideoSection extends ConsumerWidget {
     final videos = <(String, String, IconData)>[
       for (final record in records)
         if (record.videoFilePath != null) (record.cameraLabel, record.videoFilePath!, Icons.videocam_rounded),
-      if (report.skeletonVideoPath != null) ('스켈레톤 영상', report.skeletonVideoPath!, Icons.accessibility_new_rounded),
+      if (report.skeletonVideoPath != null) (context.l10n.analysisVideoSkeleton, report.skeletonVideoPath!, Icons.accessibility_new_rounded),
     ];
     if (videos.isEmpty) return const SizedBox.shrink();
 
@@ -704,7 +708,7 @@ class _VideoSection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SectionHeader(title: '운동 영상'),
+          SectionHeader(title: context.l10n.analysisVideoSection),
           AppCard(
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: Column(
@@ -736,7 +740,7 @@ class _CareNotes extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SectionHeader(title: '운동 관리 참고사항'),
+        SectionHeader(title: context.l10n.analysisCareNotes),
         AppCard(
           color: scheme.primaryContainer,
           borderColor: Colors.transparent,
