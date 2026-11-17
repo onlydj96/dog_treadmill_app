@@ -13,6 +13,7 @@ import '../../dogs/providers.dart';
 import '../data/analysis_models.dart';
 import '../providers.dart';
 import 'widgets/health_widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// 건강 탭 — AI 보행 분석 요약과 변화 추이 (문서 3.4, 화면 10 HealthDashboardScreen)
 class HealthDashboardScreen extends ConsumerWidget {
@@ -25,13 +26,13 @@ class HealthDashboardScreen extends ConsumerWidget {
     ref.listen(videoConsentGrantedProvider, (_, __) {});
 
     return Scaffold(
-      appBar: AppBar(title: Text(dog == null ? '건강' : '${dog.name}의 건강 분석')),
+      appBar: AppBar(title: Text(dog == null ? context.l10n.healthTitle : context.l10n.healthTitleDog(dog.name))),
       body: dog == null
           ? EmptyState(
               icon: Icons.pets_rounded,
-              title: '등록된 반려견이 없어요',
-              message: '반려견을 등록하고 운동하면 AI 보행 분석 결과를 볼 수 있어요.',
-              actionLabel: '반려견 등록',
+              title: context.l10n.exerciseNoDogTitle,
+              message: context.l10n.healthNoDogMessage,
+              actionLabel: context.l10n.exerciseRegisterDog,
               onAction: () => context.push(AppRoutes.dogNew),
             )
           : AsyncValueView<List<AnalysisReport>>(
@@ -87,7 +88,7 @@ class _Dashboard extends StatelessWidget {
         _PlanSection(dogId: dogId),
         if (reports.isNotEmpty) ...[
           const SizedBox(height: 28),
-          const SectionHeader(title: '분석 리포트'),
+          SectionHeader(title: context.l10n.healthReports),
           for (final report in reports)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
@@ -121,7 +122,7 @@ class _PendingBanner extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              '운동 영상 $count건을 분석하고 있어요. 완료되면 알림으로 알려 드릴게요.',
+              context.l10n.healthPendingBanner(count),
               style: TextStyle(color: scheme.calmTone.foreground, fontWeight: FontWeight.w600, fontSize: 13.5),
             ),
           ),
@@ -141,12 +142,12 @@ class _NoReportCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (analyzing) {
-      return const AppCard(
+      return AppCard(
         child: EmptyState(
           compact: true,
           icon: Icons.auto_awesome_rounded,
-          title: '첫 분석 리포트를 준비하고 있어요',
-          message: '운동 영상으로 관절 움직임과 보행 패턴을 분석 중이에요. 완료되면 알림으로 알려 드릴게요.',
+          title: context.l10n.healthPreparingTitle,
+          message: context.l10n.healthPreparingMessage,
         ),
       );
     }
@@ -157,21 +158,20 @@ class _NoReportCard extends ConsumerWidget {
         child: EmptyState(
           compact: true,
           icon: Icons.videocam_outlined,
-          title: '운동 영상 촬영 동의가 필요해요',
-          message: 'AI 보행 분석 리포트는 운동 영상으로 만들어요. '
-              '동의하면 다음 운동부터 관절 움직임과 보행 패턴을 분석해 드려요.',
-          actionLabel: '동의하러 가기',
+          title: context.l10n.healthConsentTitle,
+          message: context.l10n.healthConsentMessage,
+          actionLabel: context.l10n.healthConsentAction,
           onAction: () => context.push(AppRoutes.consents),
         ),
       );
     }
 
-    return const AppCard(
+    return AppCard(
       child: EmptyState(
         compact: true,
         icon: Icons.auto_awesome_rounded,
-        title: '아직 분석 리포트가 없어요',
-        message: '트레드밀 운동을 마치면 촬영 영상으로 관절 움직임과 보행 패턴을 분석해 드려요.',
+        title: context.l10n.healthNoReportTitle,
+        message: context.l10n.healthNoReportMessage,
       ),
     );
   }
@@ -207,7 +207,7 @@ class _LatestSummaryCard extends StatelessWidget {
                   children: [
                     Icon(Icons.auto_awesome_rounded, color: onColor, size: 20),
                     const SizedBox(width: 6),
-                    Text('최근 분석', style: TextStyle(color: onColor, fontWeight: FontWeight.w800)),
+                    Text(context.l10n.healthLatestAnalysis, style: TextStyle(color: onColor, fontWeight: FontWeight.w800)),
                     const Spacer(),
                     Text(Fmt.date(report.exerciseDate), style: TextStyle(color: onColor.withValues(alpha: 0.75))),
                   ],
@@ -238,7 +238,7 @@ class _LatestSummaryCard extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10),
-                            child: Text('좌우 대칭성', style: TextStyle(color: onColor, fontWeight: FontWeight.w700)),
+                            child: Text(context.l10n.healthSymmetry, style: TextStyle(color: onColor, fontWeight: FontWeight.w700)),
                           ),
                         ],
                       ),
@@ -255,7 +255,7 @@ class _LatestSummaryCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: StatValue(
-                        label: '분당 걸음 수',
+                        label: context.l10n.healthCadence,
                         value: gait?.cadenceSpm?.toStringAsFixed(0) ?? '-',
                         valueSize: 20,
                         color: onColor,
@@ -264,9 +264,9 @@ class _LatestSummaryCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: StatValue(
-                        label: '보행 리듬',
+                        label: context.l10n.healthRhythm,
                         value: gait?.rhythmScore == null ? '-' : (gait!.rhythmScore! * 100).toStringAsFixed(0),
-                        unit: gait?.rhythmScore == null ? null : '점',
+                        unit: gait?.rhythmScore == null ? null : context.l10n.healthUnitPoints,
                         valueSize: 20,
                         color: onColor,
                         labelColor: onColor.withValues(alpha: 0.75),
@@ -274,7 +274,7 @@ class _LatestSummaryCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: StatValue(
-                        label: '분석 신뢰도',
+                        label: context.l10n.healthConfidence,
                         value: anomaly?.confidence == null ? '-' : (anomaly!.confidence! * 100).toStringAsFixed(0),
                         unit: anomaly?.confidence == null ? null : '%',
                         valueSize: 20,
@@ -292,7 +292,7 @@ class _LatestSummaryCard extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    '리포트 자세히 보기 →',
+                    context.l10n.healthViewReport,
                     style: TextStyle(color: onColor, fontWeight: FontWeight.w800, fontSize: 13),
                   ),
                 ),
@@ -343,17 +343,17 @@ class _TrendSectionState extends State<_TrendSection> {
 
     final (description, formatter, color) = switch (_metric) {
       _TrendMetric.symmetry => (
-          '좌우 다리 움직임이 얼마나 비슷한지 보여줘요. 높을수록 균형 잡힌 보행이에요.',
+          context.l10n.healthTrendSymmetryDesc,
           (double v) => '${v.toStringAsFixed(0)}%',
           AppColors.mintDeep,
         ),
       _TrendMetric.cadence => (
-          '1분 동안의 걸음 수예요. 평소 기준선과 크게 달라지면 관찰이 필요해요.',
+          context.l10n.healthTrendCadenceDesc,
           (double v) => v.toStringAsFixed(0),
           AppColors.tealDeep,
         ),
       _TrendMetric.variability => (
-          '걸음걸이 주기가 얼마나 일정한지 보여줘요. 낮을수록 리듬이 안정적이에요.',
+          context.l10n.healthTrendVariabilityDesc,
           (double v) => '${v.toStringAsFixed(1)}%',
           AppColors.honeyDeep,
         ),
@@ -362,7 +362,7 @@ class _TrendSectionState extends State<_TrendSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SectionHeader(title: '보행 변화 추이'),
+        SectionHeader(title: context.l10n.healthTrendTitle),
         AppCard(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
           child: Column(
@@ -370,10 +370,10 @@ class _TrendSectionState extends State<_TrendSection> {
             children: [
               SegmentedButton<_TrendMetric>(
                 showSelectedIcon: false,
-                segments: const [
-                  ButtonSegment(value: _TrendMetric.symmetry, label: Text('대칭성')),
-                  ButtonSegment(value: _TrendMetric.cadence, label: Text('걸음 수')),
-                  ButtonSegment(value: _TrendMetric.variability, label: Text('변동성')),
+                segments: [
+                  ButtonSegment(value: _TrendMetric.symmetry, label: Text(context.l10n.healthTrendSegSymmetry)),
+                  ButtonSegment(value: _TrendMetric.cadence, label: Text(context.l10n.healthTrendSegCadence)),
+                  ButtonSegment(value: _TrendMetric.variability, label: Text(context.l10n.healthTrendSegVariability)),
                 ],
                 selected: {_metric},
                 onSelectionChanged: (value) => setState(() => _metric = value.first),
@@ -384,9 +384,9 @@ class _TrendSectionState extends State<_TrendSection> {
               if (points.length >= 2)
                 TrendChart(points: points, baseline: baseline, valueFormatter: formatter, color: color)
               else
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Center(child: Text('추이를 보려면 분석 결과가 2건 이상 필요해요.')),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  child: Center(child: Text(context.l10n.healthTrendNeedMore)),
                 ),
             ],
           ),
@@ -415,8 +415,8 @@ class _JointHighlights extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SectionHeader(
-          title: '관절 가동 범위 변화',
-          actionLabel: '전체 관절',
+          title: context.l10n.healthJointRomTitle,
+          actionLabel: context.l10n.healthAllJoints,
           onAction: () => context.push(AppRoutes.report(report.id)),
         ),
         AppCard(
@@ -470,7 +470,7 @@ class _PlanSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SectionHeader(title: '맞춤 운동 계획'),
+        SectionHeader(title: context.l10n.healthPlanTitle),
         AppCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,16 +488,16 @@ class _PlanSection extends ConsumerWidget {
                   if (plan.targetDurationSeconds != null)
                     Expanded(
                       child: StatValue(
-                        label: '목표 시간',
+                        label: context.l10n.healthPlanTargetTime,
                         value: '${(plan.targetDurationSeconds! / 60).round()}',
-                        unit: '분',
+                        unit: context.l10n.exerciseUnitMinutes,
                         valueSize: 20,
                       ),
                     ),
                   if (plan.targetSpeed != null)
                     Expanded(
                       child: StatValue(
-                        label: '목표 속도',
+                        label: context.l10n.healthPlanTargetSpeed,
                         value: plan.targetSpeed!.toStringAsFixed(1),
                         unit: 'km/h',
                         valueSize: 20,

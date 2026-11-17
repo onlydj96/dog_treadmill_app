@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/formatters.dart';
 import '../providers.dart';
+import '../../../l10n/l10n.dart';
 
 /// 운동/스켈레톤 영상 재생 (비공개 버킷 → 서명 URL)
 class VideoPlayerScreen extends ConsumerStatefulWidget {
@@ -104,7 +105,7 @@ class _VideoPlayerScreenState extends ConsumerState<VideoPlayerScreen> {
                             IconButton(
                               color: Colors.white,
                               iconSize: 36,
-                              tooltip: controller.value.isPlaying ? '일시정지' : '재생',
+                              tooltip: controller.value.isPlaying ? context.l10n.healthVideoPause : context.l10n.healthVideoPlay,
                               icon: Icon(
                                 controller.value.isPlaying
                                     ? Icons.pause_circle_filled_rounded
