@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../../core/utils/json.dart';
+import '../../l10n/l10n.dart';
 import 'mock_db.dart';
 
 /// 한 범위의 월간 순위 한 줄 (DB: private.ranking_standings)
@@ -53,6 +54,24 @@ class RankingApi {
     return hasName ? breed : null;
   }
 
+  /// 영어 체급 라벨 (DB: get_leaderboard 등의 `_en` 필드 규칙)
+  static String? sizeLabelEn(String? size) => switch (size) {
+        'small' => 'Small dogs',
+        'medium' => 'Medium dogs',
+        'large' => 'Large dogs',
+        _ => null,
+      };
+
+  /// "Shih Tzu", "Mixed (Maltipoo)", "Mixed breed". 카탈로그 견종은 영어 이름, 직접 적은 견종은 입력 그대로.
+  String? breedLabelEn(Json dog) {
+    final typed = (dog['breed'] as String?)?.trim();
+    final hasName = typed != null && typed.isNotEmpty;
+    final catalogName = db.byId('breeds', dog['breed_id'] as String?)?['name_en'] as String?;
+    final name = catalogName ?? (hasName ? typed : null);
+    if (dog['is_mixed'] == true) return name == null ? 'Mixed breed' : 'Mixed ($name)';
+    return name;
+  }
+
   /// 받침 유무로 조사를 붙인다. josa('콩이', '를', '을') → '콩이를' (DB: private.josa)
   static String josa(String word, String withoutBatchim, String withBatchim) {
     if (word.isEmpty) return word;
@@ -65,6 +84,12 @@ class RankingApi {
         'all' => '전체',
         'size' => sizeLabel(scopeKey) ?? scopeKey,
         _ => db.byId('branches', scopeKey)?['name'] as String? ?? '',
+      };
+
+  String scopeLabelEn(String scope, String scopeKey) => switch (scope) {
+        'all' => 'Overall',
+        'size' => sizeLabelEn(scopeKey) ?? scopeKey,
+        _ => db.byId('branches', scopeKey)?['name_en'] as String? ?? scopeLabel(scope, scopeKey),
       };
 
   static int _scopeOrder(String scope) => switch (scope) {
@@ -273,7 +298,14 @@ class RankingApi {
         'ranking',
         '새 배지를 받았어요',
         '${dog['name']}의 「${badge['name']}」 배지가 도착했어요. 배지함에서 확인해 보세요.',
-        {'dog_id': dogId, 'badge_code': code},
+        data: {'dog_id': dogId, 'badge_code': code},
+        msg: 'badge_earned',
+        args: {
+          ...MockDb.dogNameArgs(dog),
+          'badge_code': code,
+          'badge_name': badge['name'],
+          'badge_name_en': badge['name_en'],
+        },
       );
     }
   }
@@ -366,15 +398,20 @@ class RankingApi {
         (db.where('monthly_awards', (a) => a['dog_id'] == s.dogId && a['period_month'] == previousText).toList()
               ..sort(_compareAward))
             .firstOrNull;
+    final mainBranch = _mainBranch(s.dogId, monthText);
     return {
       'rank': s.place,
       'dog_id': s.dogId,
       'dog_name': dog['name'],
+      'dog_name__en': dog['name__en'],
       'breed_label': breedLabel(dog),
+      'breed_label_en': breedLabelEn(dog),
       'size_class': dog['size_class'],
       'photo_path': owner?['ranking_show_photo'] == true ? dog['profile_image_path'] : null,
       'nickname': owner?['nickname'],
-      'main_branch_name': _mainBranchName(s.dogId, monthText),
+      'nickname__en': owner?['nickname__en'],
+      'main_branch_name': mainBranch?['name'],
+      'main_branch_name_en': mainBranch?['name_en'],
       'points': s.points,
       'session_count': s.sessionCount,
       'distance_meters': s.distanceMeters,
@@ -384,6 +421,7 @@ class RankingApi {
       'title_period': title?['period_month'],
       'title_scope': title?['scope'],
       'title_label': title == null ? null : scopeLabel(title.str('scope'), title.str('scope_key')),
+      'title_label_en': title == null ? null : scopeLabelEn(title.str('scope'), title.str('scope_key')),
       'title_rank': title?['rank'],
       'participant_count': s.participantCount,
     };
@@ -396,20 +434,20 @@ class RankingApi {
     return _scopeOrder(a.str('scope')).compareTo(_scopeOrder(b.str('scope')));
   }
 
-  /// 이번 달 점수를 가장 많이 받은 지점
-  String? _mainBranchName(String dogId, String monthText) {
-    final byBranch = <String, int>{};
+  /// 이번 달 점수를 가장 많이 받은 지점 (이름이 같으면 이름순)
+  Json? _mainBranch(String dogId, String monthText) {
+    final byBranch = <Json, int>{};
     for (final p in db.where(
       'exercise_points',
       (p) => p['dog_id'] == dogId && p['period_month'] == monthText && p['voided_at'] == null,
     )) {
-      final name = db.byId('branches', p['branch_id'] as String?)?['name'] as String?;
-      if (name != null) byBranch[name] = (byBranch[name] ?? 0) + p.intOr('points');
+      final branch = db.byId('branches', p['branch_id'] as String?);
+      if (branch != null) byBranch[branch] = (byBranch[branch] ?? 0) + p.intOr('points');
     }
     final entries = byBranch.entries.toList()
       ..sort((a, b) {
         final byPoints = b.value.compareTo(a.value);
-        return byPoints != 0 ? byPoints : a.key.compareTo(b.key);
+        return byPoints != 0 ? byPoints : a.key.str('name').compareTo(b.key.str('name'));
       });
     return entries.firstOrNull?.key;
   }
@@ -453,6 +491,7 @@ class RankingApi {
         'scope': scope,
         'scope_key': key,
         'label': scopeLabel(scope, key),
+        'label_en': scopeLabelEn(scope, key),
         'rank': me.place,
         'participant_count': me.participantCount,
         'points': me.points,
@@ -467,6 +506,7 @@ class RankingApi {
       'period_month': monthText,
       'participating': db.hasConsent(uid, 'ranking'),
       'nickname': db.byId('users', uid)?['nickname'],
+      'nickname__en': db.byId('users', uid)?['nickname__en'],
       'streak_weeks': badgeStats(dogId)['streak_weeks'],
       'ranks': ranks,
       'points': rows.fold<int>(0, (sum, p) => sum + p.intOr('points')),
@@ -494,6 +534,7 @@ class RankingApi {
           return <String, dynamic>{
             'branch_id': branch['id'],
             'branch_name': branch['name'],
+            'branch_name_en': branch['name_en'],
             'distance_meters': sessions.fold<double>(0, (sum, p) => sum + p.dblOr('distance_meters')),
             'session_count': qualified.length,
             'dog_count': qualified.map((p) => p['dog_id']).toSet().length,
@@ -522,7 +563,13 @@ class RankingApi {
         return byTime != 0 ? byTime : a.str('badge_code').compareTo(b.str('badge_code'));
       });
     return [
-      for (final b in rows) {'code': b['badge_code'], 'earned_at': b['earned_at']},
+      for (final b in rows)
+        {
+          'code': b['badge_code'],
+          'earned_at': b['earned_at'],
+          'name_en': db.find('badges', (d) => d['code'] == b['badge_code'])?['name_en'],
+          'description_en': db.find('badges', (d) => d['code'] == b['badge_code'])?['description_en'],
+        },
     ];
   }
 
@@ -541,6 +588,7 @@ class RankingApi {
           'scope': a['scope'],
           'scope_key': a['scope_key'],
           'scope_label': scopeLabel(a.str('scope'), a.str('scope_key')),
+          'scope_label_en': scopeLabelEn(a.str('scope'), a.str('scope_key')),
           'rank': a['rank'],
           'points': a['points'],
         },
@@ -565,10 +613,13 @@ class RankingApi {
     return {
       'dog_id': dogId,
       'dog_name': dog['name'],
+      'dog_name__en': dog['name__en'],
       'breed_label': breedLabel(dog),
+      'breed_label_en': breedLabelEn(dog),
       'size_class': dog['size_class'],
       'photo_path': isMine || owner?['ranking_show_photo'] == true ? dog['profile_image_path'] : null,
       'nickname': owner?['nickname'],
+      'nickname__en': owner?['nickname__en'],
       'is_mine': isMine,
       'participating': participating,
       'period_month': monthText,
@@ -603,13 +654,16 @@ class RankingApi {
     bool sameCheer(Json c) => c['period_month'] == monthText && c['dog_id'] == dogId;
     if (!db.table('ranking_cheers').any((c) => sameCheer(c) && c['user_id'] == uid)) {
       db.insert('ranking_cheers', {'period_month': monthText, 'dog_id': dogId, 'user_id': uid});
-      final nickname = db.hasConsent(uid, 'ranking') ? (db.byId('users', uid)?['nickname'] as String?) : null;
+      final cheerer = db.hasConsent(uid, 'ranking') ? db.byId('users', uid) : null;
+      final nickname = cheerer?['nickname'] as String?;
       db.notify(
         dog['owner_id'] as String?,
         'ranking',
         '응원이 도착했어요',
         '${nickname == null ? '다른 보호자가' : '$nickname님이'} ${josa(dog.str('name'), '를', '을')} 응원했어요.',
-        {'dog_id': dogId},
+        data: {'dog_id': dogId},
+        msg: 'cheer_received',
+        args: {...MockDb.dogNameArgs(dog), 'nickname': nickname, 'nickname__en': cheerer?['nickname__en']},
       );
     }
     return db.where('ranking_cheers', sameCheer).length;
@@ -619,8 +673,9 @@ class RankingApi {
   // 닉네임
   // ---------------------------------------------------------------------
 
-  /// private.generate_nickname: "씩씩한발바닥0427"
+  /// private.generate_nickname: "씩씩한발바닥0427". 영어 화면에서 가입하면 "BraveWag042" (가입 트리거의 locale 분기).
   String generateNickname() {
+    if (L10n.isEnglish) return _generateNicknameEn();
     const adjectives = ['씩씩한', '날쌘', '다정한', '용감한', '부지런한', '신나는', '튼튼한', '반짝이는', '느긋한', '명랑한'];
     const nouns = ['발바닥', '꼬리', '산책러', '러너', '댕댕이', '멍멍이', '발도장', '콧등'];
     for (var i = 0; i < 50; i++) {
@@ -630,6 +685,19 @@ class RankingApi {
       if (!_nicknameTaken(candidate)) return candidate;
     }
     return '보호자${db.newId().replaceAll('-', '').substring(0, 8)}';
+  }
+
+  /// 형용사 + 명사 + 숫자 3자리 (12자 이하, [A-Za-z0-9_]). 실패하면 'Owner' + 16진수 7자.
+  String _generateNicknameEn() {
+    const adjectives = ['Brave', 'Swift', 'Sunny', 'Happy', 'Jolly', 'Lucky', 'Zippy', 'Perky', 'Chill', 'Merry'];
+    const nouns = ['Paw', 'Tail', 'Pup', 'Dog', 'Nose', 'Run', 'Step', 'Wag'];
+    for (var i = 0; i < 50; i++) {
+      final candidate = adjectives[db.random.nextInt(adjectives.length)] +
+          nouns[db.random.nextInt(nouns.length)] +
+          db.random.nextInt(1000).toString().padLeft(3, '0');
+      if (candidate.length <= 12 && !_nicknameTaken(candidate)) return candidate;
+    }
+    return 'Owner${db.newId().replaceAll('-', '').substring(0, 7)}';
   }
 
   bool _nicknameTaken(String nickname, {String? exceptUserId}) => db
@@ -653,7 +721,7 @@ class RankingApi {
     }
     if (_nicknameTaken(value, exceptUserId: uid)) rpcError('NICKNAME_TAKEN', '23505');
 
-    db.update('users', user, {'nickname': value, 'nickname_updated_at': iso(db.now())});
+    db.update('users', user, {'nickname': value, 'nickname__en': null, 'nickname_updated_at': iso(db.now())});
     return value;
   }
 
@@ -714,7 +782,21 @@ class RankingApi {
         'ranking',
         '${month.month}월 랭킹 시상대에 올랐어요',
         '${josa(dog.str('name'), '가', '이')} ${month.month}월 랭킹 $summary에 올랐어요. 명예의 전당에서 확인해 보세요.',
-        {'period_month': monthText, 'dog_id': dogId},
+        data: {'period_month': monthText, 'dog_id': dogId},
+        msg: 'monthly_award',
+        args: {
+          ...MockDb.dogNameArgs(dog),
+          'month': month.month,
+          'awards': [
+            for (final a in awards)
+              {
+                'scope': a['scope'],
+                'label': scopeLabel(a.str('scope'), a.str('scope_key')),
+                'label_en': scopeLabelEn(a.str('scope'), a.str('scope_key')),
+                'rank': a['rank'],
+              },
+          ],
+        },
       );
     }
     return awardsByDog.values.fold<int>(0, (sum, list) => sum + list.length);
@@ -756,12 +838,16 @@ class RankingApi {
         'scope': award['scope'],
         'scope_key': award['scope_key'],
         'scope_label': scopeLabel(award.str('scope'), award.str('scope_key')),
+        'scope_label_en': scopeLabelEn(award.str('scope'), award.str('scope_key')),
         'rank': award['rank'],
         'dog_id': visible ? dog['id'] : null,
         'dog_name': visible ? dog['name'] : null,
+        'dog_name__en': visible ? dog['name__en'] : null,
         'breed_label': visible ? breedLabel(dog) : null,
+        'breed_label_en': visible ? breedLabelEn(dog) : null,
         'photo_path': visible && (owner['ranking_show_photo'] == true || isMine) ? dog['profile_image_path'] : null,
         'nickname': visible ? owner['nickname'] : null,
+        'nickname__en': visible ? owner['nickname__en'] : null,
         'points': award['points'],
         'is_mine': isMine,
         'is_hidden': !visible,

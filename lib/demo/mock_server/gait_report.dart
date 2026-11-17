@@ -73,6 +73,7 @@ Json generateGaitReport({
     findings.add({
       'joint': key,
       'description': '가동 범위가 기준선보다 $percent% 줄었어요.',
+      'description_en': 'Range of motion is $percent% below baseline.',
       'severity': change <= -0.2 ? 'warning' : 'caution',
     });
   }
@@ -80,7 +81,9 @@ Json generateGaitReport({
     findings.add({
       'joint': 'left_hock',
       'label': '뒷다리 좌우 균형',
+      'label_en': 'Hind-leg balance',
       'description': '왼쪽과 오른쪽 뒷다리의 움직임 차이가 평소보다 커요.',
+      'description_en': 'The difference between left and right hind-leg movement is larger than usual.',
       'severity': 'caution',
     });
   }
@@ -90,13 +93,25 @@ Json generateGaitReport({
           ? 'normal'
           : 'caution';
 
+  final hasNote = random.nextDouble() < 0.25;
   final notes = <String>[
-    if (random.nextDouble() < 0.25) '측면 카메라에서 오른쪽 다리가 일부 가려져 신뢰도가 다소 낮아요.',
+    if (hasNote) '측면 카메라에서 오른쪽 다리가 일부 가려져 신뢰도가 다소 낮아요.',
+  ];
+  final notesEn = <String>[
+    if (hasNote) 'The right leg was partly hidden from the side camera, so confidence is a bit lower.',
   ];
   final summary = switch (level) {
     'warning' => '왼쪽 뒷다리 무릎의 움직임이 기준선보다 크게 줄었어요. 불편해 보이면 동물병원 진료를 받아 보세요.',
     'caution' => '왼쪽 뒷다리를 평소보다 덜 굽히며 걷는 모습이 관찰됐어요. 며칠 동안 걸음걸이를 지켜봐 주세요.',
     _ => '보행 리듬과 좌우 균형이 기준선과 비슷하게 유지되고 있어요. 지금처럼 꾸준히 운동해 주세요.',
+  };
+
+  final summaryEn = switch (level) {
+    'warning' =>
+      'Movement in the left hind-leg knee has dropped a lot from baseline. If your dog seems uncomfortable, please see a vet.',
+    'caution' =>
+      'We noticed your dog bending the left hind leg less than usual while walking. Keep an eye on the gait for a few days.',
+    _ => 'Gait rhythm and left-right balance are staying close to baseline. Keep up the steady exercise.',
   };
 
   return {
@@ -121,12 +136,19 @@ Json generateGaitReport({
       'confidence': round(notes.isEmpty ? 0.88 + random.nextDouble() * 0.07 : 0.78 + random.nextDouble() * 0.06, 2),
       'findings': findings,
       'notes': notes,
+      'notes_en': notesEn,
     },
     'summary': summary,
+    'summary_en': summaryEn,
     'care_notes': [
       '운동 전후로 5분씩 천천히 걸으며 몸을 풀어 주세요.',
       if (level != 'normal') '미끄러운 바닥에서 뛰거나 점프하지 않게 해 주세요.',
       '운동 후에는 물을 충분히 마실 수 있게 해 주세요.',
+    ],
+    'care_notes_en': [
+      'Walk slowly for 5 minutes before and after exercise to warm up and cool down.',
+      if (level != 'normal') 'Keep your dog from running or jumping on slippery floors.',
+      'Make sure your dog can drink plenty of water after exercise.',
     ],
     'model_version': 'gait-v0.3',
   };

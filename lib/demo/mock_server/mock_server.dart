@@ -2,6 +2,7 @@ import 'dart:math';
 
 import '../../core/utils/json.dart';
 import 'booking_api.dart';
+import 'demo_text.dart';
 import 'device_simulators.dart';
 import 'mock_db.dart';
 import 'ranking_api.dart';
@@ -10,6 +11,7 @@ import 'seed.dart';
 export 'booking_api.dart';
 export 'device_simulators.dart';
 export 'mock_db.dart';
+export 'demo_text.dart';
 export 'ranking_api.dart';
 export 'seed.dart' show DemoAccount;
 
@@ -153,7 +155,7 @@ class MockServer {
     if (candidates.isEmpty) return null;
     final user = candidates[db.random.nextInt(candidates.length)];
     ranking.cheer(dogId, asUserId: user.str('id'));
-    return user['nickname'] as String?;
+    return demoText(user, 'nickname');
   }
 
   // ---------------------------------------------------------------------

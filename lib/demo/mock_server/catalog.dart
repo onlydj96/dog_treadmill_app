@@ -35,7 +35,9 @@ abstract final class MockCatalog {
   static Json _branch(String id, String name, String address, String opensAt, String closesAt) => {
         'id': id,
         'name': name,
+        'name_en': CatalogEn.branches[id]!.$1,
         'address': address,
+        'address_en': CatalogEn.branches[id]!.$2,
         'phone': null,
         'opens_at': opensAt,
         'closes_at': closesAt,
@@ -71,7 +73,9 @@ abstract final class MockCatalog {
   static Json _program(String id, String name, String description, int minutes, String intensity, int order) => {
         'id': id,
         'name': name,
+        'name_en': CatalogEn.programs[id]!.$1,
         'description': description,
+        'description_en': CatalogEn.programs[id]!.$2,
         'duration_minutes': minutes,
         'target_speed_kmh': null,
         'intensity': intensity,
@@ -88,7 +92,9 @@ abstract final class MockCatalog {
   static Json _plan(String id, String name, String description, int sessions, int days, int price, int order) => {
         'id': id,
         'name': name,
+        'name_en': CatalogEn.plans[id]!.$1,
         'description': description,
+        'description_en': CatalogEn.plans[id]!.$2,
         'total_sessions': sessions,
         'validity_days': days,
         'price': price,
@@ -145,6 +151,7 @@ abstract final class MockCatalog {
           {
             'id': id,
             'name': name,
+            'name_en': CatalogEn.breeds[id],
             'size_class': size,
             'is_brachycephalic': brachy,
             'sort_order': (i + 1) * 10,
@@ -165,7 +172,15 @@ abstract final class MockCatalog {
           ('paw_skin_problem', '발바닥·피부 질환', '패드 상처, 지간염 등 발에 닿는 부위의 문제'),
           ('recovering', '수술·부상 회복 중', '최근 수술을 받았거나 부상에서 회복 중인 경우'),
         ].indexed)
-          {'code': code, 'name': name, 'description': description, 'sort_order': (i + 1) * 10, 'is_active': true},
+          {
+            'code': code,
+            'name': name,
+            'name_en': CatalogEn.healthConditions[code]!.$1,
+            'description': description,
+            'description_en': CatalogEn.healthConditions[code]!.$2,
+            'sort_order': (i + 1) * 10,
+            'is_active': true,
+          },
       ];
 
   static List<Json> badges() => [
@@ -186,7 +201,9 @@ abstract final class MockCatalog {
           {
             'code': code,
             'name': name,
+            'name_en': CatalogEn.badges[code]!.$1,
             'description': description,
+            'description_en': CatalogEn.badges[code]!.$2,
             'metric': metric,
             'goal': goal,
             'icon': icon,
@@ -233,8 +250,11 @@ abstract final class MockCatalog {
           {
             'id': 'f1000000-0000-4000-8000-${(i + 1).toString().padLeft(12, '0')}',
             'category': category,
+            'category_en': CatalogEn.faqs[i].$1,
             'question': question,
+            'question_en': CatalogEn.faqs[i].$2,
             'answer': answer,
+            'answer_en': CatalogEn.faqs[i].$3,
             'sort_order': i + 1,
             'is_active': true,
           },
@@ -254,6 +274,180 @@ abstract final class MockCatalog {
       '운동을 마칠 때마다 점수가 쌓이고, 매달 전체·지점·체급별 순위가 정해집니다. 마이페이지 > 동의 관리에서 랭킹 참여에 동의하면 순위표에 이름을 올릴 수 있어요.',
       false,
       12
+    ),
+  ];
+}
+
+/// 영어 값 (docs/i18n.md의 `*_en` 컬럼). 실제 DB 마이그레이션과 같은 문구.
+abstract final class CatalogEn {
+  static const branches = <String, (String, String)>{
+    MockCatalog.yongsan: ('Yongsan I\'Park Mall', '55 Hangang-daero 23-gil, Yongsan-gu, Seoul (Yongsan I\'Park Mall)'),
+    MockCatalog.goyang: (
+      'Goyang Starfield',
+      '1955 Goyang-daero, Deogyang-gu, Goyang-si, Gyeonggi-do (Starfield Goyang)'
+    ),
+    MockCatalog.yeongdeungpo: ('Yeongdeungpo Times Square', '15 Yeongjung-ro, Yeongdeungpo-gu, Seoul (Times Square)'),
+  };
+
+  static const programs = <String, (String, String)>{
+    MockCatalog.firstStep: (
+      'Treadmill First Steps',
+      'An adaptation program for dogs on their first visit. Your dog walks very slowly with breaks in between to get comfortable with the treadmill.'
+    ),
+    MockCatalog.dailyWalk: (
+      'Daily Walk',
+      'For days when rain, fine dust, or a heat wave makes outdoor walks hard. Your dog gets a day\'s worth of exercise at a comfortable pace.'
+    ),
+    MockCatalog.weightCare: (
+      'Weight Care',
+      'A long walk that alternates normal and brisk paces to help manage weight. Recommended for dogs that are overweight or don\'t get enough activity.'
+    ),
+    MockCatalog.interval: (
+      'Energy Interval',
+      'Alternates walking and light jogging to burn off extra energy. Best for healthy adult dogs that are used to the treadmill.'
+    ),
+    MockCatalog.jointCare: (
+      'Joint Care Walk',
+      'A slow, steady walk for senior dogs or dogs that need kneecap or hip care. If your dog recently had surgery, please talk to your vet first.'
+    ),
+    MockCatalog.gaitCheck: (
+      'AI Gait Check',
+      'Walks at the same speed and duration every time, so it\'s easy to compare gait changes with earlier records. Recommended once every 2–4 weeks. Reports are available if you agree to video recording.'
+    ),
+  };
+
+  static const breeds = <String, String>{
+    'maltese': 'Maltese',
+    'toy_poodle': 'Toy Poodle',
+    'miniature_poodle': 'Miniature Poodle',
+    'pomeranian': 'Pomeranian',
+    'shih_tzu': 'Shih Tzu',
+    'bichon_frise': 'Bichon Frise',
+    'chihuahua': 'Chihuahua',
+    'yorkshire_terrier': 'Yorkshire Terrier',
+    'dachshund': 'Dachshund',
+    'miniature_schnauzer': 'Miniature Schnauzer',
+    'pug': 'Pug',
+    'japanese_spitz': 'Japanese Spitz',
+    'papillon': 'Papillon',
+    'italian_greyhound': 'Italian Greyhound',
+    'jack_russell_terrier': 'Jack Russell Terrier',
+    'miniature_pinscher': 'Miniature Pinscher',
+    'pekingese': 'Pekingese',
+    'boston_terrier': 'Boston Terrier',
+    'cavalier_king_charles_spaniel': 'Cavalier King Charles Spaniel',
+    'west_highland_white_terrier': 'West Highland White Terrier',
+    'shetland_sheepdog': 'Shetland Sheepdog',
+    'welsh_corgi': 'Welsh Corgi',
+    'jindo': 'Jindo',
+    'shiba_inu': 'Shiba Inu',
+    'beagle': 'Beagle',
+    'border_collie': 'Border Collie',
+    'french_bulldog': 'French Bulldog',
+    'english_bulldog': 'English Bulldog',
+    'cocker_spaniel': 'Cocker Spaniel',
+    'siberian_husky': 'Siberian Husky',
+    'standard_poodle': 'Standard Poodle',
+    'golden_retriever': 'Golden Retriever',
+    'labrador_retriever': 'Labrador Retriever',
+    'samoyed': 'Samoyed',
+    'alaskan_malamute': 'Alaskan Malamute',
+    'german_shepherd': 'German Shepherd',
+    'doberman': 'Doberman',
+    'boxer': 'Boxer',
+    'bernese_mountain_dog': 'Bernese Mountain Dog',
+    'pungsan': 'Pungsan',
+  };
+
+  static const healthConditions = <String, (String, String)>{
+    'joint_disease': ('Joint disease', 'Patellar luxation, hip dysplasia, arthritis, cruciate ligament injury, etc.'),
+    'spinal_disease': ('Spinal / disc disease', 'Intervertebral disc disease (IVDD), etc.'),
+    'heart_disease': ('Heart disease', 'Mitral valve disease, heartworm, etc.'),
+    'obesity': ('Obesity', 'Diagnosed as obese or overweight by a vet'),
+    'respiratory_disease': ('Respiratory disease', 'Tracheal collapse, brachycephalic airway syndrome, etc.'),
+    'endocrine_disease': ('Endocrine disease', 'Diabetes, Cushing\'s syndrome, hypothyroidism, etc.'),
+    'kidney_disease': ('Kidney disease', 'Chronic kidney disease, etc.'),
+    'seizure_disorder': ('Epilepsy / seizures', 'Has a history of seizures'),
+    'paw_skin_problem': (
+      'Paw / skin problems',
+      'Pad wounds, interdigital dermatitis, or other problems on parts of the paw that touch the ground'
+    ),
+    'recovering': ('Recovering from surgery or injury', 'Recently had surgery or is recovering from an injury'),
+  };
+
+  static const badges = <String, (String, String)>{
+    'first_run': ('First Steps', 'Finished a treadmill workout for the first time.'),
+    'sessions_10': ('Tenth Workout', 'Finished 10 workouts.'),
+    'sessions_30': ('Regular Runner', 'Finished 30 workouts.'),
+    'sessions_100': ('100 Dashes', 'Finished 100 workouts.'),
+    'distance_10k': ('10km Milestone', 'Total workout distance passed 10km.'),
+    'marathon': ('Marathon Finisher', 'Total workout distance passed a marathon (42.195km).'),
+    'distance_100k': ('100km Club', 'Total workout distance passed 100km.'),
+    'streak_4': ('4-Week Streak', 'Worked out every week for 4 weeks in a row.'),
+    'streak_12': ('12-Week Streak', 'Worked out every week for 12 weeks in a row (about 3 months).'),
+    'stamp_tour': ('Stamp Tour', 'Worked out at 3 different locations.'),
+    'open_run': ('Open Run', 'Started 3 workouts within 30 minutes of the store opening.'),
+    'podium': ('Podium', 'Placed in the top 3 of a monthly ranking.'),
+  };
+
+  static const plans = <String, (String, String)>{
+    MockCatalog.planSingle: ('Single-session pass', 'Recommended for first-time visitors.'),
+    MockCatalog.planTen: ('10-session pass', 'A good fit for working out once or twice a week.'),
+    MockCatalog.planTwenty: ('20-session pass', 'Great when you need consistency, like rehab or weight care.'),
+  };
+
+  /// (카테고리, 질문, 답변) — [MockCatalog.faqs]와 같은 순서
+  static const faqs = <(String, String, String)>[
+    (
+      'Booking',
+      'Until when can I change or cancel a booking?',
+      'You can change or cancel in the app until 1 hour before the booking starts. If you booked with a pass, cancelling restores the session you used.'
+    ),
+    (
+      'Booking',
+      'How do I check in?',
+      'All stores are self-service. When you arrive, tap "Check in" on the booking details screen or on Home. You can check in from 15 minutes before the booking starts until it ends.'
+    ),
+    (
+      'Booking',
+      'Can I book without a pass?',
+      'Yes. Choose "Pay at store" as the payment method and your booking will be received as "Pending". Pay at the store on the day of your visit. In-app payment is coming soon.'
+    ),
+    (
+      'Workout',
+      'Who operates the treadmill during a workout?',
+      'There are no staff in the store, so owners operate it themselves. After checking in, start the workout on your assigned treadmill and stay beside your dog the whole time. If anything seems wrong, press the treadmill\'s emergency stop button. You can follow your workout live in the app.'
+    ),
+    (
+      'AI analysis',
+      'Is the AI gait analysis a diagnosis?',
+      'No. AI results are reference information about changes in your dog\'s gait pattern. They aren\'t a diagnosis and don\'t replace a visit to the vet. If you suspect a problem, please see a vet.'
+    ),
+    (
+      'AI analysis',
+      'How do I get an AI analysis report?',
+      'Agree to "Workout video recording" under Account > Privacy and video consent. After each workout, we analyze the recording and send you a report.'
+    ),
+    (
+      'Account',
+      'What\'s the difference between video recording consent and AI training consent?',
+      'Video recording consent is for creating your own dog\'s analysis reports. AI training consent covers using de-identified data to improve our models. You can give or withdraw each one separately.'
+    ),
+  ];
+
+  /// (제목, 본문) — [MockCatalog.notices]와 같은 순서
+  static const notices = <(String, String)>[
+    (
+      'AI gait analysis reports are here',
+      'We analyze your treadmill workout videos and give you a report on joint movement and gait patterns. To receive reports, agree to workout video recording in your account.'
+    ),
+    (
+      'Booking change and cancellation policy',
+      'You can change or cancel a booking in the app until 1 hour before it starts. After that, let us know through 1:1 inquiry in the app.'
+    ),
+    (
+      'Monthly rankings and badges are here',
+      'Every workout earns points, and overall, location, and size rankings are set each month. Agree to ranking participation under Account > Consent settings to appear on the leaderboard.'
     ),
   ];
 }

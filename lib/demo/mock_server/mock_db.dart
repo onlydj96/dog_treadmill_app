@@ -136,7 +136,18 @@ class MockDb {
   String requireUser() => currentUserId ?? rpcError('AUTH_REQUIRED', '42501');
 
   /// private.notify_user: 알림 설정에서 끈 종류는 만들지 않는다.
-  void notify(String? userId, String type, String title, String body, [Json data = const {}]) {
+  ///
+  /// [msg]·[args]는 DB 트리거가 data에 함께 저장하는 문구 종류와 값이다 (docs/i18n.md "알림"). 앱은 아는 msg면
+  /// 현재 언어로 문구를 만들고, title/body는 이전 알림·모르는 msg용 한국어 문구다.
+  void notify(
+    String? userId,
+    String type,
+    String title,
+    String body, {
+    Json data = const {},
+    required String msg,
+    Json args = const {},
+  }) {
     if (muteNotifications || userId == null) return;
     final user = byId('users', userId);
     if (user == null) return;
@@ -148,9 +159,26 @@ class MockDb {
       'type': type,
       'title': title,
       'body': body,
-      'data': {...data},
+      'data': {
+        ...data,
+        'msg': msg,
+        'args': {...args}
+      },
       'is_read': false,
     });
+  }
+
+  /// 알림 args의 반려견 이름 (`dog_name` + 영어 값 `dog_name__en`)
+  static Json dogNameArgs(Json dog) => {'dog_name': dog['name'], 'dog_name__en': dog['name__en']};
+
+  /// `dogs` 행에 카탈로그 견종의 영어 이름(`breed_catalog: {name_en}`)을 붙인다.
+  /// 카탈로그 견종이 아니면 null (실제 저장소의 `breed_catalog:breeds(name_en)` 임베드).
+  Json dogWithBreedCatalog(Json dog) {
+    final breed = byId('breeds', dog['breed_id'] as String?);
+    return {
+      ...dog,
+      'breed_catalog': breed == null ? null : {'name_en': breed['name_en']}
+    };
   }
 
   /// 최신 동의 기록 기준 (DB: private.has_consent)

@@ -105,7 +105,9 @@ class TreadmillSimulator {
       'exercise',
       '운동을 시작했어요',
       '${dog['name']}의 트레드밀 운동이 시작되었습니다. 실시간 현황을 확인해 보세요.',
-      {'session_id': session['id']},
+      data: {'session_id': session['id']},
+      msg: 'exercise_started',
+      args: MockDb.dogNameArgs(dog),
     );
 
     _runs[session.str('id')] = _LiveRun(
@@ -269,7 +271,7 @@ class TreadmillSimulator {
   /// 기기: 운동 종료·중단 (public.finish_exercise_session)
   ///
   /// 점수 적립 트리거 → 완료 알림 → (영상 촬영 동의 시) AI 분석 대기열 순서는 실제 DB와 같다.
-  Json finish(String sessionId, {required bool completed, String? stopReason}) {
+  Json finish(String sessionId, {required bool completed, String? stopReason, String? stopReasonEn}) {
     final session = _activeSession(sessionId);
     _runs.remove(sessionId);
 
@@ -283,6 +285,7 @@ class TreadmillSimulator {
       'ended_at': iso(startedAt.add(Duration(seconds: duration))),
       'current_speed': 0.0,
       'stop_reason': completed ? null : ((reason == null || reason.isEmpty) ? '운영자 판단에 의한 중단' : reason),
+      'stop_reason__en': completed || reason == null || reason.isEmpty ? null : stopReasonEn,
       'average_speed': duration > 0 ? _round1(distance / duration * 3.6) : null,
       'updated_at': iso(db.now()),
     });
@@ -309,7 +312,9 @@ class TreadmillSimulator {
         points > 0
             ? '${dog['name']}의 운동이 끝났어요. $points점을 받았어요! 운동 기록을 확인해 보세요.'
             : '${dog['name']}의 운동이 끝났어요. 운동 기록을 확인해 보세요.',
-        {'session_id': sessionId},
+        data: {'session_id': sessionId},
+        msg: 'exercise_completed',
+        args: {...MockDb.dogNameArgs(dog), 'points': points},
       );
     } else {
       db.notify(
@@ -317,7 +322,13 @@ class TreadmillSimulator {
         'exercise',
         '운동이 중단되었어요',
         '${dog['name']}의 운동이 중단되었습니다. 사유: ${session['stop_reason'] ?? '-'}',
-        {'session_id': sessionId},
+        data: {'session_id': sessionId},
+        msg: 'exercise_stopped',
+        args: {
+          ...MockDb.dogNameArgs(dog),
+          'reason': session['stop_reason'],
+          'reason__en': session['stop_reason__en'],
+        },
       );
     }
 
@@ -414,7 +425,9 @@ class AiAnalysisSimulator {
       'analysis',
       'AI 보행 분석 리포트가 도착했어요',
       '${dog['name']}의 운동 분석 결과를 확인해 보세요.',
-      {'report_id': reportId},
+      data: {'report_id': reportId},
+      msg: 'analysis_completed',
+      args: MockDb.dogNameArgs(dog),
     );
   }
 
