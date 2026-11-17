@@ -1,19 +1,26 @@
 import '../../../core/utils/json.dart';
+import '../../../l10n/l10n.dart';
 import '../../exercise/data/exercise_session.dart';
 import 'dog_keypoints.dart';
 
 // 지표 JSON 구조는 docs/analysis-metrics.md 참고 (AI 서버와의 계약)
 
 enum AnalysisStatus {
-  queued('queued', '분석 대기'),
-  processing('processing', '분석 중'),
-  completed('completed', '분석 완료'),
-  failed('failed', '분석 실패');
+  queued('queued'),
+  processing('processing'),
+  completed('completed'),
+  failed('failed');
 
-  const AnalysisStatus(this.dbValue, this.label);
+  const AnalysisStatus(this.dbValue);
 
   final String dbValue;
-  final String label;
+
+  String get label => switch (this) {
+        AnalysisStatus.queued => L10n.current.analysisStatusQueued,
+        AnalysisStatus.processing => L10n.current.analysisStatusProcessing,
+        AnalysisStatus.completed => L10n.current.analysisStatusCompleted,
+        AnalysisStatus.failed => L10n.current.analysisStatusFailed,
+      };
 
   static AnalysisStatus fromDb(String value) =>
       values.firstWhere((e) => e.dbValue == value, orElse: () => AnalysisStatus.queued);
@@ -24,20 +31,22 @@ enum AnalysisStatus {
 class JointMetric {
   const JointMetric({
     required this.key,
-    required this.label,
+    String? label,
+    this.labelEn,
     this.romDeg,
     this.meanAngleDeg,
     this.minAngleDeg,
     this.maxAngleDeg,
     this.baselineRomDeg,
     this.confidence,
-  });
+  }) : _label = label;
 
   factory JointMetric.fromJson(Json json) {
     final key = json.strOrNull('key') ?? '';
     return JointMetric(
       key: key,
-      label: json.strOrNull('label') ?? DogKeypoint.fromKey(key)?.label ?? key,
+      label: json.strOrNull('label'),
+      labelEn: json.strOrNull('label_en'),
       romDeg: json.dblOrNull('rom_deg'),
       meanAngleDeg: json.dblOrNull('mean_angle_deg'),
       minAngleDeg: json.dblOrNull('min_angle_deg'),
@@ -48,7 +57,18 @@ class JointMetric {
   }
 
   final String key;
-  final String label;
+  final String? _label;
+
+  /// AI 결과의 영어 라벨 (`label_en`)
+  final String? labelEn;
+
+  /// 현재 언어의 관절 이름. 한국어: label → 앱 관절 이름 → key,
+  /// 영어: label_en → 앱 관절 이름 → label → key.
+  String get label {
+    final keypoint = DogKeypoint.fromKey(key)?.label;
+    if (L10n.isEnglish) return L10n.pickOrNull(null, labelEn) ?? keypoint ?? _label ?? key;
+    return _label ?? keypoint ?? key;
+  }
 
   /// 관절 가동 범위(ROM, 도)
   final double? romDeg;
@@ -139,14 +159,19 @@ class GaitMetrics {
 }
 
 enum AnomalyLevel {
-  normal('normal', '특이사항 없음'),
-  caution('caution', '관찰 필요'),
-  warning('warning', '주의 필요');
+  normal('normal'),
+  caution('caution'),
+  warning('warning');
 
-  const AnomalyLevel(this.dbValue, this.label);
+  const AnomalyLevel(this.dbValue);
 
   final String dbValue;
-  final String label;
+
+  String get label => switch (this) {
+        AnomalyLevel.normal => L10n.current.analysisLevelNormal,
+        AnomalyLevel.caution => L10n.current.analysisLevelCaution,
+        AnomalyLevel.warning => L10n.current.analysisLevelWarning,
+      };
 
   static AnomalyLevel fromDb(String? value) =>
       values.firstWhere((e) => e.dbValue == value, orElse: () => AnomalyLevel.normal);
@@ -154,26 +179,43 @@ enum AnomalyLevel {
 
 class AnomalyFinding {
   const AnomalyFinding({
-    required this.description,
+    required String description,
     required this.severity,
     this.jointKey,
-    this.label,
-  });
+    String? label,
+    this.labelEn,
+    this.descriptionEn,
+  })  : _description = description,
+        _label = label;
 
   factory AnomalyFinding.fromJson(Json json) {
     final joint = json.strOrNull('joint');
     return AnomalyFinding(
       jointKey: joint,
-      label: json.strOrNull('label') ?? (joint == null ? null : DogKeypoint.fromKey(joint)?.label),
+      label: json.strOrNull('label'),
+      labelEn: json.strOrNull('label_en'),
       description: json.strOrNull('description') ?? '',
+      descriptionEn: json.strOrNull('description_en'),
       severity: AnomalyLevel.fromDb(json.strOrNull('severity')),
     );
   }
 
   final String? jointKey;
-  final String? label;
-  final String description;
+  final String? _label;
+  final String? labelEn;
+  final String _description;
+  final String? descriptionEn;
   final AnomalyLevel severity;
+
+  /// 현재 언어의 관절 이름. 한국어: label → 앱 관절 이름, 영어: label_en → 앱 관절 이름 → label.
+  String? get label {
+    final joint = jointKey;
+    final keypoint = joint == null ? null : DogKeypoint.fromKey(joint)?.label;
+    if (L10n.isEnglish) return L10n.pickOrNull(null, labelEn) ?? keypoint ?? _label;
+    return _label ?? keypoint;
+  }
+
+  String get description => L10n.pick(_description, descriptionEn);
 }
 
 class AnomalyMetrics {
@@ -182,8 +224,9 @@ class AnomalyMetrics {
     this.anomalyScore,
     this.confidence,
     this.findings = const [],
-    this.notes = const [],
-  });
+    List<String> notes = const [],
+    this.notesEn,
+  }) : _notes = notes;
 
   factory AnomalyMetrics.fromJson(Json json) => AnomalyMetrics(
         level: AnomalyLevel.fromDb(json.strOrNull('level')),
@@ -191,6 +234,7 @@ class AnomalyMetrics {
         confidence: json.dblOrNull('confidence'),
         findings: json.objList('findings').map(AnomalyFinding.fromJson).toList(),
         notes: json.strList('notes'),
+        notesEn: json['notes_en'] is List ? json.strList('notes_en') : null,
       );
 
   final AnomalyLevel level;
@@ -202,8 +246,11 @@ class AnomalyMetrics {
   final double? confidence;
   final List<AnomalyFinding> findings;
 
+  final List<String> _notes;
+  final List<String>? notesEn;
+
   /// 분석 주의사항 (카메라 각도, 가림 등)
-  final List<String> notes;
+  List<String> get notes => L10n.pickList(_notes, notesEn);
 }
 
 class AnalysisReport {
@@ -216,14 +263,17 @@ class AnalysisReport {
     this.jointMetrics,
     this.gaitMetrics,
     this.anomalyMetrics,
-    this.summary,
-    this.careNotes = const [],
+    String? summary,
+    this.summaryEn,
+    List<String> careNotes = const [],
+    this.careNotesEn,
     this.skeletonVideoPath,
     this.reportPdfPath,
     this.modelVersion,
     this.completedAt,
     this.session,
-  });
+  })  : _summary = summary,
+        _careNotes = careNotes;
 
   factory AnalysisReport.fromJson(Json json) {
     final joint = json.objOrNull('joint_metrics');
@@ -239,7 +289,9 @@ class AnalysisReport {
       gaitMetrics: gait == null ? null : GaitMetrics.fromJson(gait),
       anomalyMetrics: anomaly == null ? null : AnomalyMetrics.fromJson(anomaly),
       summary: json.strOrNull('summary'),
+      summaryEn: json.strOrNull('summary_en'),
       careNotes: json.strList('care_notes'),
+      careNotesEn: json['care_notes_en'] is List ? json.strList('care_notes_en') : null,
       skeletonVideoPath: json.strOrNull('skeleton_video_path'),
       reportPdfPath: json.strOrNull('report_pdf_path'),
       modelVersion: json.strOrNull('model_version'),
@@ -265,14 +317,21 @@ class AnalysisReport {
   final JointMetrics? jointMetrics;
   final GaitMetrics? gaitMetrics;
   final AnomalyMetrics? anomalyMetrics;
-  final String? summary;
-  final List<String> careNotes;
+  final String? _summary;
+  final String? summaryEn;
+  final List<String> _careNotes;
+  final List<String>? careNotesEn;
   final String? skeletonVideoPath;
   final String? reportPdfPath;
   final String? modelVersion;
   final DateTime createdAt;
   final DateTime? completedAt;
   final ExerciseSession? session;
+
+  /// 현재 언어의 요약 (영어 화면에서 summary_en이 없으면 한국어 요약)
+  String? get summary => L10n.pickOrNull(_summary, summaryEn);
+
+  List<String> get careNotes => L10n.pickList(_careNotes, careNotesEn);
 
   /// 운동 일시 (세션 시작 시각, 없으면 리포트 생성 시각)
   DateTime get exerciseDate => session?.startedAt ?? createdAt;
@@ -297,7 +356,7 @@ class PoseRecord {
   final double? fps;
   final int? frameCount;
 
-  String get cameraLabel => cameraType == 'front' ? '정면 영상' : '측면 영상';
+  String get cameraLabel => cameraType == 'front' ? L10n.current.analysisCameraFront : L10n.current.analysisCameraSide;
 }
 
 class ExercisePlan {

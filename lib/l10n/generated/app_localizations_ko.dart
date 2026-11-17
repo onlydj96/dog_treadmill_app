@@ -364,4 +364,322 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get serverStopReasonByStaff => '운영자 판단에 의한 중단';
+
+  @override
+  String get exerciseStatusReady => '준비 중';
+
+  @override
+  String get exerciseStatusRunning => '운동 중';
+
+  @override
+  String get exerciseStatusPaused => '일시정지';
+
+  @override
+  String get exerciseStatusCompleted => '운동 완료';
+
+  @override
+  String get exerciseStatusStopped => '운동 중단';
+
+  @override
+  String get exerciseHistoryTitle => '운동 기록';
+
+  @override
+  String exerciseHistoryTitleDog(String dog) {
+    return '$dog의 운동 기록';
+  }
+
+  @override
+  String get exerciseTitle => '운동';
+
+  @override
+  String exerciseTitleDog(String dog) {
+    return '$dog의 운동';
+  }
+
+  @override
+  String get exerciseNoDogTitle => '등록된 반려견이 없어요';
+
+  @override
+  String get exerciseNoDogHistoryMessage => '반려견을 등록하면 운동 기록을 볼 수 있어요.';
+
+  @override
+  String get exerciseNoDogLiveMessage => '반려견을 등록하면 운동 현황과 기록을 볼 수 있어요.';
+
+  @override
+  String get exerciseRegisterDog => '반려견 등록';
+
+  @override
+  String get exerciseNoRecordsTitle => '아직 운동 기록이 없어요';
+
+  @override
+  String get exerciseNoRecordsHistoryMessage => '운동을 마치면 날짜별 기록이 쌓여요.';
+
+  @override
+  String get exerciseNoRecordsSummaryMessage => '운동을 마치면 시간, 거리, 속도가 기록돼요.';
+
+  @override
+  String exerciseSessionCount(int count) {
+    return '$count회';
+  }
+
+  @override
+  String get exerciseTotalsTitle => '누적 운동 기록';
+
+  @override
+  String get exerciseStatTotalWorkouts => '총 운동';
+
+  @override
+  String get exerciseStatTotalTime => '총 시간';
+
+  @override
+  String get exerciseStatTotalDistance => '총 거리';
+
+  @override
+  String get exerciseStatBestSpeed => '최고 속도';
+
+  @override
+  String get exerciseUnitTimes => '회';
+
+  @override
+  String get exerciseUnitMinutes => '분';
+
+  @override
+  String get exerciseCompletedToast => '운동을 완료했어요!';
+
+  @override
+  String get exerciseStoppedToast => '운동이 중단되었어요.';
+
+  @override
+  String get exerciseLive => '실시간';
+
+  @override
+  String get exerciseElapsed => '경과 시간';
+
+  @override
+  String exerciseTarget(String duration) {
+    return '목표 $duration';
+  }
+
+  @override
+  String get exerciseCurrentSpeed => '현재 속도';
+
+  @override
+  String get exerciseDistance => '이동 거리';
+
+  @override
+  String get exerciseStartTime => '시작 시간';
+
+  @override
+  String get exerciseTreadmill => '트레드밀';
+
+  @override
+  String get exerciseUnmannedNotice =>
+      '무인 매장이에요. 운동하는 동안 반려견 곁을 지켜 주시고, 이상하면 트레드밀의 비상정지 버튼을 눌러 주세요.';
+
+  @override
+  String get exerciseNoLiveTitle => '진행 중인 운동이 없어요';
+
+  @override
+  String get exerciseNoLiveMessage => '운동이 시작되면 이곳에서 실시간으로 확인할 수 있어요.';
+
+  @override
+  String get exerciseBookWorkout => '운동 예약하기';
+
+  @override
+  String get exerciseNextBooking => '다음 예약';
+
+  @override
+  String get exerciseMyBookings => '예약 내역';
+
+  @override
+  String exerciseMonthSummary(int month) {
+    return '$month월 운동 요약';
+  }
+
+  @override
+  String get exerciseStatCount => '운동 횟수';
+
+  @override
+  String get exerciseStatTotalWorkoutTime => '총 운동 시간';
+
+  @override
+  String get exerciseRecentRecords => '최근 운동 기록';
+
+  @override
+  String get exerciseAllRecords => '전체 기록';
+
+  @override
+  String exerciseTreadmillName(String name) {
+    return '트레드밀 $name';
+  }
+
+  @override
+  String get exerciseWorkoutTime => '운동 시간';
+
+  @override
+  String get exerciseAvgMax => '평균 / 최고';
+
+  @override
+  String exerciseStopReason(String reason) {
+    return '중단 사유: $reason';
+  }
+
+  @override
+  String get exercisePointsVoided => '운영자 확인 후 무효 처리된 기록이에요';
+
+  @override
+  String exercisePointsWeeklyBonus(String points) {
+    return '주간 보너스 $points 포함';
+  }
+
+  @override
+  String get exercisePointsDefault => '랭킹 점수';
+
+  @override
+  String get exerciseReportAi => 'AI 리포트';
+
+  @override
+  String get exerciseReportFailed => '분석 실패';
+
+  @override
+  String get exerciseReportPending => '분석 중';
+
+  @override
+  String get analysisStatusQueued => '분석 대기';
+
+  @override
+  String get analysisStatusProcessing => '분석 중';
+
+  @override
+  String get analysisStatusCompleted => '분석 완료';
+
+  @override
+  String get analysisStatusFailed => '분석 실패';
+
+  @override
+  String get analysisLevelNormal => '특이사항 없음';
+
+  @override
+  String get analysisLevelCaution => '관찰 필요';
+
+  @override
+  String get analysisLevelWarning => '주의 필요';
+
+  @override
+  String get analysisCameraFront => '정면 영상';
+
+  @override
+  String get analysisCameraSide => '측면 영상';
+
+  @override
+  String get healthTitle => '건강';
+
+  @override
+  String healthTitleDog(String dog) {
+    return '$dog의 건강 분석';
+  }
+
+  @override
+  String get healthNoDogMessage => '반려견을 등록하고 운동하면 AI 보행 분석 결과를 볼 수 있어요.';
+
+  @override
+  String get healthReports => '분석 리포트';
+
+  @override
+  String healthPendingBanner(int count) {
+    return '운동 영상 $count건을 분석하고 있어요. 완료되면 알림으로 알려 드릴게요.';
+  }
+
+  @override
+  String get healthPreparingTitle => '첫 분석 리포트를 준비하고 있어요';
+
+  @override
+  String get healthPreparingMessage =>
+      '운동 영상으로 관절 움직임과 보행 패턴을 분석 중이에요. 완료되면 알림으로 알려 드릴게요.';
+
+  @override
+  String get healthConsentTitle => '운동 영상 촬영 동의가 필요해요';
+
+  @override
+  String get healthConsentMessage =>
+      'AI 보행 분석 리포트는 운동 영상으로 만들어요. 동의하면 다음 운동부터 관절 움직임과 보행 패턴을 분석해 드려요.';
+
+  @override
+  String get healthConsentAction => '동의하러 가기';
+
+  @override
+  String get healthNoReportTitle => '아직 분석 리포트가 없어요';
+
+  @override
+  String get healthNoReportMessage =>
+      '트레드밀 운동을 마치면 촬영 영상으로 관절 움직임과 보행 패턴을 분석해 드려요.';
+
+  @override
+  String get healthLatestAnalysis => '최근 분석';
+
+  @override
+  String get healthSymmetry => '좌우 대칭성';
+
+  @override
+  String get healthCadence => '분당 걸음 수';
+
+  @override
+  String get healthRhythm => '보행 리듬';
+
+  @override
+  String get healthUnitPoints => '점';
+
+  @override
+  String get healthConfidence => '분석 신뢰도';
+
+  @override
+  String get healthViewReport => '리포트 자세히 보기 →';
+
+  @override
+  String get healthTrendSymmetryDesc =>
+      '좌우 다리 움직임이 얼마나 비슷한지 보여줘요. 높을수록 균형 잡힌 보행이에요.';
+
+  @override
+  String get healthTrendCadenceDesc =>
+      '1분 동안의 걸음 수예요. 평소 기준선과 크게 달라지면 관찰이 필요해요.';
+
+  @override
+  String get healthTrendVariabilityDesc =>
+      '걸음걸이 주기가 얼마나 일정한지 보여줘요. 낮을수록 리듬이 안정적이에요.';
+
+  @override
+  String get healthTrendTitle => '보행 변화 추이';
+
+  @override
+  String get healthTrendSegSymmetry => '대칭성';
+
+  @override
+  String get healthTrendSegCadence => '걸음 수';
+
+  @override
+  String get healthTrendSegVariability => '변동성';
+
+  @override
+  String get healthTrendNeedMore => '추이를 보려면 분석 결과가 2건 이상 필요해요.';
+
+  @override
+  String get healthJointRomTitle => '관절 가동 범위 변화';
+
+  @override
+  String get healthAllJoints => '전체 관절';
+
+  @override
+  String get healthPlanTitle => '맞춤 운동 계획';
+
+  @override
+  String get healthPlanTargetTime => '목표 시간';
+
+  @override
+  String get healthPlanTargetSpeed => '목표 속도';
+
+  @override
+  String get healthVideoPause => '일시정지';
+
+  @override
+  String get healthVideoPlay => '재생';
 }

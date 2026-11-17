@@ -739,6 +739,588 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'운영자 판단에 의한 중단'**
   String get serverStopReasonByStaff;
+
+  /// No description provided for @exerciseStatusReady.
+  ///
+  /// In ko, this message translates to:
+  /// **'준비 중'**
+  String get exerciseStatusReady;
+
+  /// No description provided for @exerciseStatusRunning.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 중'**
+  String get exerciseStatusRunning;
+
+  /// No description provided for @exerciseStatusPaused.
+  ///
+  /// In ko, this message translates to:
+  /// **'일시정지'**
+  String get exerciseStatusPaused;
+
+  /// No description provided for @exerciseStatusCompleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 완료'**
+  String get exerciseStatusCompleted;
+
+  /// No description provided for @exerciseStatusStopped.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 중단'**
+  String get exerciseStatusStopped;
+
+  /// No description provided for @exerciseHistoryTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 기록'**
+  String get exerciseHistoryTitle;
+
+  /// No description provided for @exerciseHistoryTitleDog.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 운동 기록'**
+  String exerciseHistoryTitleDog(String dog);
+
+  /// No description provided for @exerciseTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동'**
+  String get exerciseTitle;
+
+  /// No description provided for @exerciseTitleDog.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 운동'**
+  String exerciseTitleDog(String dog);
+
+  /// No description provided for @exerciseNoDogTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록된 반려견이 없어요'**
+  String get exerciseNoDogTitle;
+
+  /// No description provided for @exerciseNoDogHistoryMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견을 등록하면 운동 기록을 볼 수 있어요.'**
+  String get exerciseNoDogHistoryMessage;
+
+  /// No description provided for @exerciseNoDogLiveMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견을 등록하면 운동 현황과 기록을 볼 수 있어요.'**
+  String get exerciseNoDogLiveMessage;
+
+  /// No description provided for @exerciseRegisterDog.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 등록'**
+  String get exerciseRegisterDog;
+
+  /// No description provided for @exerciseNoRecordsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 운동 기록이 없어요'**
+  String get exerciseNoRecordsTitle;
+
+  /// No description provided for @exerciseNoRecordsHistoryMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동을 마치면 날짜별 기록이 쌓여요.'**
+  String get exerciseNoRecordsHistoryMessage;
+
+  /// No description provided for @exerciseNoRecordsSummaryMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동을 마치면 시간, 거리, 속도가 기록돼요.'**
+  String get exerciseNoRecordsSummaryMessage;
+
+  /// No description provided for @exerciseSessionCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}회'**
+  String exerciseSessionCount(int count);
+
+  /// No description provided for @exerciseTotalsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'누적 운동 기록'**
+  String get exerciseTotalsTitle;
+
+  /// No description provided for @exerciseStatTotalWorkouts.
+  ///
+  /// In ko, this message translates to:
+  /// **'총 운동'**
+  String get exerciseStatTotalWorkouts;
+
+  /// No description provided for @exerciseStatTotalTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'총 시간'**
+  String get exerciseStatTotalTime;
+
+  /// No description provided for @exerciseStatTotalDistance.
+  ///
+  /// In ko, this message translates to:
+  /// **'총 거리'**
+  String get exerciseStatTotalDistance;
+
+  /// No description provided for @exerciseStatBestSpeed.
+  ///
+  /// In ko, this message translates to:
+  /// **'최고 속도'**
+  String get exerciseStatBestSpeed;
+
+  /// No description provided for @exerciseUnitTimes.
+  ///
+  /// In ko, this message translates to:
+  /// **'회'**
+  String get exerciseUnitTimes;
+
+  /// No description provided for @exerciseUnitMinutes.
+  ///
+  /// In ko, this message translates to:
+  /// **'분'**
+  String get exerciseUnitMinutes;
+
+  /// No description provided for @exerciseCompletedToast.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동을 완료했어요!'**
+  String get exerciseCompletedToast;
+
+  /// No description provided for @exerciseStoppedToast.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동이 중단되었어요.'**
+  String get exerciseStoppedToast;
+
+  /// No description provided for @exerciseLive.
+  ///
+  /// In ko, this message translates to:
+  /// **'실시간'**
+  String get exerciseLive;
+
+  /// No description provided for @exerciseElapsed.
+  ///
+  /// In ko, this message translates to:
+  /// **'경과 시간'**
+  String get exerciseElapsed;
+
+  /// No description provided for @exerciseTarget.
+  ///
+  /// In ko, this message translates to:
+  /// **'목표 {duration}'**
+  String exerciseTarget(String duration);
+
+  /// No description provided for @exerciseCurrentSpeed.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 속도'**
+  String get exerciseCurrentSpeed;
+
+  /// No description provided for @exerciseDistance.
+  ///
+  /// In ko, this message translates to:
+  /// **'이동 거리'**
+  String get exerciseDistance;
+
+  /// No description provided for @exerciseStartTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'시작 시간'**
+  String get exerciseStartTime;
+
+  /// No description provided for @exerciseTreadmill.
+  ///
+  /// In ko, this message translates to:
+  /// **'트레드밀'**
+  String get exerciseTreadmill;
+
+  /// No description provided for @exerciseUnmannedNotice.
+  ///
+  /// In ko, this message translates to:
+  /// **'무인 매장이에요. 운동하는 동안 반려견 곁을 지켜 주시고, 이상하면 트레드밀의 비상정지 버튼을 눌러 주세요.'**
+  String get exerciseUnmannedNotice;
+
+  /// No description provided for @exerciseNoLiveTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'진행 중인 운동이 없어요'**
+  String get exerciseNoLiveTitle;
+
+  /// No description provided for @exerciseNoLiveMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동이 시작되면 이곳에서 실시간으로 확인할 수 있어요.'**
+  String get exerciseNoLiveMessage;
+
+  /// No description provided for @exerciseBookWorkout.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 예약하기'**
+  String get exerciseBookWorkout;
+
+  /// No description provided for @exerciseNextBooking.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음 예약'**
+  String get exerciseNextBooking;
+
+  /// No description provided for @exerciseMyBookings.
+  ///
+  /// In ko, this message translates to:
+  /// **'예약 내역'**
+  String get exerciseMyBookings;
+
+  /// No description provided for @exerciseMonthSummary.
+  ///
+  /// In ko, this message translates to:
+  /// **'{month}월 운동 요약'**
+  String exerciseMonthSummary(int month);
+
+  /// No description provided for @exerciseStatCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 횟수'**
+  String get exerciseStatCount;
+
+  /// No description provided for @exerciseStatTotalWorkoutTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'총 운동 시간'**
+  String get exerciseStatTotalWorkoutTime;
+
+  /// No description provided for @exerciseRecentRecords.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 운동 기록'**
+  String get exerciseRecentRecords;
+
+  /// No description provided for @exerciseAllRecords.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 기록'**
+  String get exerciseAllRecords;
+
+  /// No description provided for @exerciseTreadmillName.
+  ///
+  /// In ko, this message translates to:
+  /// **'트레드밀 {name}'**
+  String exerciseTreadmillName(String name);
+
+  /// No description provided for @exerciseWorkoutTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 시간'**
+  String get exerciseWorkoutTime;
+
+  /// No description provided for @exerciseAvgMax.
+  ///
+  /// In ko, this message translates to:
+  /// **'평균 / 최고'**
+  String get exerciseAvgMax;
+
+  /// No description provided for @exerciseStopReason.
+  ///
+  /// In ko, this message translates to:
+  /// **'중단 사유: {reason}'**
+  String exerciseStopReason(String reason);
+
+  /// No description provided for @exercisePointsVoided.
+  ///
+  /// In ko, this message translates to:
+  /// **'운영자 확인 후 무효 처리된 기록이에요'**
+  String get exercisePointsVoided;
+
+  /// No description provided for @exercisePointsWeeklyBonus.
+  ///
+  /// In ko, this message translates to:
+  /// **'주간 보너스 {points} 포함'**
+  String exercisePointsWeeklyBonus(String points);
+
+  /// No description provided for @exercisePointsDefault.
+  ///
+  /// In ko, this message translates to:
+  /// **'랭킹 점수'**
+  String get exercisePointsDefault;
+
+  /// No description provided for @exerciseReportAi.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 리포트'**
+  String get exerciseReportAi;
+
+  /// No description provided for @exerciseReportFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 실패'**
+  String get exerciseReportFailed;
+
+  /// No description provided for @exerciseReportPending.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 중'**
+  String get exerciseReportPending;
+
+  /// No description provided for @analysisStatusQueued.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 대기'**
+  String get analysisStatusQueued;
+
+  /// No description provided for @analysisStatusProcessing.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 중'**
+  String get analysisStatusProcessing;
+
+  /// No description provided for @analysisStatusCompleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 완료'**
+  String get analysisStatusCompleted;
+
+  /// No description provided for @analysisStatusFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 실패'**
+  String get analysisStatusFailed;
+
+  /// No description provided for @analysisLevelNormal.
+  ///
+  /// In ko, this message translates to:
+  /// **'특이사항 없음'**
+  String get analysisLevelNormal;
+
+  /// No description provided for @analysisLevelCaution.
+  ///
+  /// In ko, this message translates to:
+  /// **'관찰 필요'**
+  String get analysisLevelCaution;
+
+  /// No description provided for @analysisLevelWarning.
+  ///
+  /// In ko, this message translates to:
+  /// **'주의 필요'**
+  String get analysisLevelWarning;
+
+  /// No description provided for @analysisCameraFront.
+  ///
+  /// In ko, this message translates to:
+  /// **'정면 영상'**
+  String get analysisCameraFront;
+
+  /// No description provided for @analysisCameraSide.
+  ///
+  /// In ko, this message translates to:
+  /// **'측면 영상'**
+  String get analysisCameraSide;
+
+  /// No description provided for @healthTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'건강'**
+  String get healthTitle;
+
+  /// No description provided for @healthTitleDog.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 건강 분석'**
+  String healthTitleDog(String dog);
+
+  /// No description provided for @healthNoDogMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견을 등록하고 운동하면 AI 보행 분석 결과를 볼 수 있어요.'**
+  String get healthNoDogMessage;
+
+  /// No description provided for @healthReports.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 리포트'**
+  String get healthReports;
+
+  /// No description provided for @healthPendingBanner.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 영상 {count}건을 분석하고 있어요. 완료되면 알림으로 알려 드릴게요.'**
+  String healthPendingBanner(int count);
+
+  /// No description provided for @healthPreparingTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'첫 분석 리포트를 준비하고 있어요'**
+  String get healthPreparingTitle;
+
+  /// No description provided for @healthPreparingMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 영상으로 관절 움직임과 보행 패턴을 분석 중이에요. 완료되면 알림으로 알려 드릴게요.'**
+  String get healthPreparingMessage;
+
+  /// No description provided for @healthConsentTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 영상 촬영 동의가 필요해요'**
+  String get healthConsentTitle;
+
+  /// No description provided for @healthConsentMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 보행 분석 리포트는 운동 영상으로 만들어요. 동의하면 다음 운동부터 관절 움직임과 보행 패턴을 분석해 드려요.'**
+  String get healthConsentMessage;
+
+  /// No description provided for @healthConsentAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'동의하러 가기'**
+  String get healthConsentAction;
+
+  /// No description provided for @healthNoReportTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 분석 리포트가 없어요'**
+  String get healthNoReportTitle;
+
+  /// No description provided for @healthNoReportMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'트레드밀 운동을 마치면 촬영 영상으로 관절 움직임과 보행 패턴을 분석해 드려요.'**
+  String get healthNoReportMessage;
+
+  /// No description provided for @healthLatestAnalysis.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 분석'**
+  String get healthLatestAnalysis;
+
+  /// No description provided for @healthSymmetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'좌우 대칭성'**
+  String get healthSymmetry;
+
+  /// No description provided for @healthCadence.
+  ///
+  /// In ko, this message translates to:
+  /// **'분당 걸음 수'**
+  String get healthCadence;
+
+  /// No description provided for @healthRhythm.
+  ///
+  /// In ko, this message translates to:
+  /// **'보행 리듬'**
+  String get healthRhythm;
+
+  /// No description provided for @healthUnitPoints.
+  ///
+  /// In ko, this message translates to:
+  /// **'점'**
+  String get healthUnitPoints;
+
+  /// No description provided for @healthConfidence.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 신뢰도'**
+  String get healthConfidence;
+
+  /// No description provided for @healthViewReport.
+  ///
+  /// In ko, this message translates to:
+  /// **'리포트 자세히 보기 →'**
+  String get healthViewReport;
+
+  /// No description provided for @healthTrendSymmetryDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'좌우 다리 움직임이 얼마나 비슷한지 보여줘요. 높을수록 균형 잡힌 보행이에요.'**
+  String get healthTrendSymmetryDesc;
+
+  /// No description provided for @healthTrendCadenceDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'1분 동안의 걸음 수예요. 평소 기준선과 크게 달라지면 관찰이 필요해요.'**
+  String get healthTrendCadenceDesc;
+
+  /// No description provided for @healthTrendVariabilityDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'걸음걸이 주기가 얼마나 일정한지 보여줘요. 낮을수록 리듬이 안정적이에요.'**
+  String get healthTrendVariabilityDesc;
+
+  /// No description provided for @healthTrendTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'보행 변화 추이'**
+  String get healthTrendTitle;
+
+  /// No description provided for @healthTrendSegSymmetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'대칭성'**
+  String get healthTrendSegSymmetry;
+
+  /// No description provided for @healthTrendSegCadence.
+  ///
+  /// In ko, this message translates to:
+  /// **'걸음 수'**
+  String get healthTrendSegCadence;
+
+  /// No description provided for @healthTrendSegVariability.
+  ///
+  /// In ko, this message translates to:
+  /// **'변동성'**
+  String get healthTrendSegVariability;
+
+  /// No description provided for @healthTrendNeedMore.
+  ///
+  /// In ko, this message translates to:
+  /// **'추이를 보려면 분석 결과가 2건 이상 필요해요.'**
+  String get healthTrendNeedMore;
+
+  /// No description provided for @healthJointRomTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'관절 가동 범위 변화'**
+  String get healthJointRomTitle;
+
+  /// No description provided for @healthAllJoints.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 관절'**
+  String get healthAllJoints;
+
+  /// No description provided for @healthPlanTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'맞춤 운동 계획'**
+  String get healthPlanTitle;
+
+  /// No description provided for @healthPlanTargetTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'목표 시간'**
+  String get healthPlanTargetTime;
+
+  /// No description provided for @healthPlanTargetSpeed.
+  ///
+  /// In ko, this message translates to:
+  /// **'목표 속도'**
+  String get healthPlanTargetSpeed;
+
+  /// No description provided for @healthVideoPause.
+  ///
+  /// In ko, this message translates to:
+  /// **'일시정지'**
+  String get healthVideoPause;
+
+  /// No description provided for @healthVideoPlay.
+  ///
+  /// In ko, this message translates to:
+  /// **'재생'**
+  String get healthVideoPlay;
 }
 
 class _AppLocalizationsDelegate

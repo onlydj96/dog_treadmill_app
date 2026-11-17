@@ -417,4 +417,341 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverStopReasonByStaff => 'Stopped by staff';
+
+  @override
+  String get exerciseStatusReady => 'Getting ready';
+
+  @override
+  String get exerciseStatusRunning => 'Working out';
+
+  @override
+  String get exerciseStatusPaused => 'Paused';
+
+  @override
+  String get exerciseStatusCompleted => 'Workout complete';
+
+  @override
+  String get exerciseStatusStopped => 'Workout stopped';
+
+  @override
+  String get exerciseHistoryTitle => 'Workout history';
+
+  @override
+  String exerciseHistoryTitleDog(String dog) {
+    return '$dog\'s workout history';
+  }
+
+  @override
+  String get exerciseTitle => 'Workout';
+
+  @override
+  String exerciseTitleDog(String dog) {
+    return '$dog\'s workout';
+  }
+
+  @override
+  String get exerciseNoDogTitle => 'You haven\'t added a dog yet';
+
+  @override
+  String get exerciseNoDogHistoryMessage =>
+      'Add your dog to see workout history.';
+
+  @override
+  String get exerciseNoDogLiveMessage =>
+      'Add your dog to see live workouts and history.';
+
+  @override
+  String get exerciseRegisterDog => 'Add your dog';
+
+  @override
+  String get exerciseNoRecordsTitle => 'No workouts yet';
+
+  @override
+  String get exerciseNoRecordsHistoryMessage =>
+      'Your workouts will be listed here by date.';
+
+  @override
+  String get exerciseNoRecordsSummaryMessage =>
+      'Time, distance and speed are recorded after each workout.';
+
+  @override
+  String exerciseSessionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count workouts',
+      one: '1 workout',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exerciseTotalsTitle => 'Workout totals';
+
+  @override
+  String get exerciseStatTotalWorkouts => 'Total workouts';
+
+  @override
+  String get exerciseStatTotalTime => 'Total time';
+
+  @override
+  String get exerciseStatTotalDistance => 'Total distance';
+
+  @override
+  String get exerciseStatBestSpeed => 'Top speed';
+
+  @override
+  String get exerciseUnitTimes => '';
+
+  @override
+  String get exerciseUnitMinutes => 'min';
+
+  @override
+  String get exerciseCompletedToast => 'Workout complete!';
+
+  @override
+  String get exerciseStoppedToast => 'Your workout was stopped.';
+
+  @override
+  String get exerciseLive => 'Live';
+
+  @override
+  String get exerciseElapsed => 'Elapsed time';
+
+  @override
+  String exerciseTarget(String duration) {
+    return 'Goal: $duration';
+  }
+
+  @override
+  String get exerciseCurrentSpeed => 'Current speed';
+
+  @override
+  String get exerciseDistance => 'Distance';
+
+  @override
+  String get exerciseStartTime => 'Start time';
+
+  @override
+  String get exerciseTreadmill => 'Treadmill';
+
+  @override
+  String get exerciseUnmannedNotice =>
+      'This is a self-service store. Please stay with your dog during the workout, and press the treadmill\'s emergency stop button if anything seems off.';
+
+  @override
+  String get exerciseNoLiveTitle => 'No workout in progress';
+
+  @override
+  String get exerciseNoLiveMessage =>
+      'Once a workout starts, you\'ll see it live here.';
+
+  @override
+  String get exerciseBookWorkout => 'Book a workout';
+
+  @override
+  String get exerciseNextBooking => 'Next booking';
+
+  @override
+  String get exerciseMyBookings => 'My bookings';
+
+  @override
+  String exerciseMonthSummary(int month) {
+    return 'This month\'s workouts';
+  }
+
+  @override
+  String get exerciseStatCount => 'Workouts';
+
+  @override
+  String get exerciseStatTotalWorkoutTime => 'Total workout time';
+
+  @override
+  String get exerciseRecentRecords => 'Recent workouts';
+
+  @override
+  String get exerciseAllRecords => 'See all';
+
+  @override
+  String exerciseTreadmillName(String name) {
+    return 'Treadmill $name';
+  }
+
+  @override
+  String get exerciseWorkoutTime => 'Workout time';
+
+  @override
+  String get exerciseAvgMax => 'Avg / max';
+
+  @override
+  String exerciseStopReason(String reason) {
+    return 'Stopped: $reason';
+  }
+
+  @override
+  String get exercisePointsVoided => 'Voided after a staff review';
+
+  @override
+  String exercisePointsWeeklyBonus(String points) {
+    return 'Includes $points weekly bonus';
+  }
+
+  @override
+  String get exercisePointsDefault => 'Ranking points';
+
+  @override
+  String get exerciseReportAi => 'AI report';
+
+  @override
+  String get exerciseReportFailed => 'Analysis failed';
+
+  @override
+  String get exerciseReportPending => 'Analyzing';
+
+  @override
+  String get analysisStatusQueued => 'Queued';
+
+  @override
+  String get analysisStatusProcessing => 'Analyzing';
+
+  @override
+  String get analysisStatusCompleted => 'Analysis complete';
+
+  @override
+  String get analysisStatusFailed => 'Analysis failed';
+
+  @override
+  String get analysisLevelNormal => 'No concerns';
+
+  @override
+  String get analysisLevelCaution => 'Monitor';
+
+  @override
+  String get analysisLevelWarning => 'Needs attention';
+
+  @override
+  String get analysisCameraFront => 'Front view';
+
+  @override
+  String get analysisCameraSide => 'Side view';
+
+  @override
+  String get healthTitle => 'Health';
+
+  @override
+  String healthTitleDog(String dog) {
+    return '$dog\'s health analysis';
+  }
+
+  @override
+  String get healthNoDogMessage =>
+      'Add your dog and start working out to see AI gait analysis results.';
+
+  @override
+  String get healthReports => 'Analysis reports';
+
+  @override
+  String healthPendingBanner(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count workout videos',
+      one: '1 workout video',
+    );
+    return 'We\'re analyzing $_temp0. We\'ll notify you when it\'s done.';
+  }
+
+  @override
+  String get healthPreparingTitle => 'We\'re preparing your first report';
+
+  @override
+  String get healthPreparingMessage =>
+      'We\'re analyzing joint movement and gait patterns from your workout video. We\'ll notify you when it\'s done.';
+
+  @override
+  String get healthConsentTitle => 'Workout video consent needed';
+
+  @override
+  String get healthConsentMessage =>
+      'AI gait analysis reports are made from workout videos. If you agree, we\'ll analyze joint movement and gait patterns starting with your next workout.';
+
+  @override
+  String get healthConsentAction => 'Go to consent';
+
+  @override
+  String get healthNoReportTitle => 'No analysis reports yet';
+
+  @override
+  String get healthNoReportMessage =>
+      'After a treadmill workout, we\'ll analyze joint movement and gait patterns from the video.';
+
+  @override
+  String get healthLatestAnalysis => 'Latest analysis';
+
+  @override
+  String get healthSymmetry => 'Left-right symmetry';
+
+  @override
+  String get healthCadence => 'Steps per minute';
+
+  @override
+  String get healthRhythm => 'Gait rhythm';
+
+  @override
+  String get healthUnitPoints => 'pts';
+
+  @override
+  String get healthConfidence => 'Confidence';
+
+  @override
+  String get healthViewReport => 'View full report →';
+
+  @override
+  String get healthTrendSymmetryDesc =>
+      'Shows how similar the left and right leg movements are. Higher means a more balanced gait.';
+
+  @override
+  String get healthTrendCadenceDesc =>
+      'Steps taken in one minute. A big change from the usual baseline is worth monitoring.';
+
+  @override
+  String get healthTrendVariabilityDesc =>
+      'Shows how consistent the stride timing is. Lower means a steadier rhythm.';
+
+  @override
+  String get healthTrendTitle => 'Gait trends';
+
+  @override
+  String get healthTrendSegSymmetry => 'Symmetry';
+
+  @override
+  String get healthTrendSegCadence => 'Steps';
+
+  @override
+  String get healthTrendSegVariability => 'Variability';
+
+  @override
+  String get healthTrendNeedMore =>
+      'You need at least 2 analysis results to see a trend.';
+
+  @override
+  String get healthJointRomTitle => 'Joint range of motion changes';
+
+  @override
+  String get healthAllJoints => 'All joints';
+
+  @override
+  String get healthPlanTitle => 'Custom workout plan';
+
+  @override
+  String get healthPlanTargetTime => 'Target time';
+
+  @override
+  String get healthPlanTargetSpeed => 'Target speed';
+
+  @override
+  String get healthVideoPause => 'Pause';
+
+  @override
+  String get healthVideoPlay => 'Play';
 }

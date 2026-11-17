@@ -1,17 +1,25 @@
 import '../../../core/utils/json.dart';
 import '../../ranking/data/ranking_models.dart';
+import '../../../l10n/l10n.dart';
 
 enum SessionStatus {
-  ready('ready', '준비 중'),
-  running('running', '운동 중'),
-  paused('paused', '일시정지'),
-  completed('completed', '운동 완료'),
-  stopped('stopped', '운동 중단');
+  ready('ready'),
+  running('running'),
+  paused('paused'),
+  completed('completed'),
+  stopped('stopped');
 
-  const SessionStatus(this.dbValue, this.label);
+  const SessionStatus(this.dbValue);
 
   final String dbValue;
-  final String label;
+
+  String get label => switch (this) {
+        SessionStatus.ready => L10n.current.exerciseStatusReady,
+        SessionStatus.running => L10n.current.exerciseStatusRunning,
+        SessionStatus.paused => L10n.current.exerciseStatusPaused,
+        SessionStatus.completed => L10n.current.exerciseStatusCompleted,
+        SessionStatus.stopped => L10n.current.exerciseStatusStopped,
+      };
 
   static SessionStatus fromDb(String value) =>
       values.firstWhere((e) => e.dbValue == value, orElse: () => SessionStatus.ready);

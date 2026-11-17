@@ -17,6 +17,7 @@ import '../../health/providers.dart';
 import '../data/exercise_session.dart';
 import '../providers.dart';
 import 'widgets/exercise_widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// 운동 탭 — 현재 운동 진행 현황 + 최근 기록 (문서 3.3)
 class ExerciseScreen extends ConsumerWidget {
@@ -39,18 +40,18 @@ class ExerciseScreen extends ConsumerWidget {
           ..invalidate(sessionsProvider(after.dogId))
           ..invalidate(reportsProvider(after.dogId))
           ..invalidate(nextBookingProvider);
-        context.showMessage(after.status == SessionStatus.completed ? '운동을 완료했어요!' : '운동이 중단되었어요.');
+        context.showMessage(after.status == SessionStatus.completed ? context.l10n.exerciseCompletedToast : context.l10n.exerciseStoppedToast);
       }
     });
 
     return Scaffold(
-      appBar: AppBar(title: Text(dog == null ? '운동' : '${dog.name}의 운동')),
+      appBar: AppBar(title: Text(dog == null ? context.l10n.exerciseTitle : context.l10n.exerciseTitleDog(dog.name))),
       body: dog == null
           ? EmptyState(
               icon: Icons.pets_rounded,
-              title: '등록된 반려견이 없어요',
-              message: '반려견을 등록하면 운동 현황과 기록을 볼 수 있어요.',
-              actionLabel: '반려견 등록',
+              title: context.l10n.exerciseNoDogTitle,
+              message: context.l10n.exerciseNoDogLiveMessage,
+              actionLabel: context.l10n.exerciseRegisterDog,
               onAction: () => context.push(AppRoutes.dogNew),
             )
           : RefreshIndicator(
@@ -129,7 +130,7 @@ class _LiveSessionCard extends ConsumerWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '실시간',
+                      context.l10n.exerciseLive,
                       style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12.5),
                     ),
                   ],
@@ -141,13 +142,13 @@ class _LiveSessionCard extends ConsumerWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('경과 시간', style: TextStyle(color: Colors.white.withValues(alpha: 0.75), fontSize: 13)),
+                      Text(context.l10n.exerciseElapsed, style: TextStyle(color: Colors.white.withValues(alpha: 0.75), fontSize: 13)),
                       const SizedBox(height: 4),
                       Text(Fmt.timer(elapsed), style: AppText.numeric(44, color: Colors.white)),
                       if (target != null) ...[
                         const SizedBox(height: 4),
                         Text(
-                          '목표 ${Fmt.durationMinutes(target)}',
+                          context.l10n.exerciseTarget(Fmt.durationMinutes(target)),
                           style: const TextStyle(color: AppColors.mintLight, fontWeight: FontWeight.w600, fontSize: 13),
                         ),
                       ],
@@ -158,11 +159,11 @@ class _LiveSessionCard extends ConsumerWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: HeroNumber(label: '현재 속도', value: session.currentSpeed.toStringAsFixed(1), unit: 'km/h'),
+                      child: HeroNumber(label: context.l10n.exerciseCurrentSpeed, value: session.currentSpeed.toStringAsFixed(1), unit: 'km/h'),
                     ),
                     Expanded(
                       child: HeroNumber(
-                        label: '이동 거리',
+                        label: context.l10n.exerciseDistance,
                         value: session.distanceMeters >= 1000
                             ? (session.distanceMeters / 1000).toStringAsFixed(2)
                             : session.distanceMeters.round().toString(),
@@ -176,11 +177,11 @@ class _LiveSessionCard extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: HeroNumber(
-                        label: '시작 시간',
+                        label: context.l10n.exerciseStartTime,
                         value: session.startedAt == null ? '-' : Fmt.time(session.startedAt!),
                       ),
                     ),
-                    Expanded(child: HeroNumber(label: '트레드밀', value: treadmillName ?? '-')),
+                    Expanded(child: HeroNumber(label: context.l10n.exerciseTreadmill, value: treadmillName ?? '-')),
                   ],
                 ),
                 const SizedBox(height: 18),
@@ -196,7 +197,7 @@ class _LiveSessionCard extends ConsumerWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          '무인 매장이에요. 운동하는 동안 반려견 곁을 지켜 주시고, 이상하면 트레드밀의 비상정지 버튼을 눌러 주세요.',
+                          context.l10n.exerciseUnmannedNotice,
                           style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 12.5),
                         ),
                       ),
@@ -214,6 +215,9 @@ class _LiveSessionCard extends ConsumerWidget {
 
 /// 진행 중인 운동이 없을 때 — 건강 탭의 '리포트 없음' 카드와 같은 가운데 정렬 빈 상태.
 /// 다음 예약이 있으면 홈과 같은 '다음 예약' 섹션으로 따로 보여준다.
+/// 단위가 없는 언어(영어의 '회')는 비워 둔다.
+String? _unit(String unit) => unit.isEmpty ? null : unit;
+
 class _NoLiveSession extends ConsumerWidget {
   const _NoLiveSession();
 
@@ -228,15 +232,18 @@ class _NoLiveSession extends ConsumerWidget {
           child: EmptyState(
             compact: true,
             icon: Icons.directions_run_rounded,
-            title: '진행 중인 운동이 없어요',
-            message: '운동이 시작되면 이곳에서 실시간으로 확인할 수 있어요.',
-            actionLabel: next == null ? '운동 예약하기' : null,
+            title: context.l10n.exerciseNoLiveTitle,
+            message: context.l10n.exerciseNoLiveMessage,
+            actionLabel: next == null ? context.l10n.exerciseBookWorkout : null,
             onAction: next == null ? () => context.push(AppRoutes.bookingNew) : null,
           ),
         ),
         if (next != null) ...[
           const SizedBox(height: 28),
-          SectionHeader(title: '다음 예약', actionLabel: '예약 내역', onAction: () => context.go(AppRoutes.booking)),
+          SectionHeader(
+            title: context.l10n.exerciseNextBooking,
+            actionLabel: context.l10n.exerciseMyBookings,
+             onAction: () => context.go(AppRoutes.booking)),
           BookingCard(booking: next, onTap: () => context.push(AppRoutes.bookingDetail(next.id))),
         ],
       ],
@@ -259,14 +266,18 @@ class _MonthlySummary extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionHeader(title: '${now.month}월 운동 요약'),
+        SectionHeader(title: context.l10n.exerciseMonthSummary(now.month)),
         AppCard(
           child: Row(
             children: [
-              Expanded(child: StatValue(label: '운동 횟수', value: '${totals.count}', unit: '회')),
-              Expanded(child: StatValue(label: '총 운동 시간', value: '${(totals.seconds / 60).round()}', unit: '분')),
+              Expanded(child: StatValue(label: context.l10n.exerciseStatCount, value: '${totals.count}', unit: _unit(context.l10n.exerciseUnitTimes))),
+              Expanded(child: StatValue(
+                  label: context.l10n.exerciseStatTotalWorkoutTime,
+                  value: '${(totals.seconds / 60).round()}',
+                  unit: context.l10n.exerciseUnitMinutes,
+                ),),
               Expanded(
-                child: StatValue(label: '총 거리', value: (totals.meters / 1000).toStringAsFixed(1), unit: 'km'),
+                child: StatValue(label: context.l10n.exerciseStatTotalDistance, value: (totals.meters / 1000).toStringAsFixed(1), unit: 'km'),
               ),
             ],
           ),
@@ -288,8 +299,8 @@ class _RecentRecords extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SectionHeader(
-          title: '최근 운동 기록',
-          actionLabel: '전체 기록',
+          title: context.l10n.exerciseRecentRecords,
+          actionLabel: context.l10n.exerciseAllRecords,
           onAction: () => context.push(AppRoutes.exerciseHistory),
         ),
         sessions.when(
@@ -301,12 +312,12 @@ class _RecentRecords extends ConsumerWidget {
           ),
           data: (list) {
             if (list.isEmpty) {
-              return const AppCard(
+              return AppCard(
                 child: EmptyState(
                   compact: true,
                   icon: Icons.insights_rounded,
-                  title: '아직 운동 기록이 없어요',
-                  message: '운동을 마치면 시간, 거리, 속도가 기록돼요.',
+                  title: context.l10n.exerciseNoRecordsTitle,
+                  message: context.l10n.exerciseNoRecordsSummaryMessage,
                 ),
               );
             }

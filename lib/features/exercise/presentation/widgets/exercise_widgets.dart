@@ -9,6 +9,8 @@ import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/common.dart';
 import '../../../ranking/presentation/widgets/ranking_widgets.dart';
 import '../../data/exercise_session.dart';
+import '../../../../l10n/l10n.dart';
+import '../../../../l10n/server_text.dart';
 
 /// 운동 경과 시간을 1초마다 갱신해 보여주는 위젯
 class LiveTicker extends StatefulWidget {
@@ -176,7 +178,7 @@ class ExerciseRecordTile extends StatelessWidget {
                     Text(
                       [
                         Fmt.time(session.date),
-                        if (session.treadmillName != null) '트레드밀 ${session.treadmillName}',
+                        if (session.treadmillName != null) context.l10n.exerciseTreadmillName(session.treadmillName!),
                       ].join(' · '),
                       style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant),
                     ),
@@ -195,14 +197,14 @@ class ExerciseRecordTile extends StatelessWidget {
             children: [
               Expanded(
                 child: StatValue(
-                  label: '운동 시간',
+                  label: context.l10n.exerciseWorkoutTime,
                   value: Fmt.timer(session.durationSeconds),
                   valueSize: 19,
                 ),
               ),
               Expanded(
                 child: StatValue(
-                  label: '이동 거리',
+                  label: context.l10n.exerciseDistance,
                   value: (session.distanceMeters / 1000).toStringAsFixed(2),
                   unit: 'km',
                   valueSize: 19,
@@ -210,7 +212,7 @@ class ExerciseRecordTile extends StatelessWidget {
               ),
               Expanded(
                 child: StatValue(
-                  label: '평균 / 최고',
+                  label: context.l10n.exerciseAvgMax,
                   value: '${session.averageSpeed?.toStringAsFixed(1) ?? '-'}'
                       '/${session.maxSpeed?.toStringAsFixed(1) ?? '-'}',
                   unit: 'km/h',
@@ -222,7 +224,7 @@ class ExerciseRecordTile extends StatelessWidget {
           if (session.status == SessionStatus.stopped && session.stopReason != null) ...[
             const SizedBox(height: 10),
             Text(
-              '중단 사유: ${session.stopReason}',
+              context.l10n.exerciseStopReason(localizedStopReason(session.stopReason!)),
               style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant),
             ),
           ],
@@ -235,9 +237,11 @@ class ExerciseRecordTile extends StatelessWidget {
                 Expanded(
                   child: Text(
                     points.voided
-                        ? '운영자 확인 후 무효 처리된 기록이에요'
+                        ? context.l10n.exercisePointsVoided
                         : points.note?.message ??
-                            (points.weeklyBonus > 0 ? '주간 보너스 ${points.weeklyBonus}점 포함' : '랭킹 점수'),
+                            (points.weeklyBonus > 0
+                                ? context.l10n.exercisePointsWeeklyBonus(Fmt.points(points.weeklyBonus))
+                                : context.l10n.exercisePointsDefault),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant),
@@ -263,9 +267,9 @@ class _ReportChip extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final tone = scheme.calmTone;
     final label = switch (report.status) {
-      'completed' => 'AI 리포트',
-      'failed' => '분석 실패',
-      _ => '분석 중',
+      'completed' => context.l10n.exerciseReportAi,
+      'failed' => context.l10n.exerciseReportFailed,
+      _ => context.l10n.exerciseReportPending,
     };
     final tappable = report.isCompleted && onTap != null;
     return Semantics(

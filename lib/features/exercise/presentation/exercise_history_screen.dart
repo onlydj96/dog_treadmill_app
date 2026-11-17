@@ -11,6 +11,7 @@ import '../../dogs/providers.dart';
 import '../data/exercise_session.dart';
 import '../providers.dart';
 import 'widgets/exercise_widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// 운동 기록 — 날짜별 기록, 누적 통계, 중단 사유, AI 리포트 연결 (문서 3.3)
 class ExerciseHistoryScreen extends ConsumerWidget {
@@ -20,13 +21,13 @@ class ExerciseHistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dog = ref.watch(selectedDogProvider).valueOrNull;
     return Scaffold(
-      appBar: AppBar(title: Text(dog == null ? '운동 기록' : '${dog.name}의 운동 기록')),
+      appBar: AppBar(title: Text(dog == null ? context.l10n.exerciseHistoryTitle : context.l10n.exerciseHistoryTitleDog(dog.name))),
       body: dog == null
           ? EmptyState(
               icon: Icons.pets_rounded,
-              title: '등록된 반려견이 없어요',
-              message: '반려견을 등록하면 운동 기록을 볼 수 있어요.',
-              actionLabel: '반려견 등록',
+              title: context.l10n.exerciseNoDogTitle,
+              message: context.l10n.exerciseNoDogHistoryMessage,
+              actionLabel: context.l10n.exerciseRegisterDog,
               onAction: () => context.push(AppRoutes.dogNew),
             )
           : AsyncValueView<List<ExerciseSession>>(
@@ -38,10 +39,10 @@ class ExerciseHistoryScreen extends ConsumerWidget {
                   await ref.read(sessionsProvider(dog.id).future);
                 },
                 child: sessions.isEmpty
-                    ? const EmptyState(
+                    ? EmptyState(
                         icon: Icons.insights_rounded,
-                        title: '아직 운동 기록이 없어요',
-                        message: '운동을 마치면 날짜별 기록이 쌓여요.',
+                        title: context.l10n.exerciseNoRecordsTitle,
+                        message: context.l10n.exerciseNoRecordsHistoryMessage,
                       )
                     : _HistoryList(sessions: sessions),
               ),
@@ -50,17 +51,20 @@ class ExerciseHistoryScreen extends ConsumerWidget {
   }
 }
 
+/// 단위가 없는 언어(영어의 '회')는 비워 둔다.
+String? _unit(String unit) => unit.isEmpty ? null : unit;
+
 class _HistoryList extends StatelessWidget {
   const _HistoryList({required this.sessions});
 
   final List<ExerciseSession> sessions;
 
   /// "2026년 11월 · 3회 · 120점" (점수 기록이 있는 달만 점수를 붙인다)
-  static String _monthTitle(String month, List<ExerciseSession> sessions) {
+  static String _monthTitle(BuildContext context, String month, List<ExerciseSession> sessions) {
     final scored = sessions.map((s) => s.pointsSummary).nonNulls.toList();
     return [
       month,
-      '${sessions.length}회',
+      context.l10n.exerciseSessionCount(sessions.length),
       if (scored.isNotEmpty) Fmt.points(scored.fold<int>(0, (sum, p) => sum + p.total)),
     ].join(' · ');
   }
@@ -85,34 +89,34 @@ class _HistoryList extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                '누적 운동 기록',
-                style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.mintInk),
+              Text(
+                context.l10n.exerciseTotalsTitle,
+                style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.mintInk),
               ),
               const SizedBox(height: 14),
               Row(
                 children: [
                   Expanded(
                     child: StatValue(
-                      label: '총 운동',
+                      label: context.l10n.exerciseStatTotalWorkouts,
                       value: '${totals.count}',
-                      unit: '회',
+                      unit: _unit(context.l10n.exerciseUnitTimes),
                       color: AppColors.mintInk,
                       labelColor: AppColors.mintDeep,
                     ),
                   ),
                   Expanded(
                     child: StatValue(
-                      label: '총 시간',
+                      label: context.l10n.exerciseStatTotalTime,
                       value: '${(totals.seconds / 60).round()}',
-                      unit: '분',
+                      unit: context.l10n.exerciseUnitMinutes,
                       color: AppColors.mintInk,
                       labelColor: AppColors.mintDeep,
                     ),
                   ),
                   Expanded(
                     child: StatValue(
-                      label: '총 거리',
+                      label: context.l10n.exerciseStatTotalDistance,
                       value: (totals.meters / 1000).toStringAsFixed(1),
                       unit: 'km',
                       color: AppColors.mintInk,
@@ -121,7 +125,7 @@ class _HistoryList extends StatelessWidget {
                   ),
                   Expanded(
                     child: StatValue(
-                      label: '최고 속도',
+                      label: context.l10n.exerciseStatBestSpeed,
                       value: bestSpeed == 0 ? '-' : bestSpeed.toStringAsFixed(1),
                       unit: bestSpeed == 0 ? null : 'km/h',
                       color: AppColors.mintInk,
@@ -135,7 +139,7 @@ class _HistoryList extends StatelessWidget {
         ),
         for (final entry in groups.entries) ...[
           const SizedBox(height: 24),
-          SectionHeader(title: _monthTitle(entry.key, entry.value)),
+          SectionHeader(title: _monthTitle(context, entry.key, entry.value)),
           for (final session in entry.value)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
