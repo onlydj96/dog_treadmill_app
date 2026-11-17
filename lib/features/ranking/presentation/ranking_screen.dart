@@ -9,6 +9,7 @@ import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../../booking/data/booking_models.dart';
 import '../../booking/providers.dart';
 import '../../consents/data/consent_repository.dart';
@@ -95,7 +96,7 @@ class _RankingScreenState extends ConsumerState<RankingScreen> with SingleTicker
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
-              child: Text('매장 랭킹 보드', style: Theme.of(context).textTheme.titleLarge),
+              child: Text(context.l10n.boardTitle, style: Theme.of(context).textTheme.titleLarge),
             ),
             for (final branch in candidates)
               ListTile(
@@ -119,27 +120,31 @@ class _RankingScreenState extends ConsumerState<RankingScreen> with SingleTicker
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('랭킹'),
+        title: Text(context.l10n.rankingTitle),
         actions: [
           if (dog != null && mine != null && mine.points > 0)
             IconButton(
-              tooltip: '자랑하기',
+              tooltip: context.l10n.rankingShareTooltip,
               icon: const Icon(Icons.ios_share_rounded),
               onPressed: () => showRankingShareSheet(context, dog: dog, ranking: mine),
             ),
           PopupMenuButton<_MenuAction>(
-            tooltip: '랭킹 메뉴',
+            tooltip: context.l10n.rankingMenuTooltip,
             onSelected: _openMenu,
             itemBuilder: (context) => [
-              const PopupMenuItem(value: _MenuAction.settings, child: Text('참여·닉네임 설정')),
-              const PopupMenuItem(value: _MenuAction.rules, child: Text('점수 규칙')),
-              if (isAdmin) const PopupMenuItem(value: _MenuAction.board, child: Text('매장 랭킹 보드')),
+              PopupMenuItem(value: _MenuAction.settings, child: Text(context.l10n.rankingMenuSettings)),
+              PopupMenuItem(value: _MenuAction.rules, child: Text(context.l10n.rankingMenuRules)),
+              if (isAdmin) PopupMenuItem(value: _MenuAction.board, child: Text(context.l10n.boardTitle)),
             ],
           ),
         ],
         bottom: TabBar(
           controller: _tabs,
-          tabs: const [Tab(text: '반려견 랭킹'), Tab(text: '지점 대항전'), Tab(text: '명예의 전당')],
+          tabs: [
+            Tab(text: context.l10n.rankingTabDogs),
+            Tab(text: context.l10n.rankingTabBattle),
+            Tab(text: context.l10n.rankingTabHall),
+          ],
         ),
       ),
       body: TabBarView(
@@ -209,7 +214,7 @@ class _RankingScreenState extends ConsumerState<RankingScreen> with SingleTicker
                     children: [
                       for (final size in DogSize.values)
                         ChoiceChip(
-                          label: Text('${size.label}견'),
+                          label: Text(sizeScopeLabel(size)),
                           selected: scopeKey == size.dbValue,
                           onSelected: (_) => setState(() => _size = size),
                         ),
@@ -234,10 +239,10 @@ class _RankingScreenState extends ConsumerState<RankingScreen> with SingleTicker
                         child: EmptyState(
                           compact: true,
                           icon: Icons.leaderboard_rounded,
-                          title: '아직 순위에 오른 반려견이 없어요',
+                          title: context.l10n.rankingEmptyTitle,
                           message: RankingMonth.isCurrent(_month)
-                              ? '이번 달 첫 운동을 마치면 바로 랭킹에 올라요.'
-                              : '이 달에는 운동 기록이 없어요.',
+                              ? context.l10n.rankingEmptyCurrent
+                              : context.l10n.rankingEmptyPast,
                         ),
                       );
                     }
@@ -254,8 +259,9 @@ class _RankingScreenState extends ConsumerState<RankingScreen> with SingleTicker
                           ),
                         const SizedBox(height: 4),
                         Text(
-                          '참여 반려견 ${entries.first.participantCount}마리'
-                          '${entries.first.participantCount > entries.length ? ' · 상위 ${entries.length}마리' : ''}',
+                          entries.first.participantCount > entries.length
+                              ? context.l10n.rankingParticipantsTop(entries.first.participantCount, entries.length)
+                              : context.l10n.rankingParticipants(entries.first.participantCount),
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant),
                         ),
@@ -312,7 +318,7 @@ class _MonthBar extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-          tooltip: '이전 달',
+          tooltip: context.l10n.rankingPrevMonth,
           onPressed: month.isAfter(earliest) ? () => onChanged(RankingMonth.previous(month)) : null,
           icon: const Icon(Icons.chevron_left_rounded),
         ),
@@ -321,14 +327,14 @@ class _MonthBar extends StatelessWidget {
             children: [
               Text(Fmt.yearMonth(month), style: Theme.of(context).textTheme.titleMedium),
               Text(
-                isCurrent ? '진행 중 · 운동이 끝나면 바로 반영돼요' : '지난 달 기록',
+                isCurrent ? context.l10n.rankingMonthInProgress : context.l10n.rankingMonthPast,
                 style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
               ),
             ],
           ),
         ),
         IconButton(
-          tooltip: '다음 달',
+          tooltip: context.l10n.rankingNextMonth,
           onPressed: isCurrent ? null : () => onChanged(RankingMonth.next(month)),
           icon: const Icon(Icons.chevron_right_rounded),
         ),
@@ -359,12 +365,14 @@ class _JoinBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  overall == null ? '${dog.name}도 랭킹에 올려 보세요' : '참여하면 ${dog.name} 전체 ${overall.rank}위예요',
+                  overall == null
+                      ? context.l10n.rankingJoinPrompt(dog.name)
+                      : context.l10n.rankingJoinPromptRank(dog.name, overall.rank),
                   style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.charcoal),
                 ),
-                const Text(
-                  '닉네임과 반려견 정보만 공개돼요.',
-                  style: TextStyle(fontSize: 12.5, color: AppColors.honeyInk),
+                Text(
+                  context.l10n.rankingJoinPublicInfo,
+                  style: const TextStyle(fontSize: 12.5, color: AppColors.honeyInk),
                 ),
               ],
             ),
@@ -377,7 +385,7 @@ class _JoinBanner extends StatelessWidget {
               minimumSize: const Size(0, 40),
               padding: const EdgeInsets.symmetric(horizontal: 14),
             ),
-            child: const Text('참여하기'),
+            child: Text(context.l10n.rankingJoinButton),
           ),
         ],
       ),
@@ -397,12 +405,18 @@ class _MyRankBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final rank = this.rank;
+    final l = context.l10n;
+    final pointsToNext = rank?.pointsToNext;
     final title = rank == null
-        ? '${dog.name} · 이 랭킹에서는 아직 점수가 없어요'
-        : '${dog.name} · ${participating ? '' : '참여하면 '}${rank.rank}위';
+        ? l.rankingMyBarNoScore(dog.name)
+        : participating
+            ? l.rankingMyBarRank(dog.name, rank.rank)
+            : l.rankingMyBarRankIfJoined(dog.name, rank.rank);
     final caption = rank == null
-        ? '운동을 마치면 점수가 쌓여요'
-        : '${Fmt.points(rank.points)} · ${rank.pointsToNext == null ? '1위를 지키고 있어요!' : '${rank.pointsToNext}점 더 받으면 순위가 올라요'}';
+        ? l.rankingMyBarNoPoints
+        : pointsToNext == null
+            ? l.rankingMyBarKeepFirst(Fmt.points(rank.points))
+            : l.rankingMyBarPointsToNext(Fmt.points(rank.points), pointsToNext);
 
     return Material(
       color: scheme.surfaceContainerLowest,
@@ -463,7 +477,7 @@ class _BattleTab extends ConsumerWidget {
           _MonthBar(month: month, onChanged: onMonthChanged),
           const SizedBox(height: 6),
           Text(
-            '지점에서 운동한 모든 반려견의 거리를 더해요. 우리 반려견이 걸은 만큼 우리 지점이 앞서요!',
+            context.l10n.rankingBattleIntro,
             style: TextStyle(color: scheme.onSurfaceVariant, height: 1.5),
           ),
           const SizedBox(height: 16),
@@ -521,7 +535,7 @@ class _BattleCard extends StatelessWidget {
                     ),
                     if (isMine) ...[
                       const SizedBox(width: 6),
-                      StatusBadge(label: '내 지점', tone: scheme.activeTone, dense: true),
+                      StatusBadge(label: context.l10n.rankingBattleMine, tone: scheme.activeTone, dense: true),
                     ],
                   ],
                 ),
@@ -538,7 +552,7 @@ class _BattleCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '운동 ${entry.sessionCount}회 · 반려견 ${entry.dogCount}마리',
+            context.l10n.rankingBattleStats(entry.sessionCount, entry.dogCount),
             style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant),
           ),
         ],
@@ -558,10 +572,10 @@ class _HallOfFameTab extends ConsumerWidget {
       onRetry: () => ref.invalidate(hallOfFameProvider),
       data: (entries) {
         if (entries.isEmpty) {
-          return const EmptyState(
+          return EmptyState(
             icon: Icons.emoji_events_outlined,
-            title: '아직 명예의 전당이 비어 있어요',
-            message: '매달 1일에 지난달 부문별 1~3위가 이곳에 올라요.',
+            title: context.l10n.rankingHallEmptyTitle,
+            message: context.l10n.rankingHallEmptyMessage,
           );
         }
         final months = <DateTime, List<HallOfFameEntry>>{};
@@ -577,7 +591,7 @@ class _HallOfFameTab extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
             children: [
               for (final month in months.entries) ...[
-                SectionHeader(title: '${Fmt.yearMonth(month.key)} 명예의 전당'),
+                SectionHeader(title: context.l10n.rankingHallMonthTitle(Fmt.yearMonth(month.key))),
                 _HallMonthCard(entries: month.value),
                 const SizedBox(height: 24),
               ],
@@ -625,7 +639,7 @@ class _HallMonthCard extends StatelessWidget {
                           DogAvatar.path(path: entry.photoPath, size: 56, ringColor: AppColors.medal(entry.rank)),
                           const SizedBox(height: 6),
                           Text(
-                            entry.dogName ?? '비공개 반려견',
+                            entry.dogName ?? context.l10n.rankingPrivateDog,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontWeight: FontWeight.w800),
@@ -645,7 +659,7 @@ class _HallMonthCard extends StatelessWidget {
             ),
           if (champions.isNotEmpty) ...[
             const Divider(height: 24),
-            Text('부문별 1위', style: TextStyle(fontWeight: FontWeight.w800, color: scheme.onSurfaceVariant)),
+            Text(context.l10n.rankingHallChampions, style: TextStyle(fontWeight: FontWeight.w800, color: scheme.onSurfaceVariant)),
             const SizedBox(height: 4),
             for (final entry in champions)
               ListTile(
@@ -653,7 +667,7 @@ class _HallMonthCard extends StatelessWidget {
                 dense: true,
                 onTap: () => open(entry),
                 leading: DogAvatar.path(path: entry.photoPath, size: 36),
-                title: Text(entry.dogName ?? '비공개 반려견', style: const TextStyle(fontWeight: FontWeight.w700)),
+                title: Text(entry.dogName ?? context.l10n.rankingPrivateDog, style: const TextStyle(fontWeight: FontWeight.w700)),
                 subtitle: Text(
                   entry.scope == RankingScope.branch ? shortBranchName(entry.scopeLabel) : entry.scopeLabel,
                 ),

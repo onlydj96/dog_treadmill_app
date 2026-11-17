@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/utils/formatters.dart';
 import '../../../core/utils/json.dart';
+import '../../../l10n/l10n.dart';
 import '../../dogs/data/dog.dart';
 
 /// 랭킹 기간(월). 한국 시간 기준이며 1일 0시의 로컬 [DateTime]으로 다룬다.
@@ -21,23 +22,37 @@ abstract final class RankingMonth {
   static bool isCurrent(DateTime month, {DateTime? now}) => of(month) == current(now: now);
 }
 
-/// "용산 아이파크몰점" → "용산점". 칩·칭호처럼 좁은 곳에 쓴다.
+/// "용산 아이파크몰점" → "용산점", "Yongsan I'Park Mall" → "Yongsan". 칩·칭호처럼 좁은 곳에 쓴다.
 String shortBranchName(String name) {
   final trimmed = name.trim();
   final space = trimmed.indexOf(' ');
   if (space <= 0) return trimmed;
-  return '${trimmed.substring(0, space)}점';
+  final first = trimmed.substring(0, space);
+  // 한글 이름은 "OO점"으로, 영어 이름은 첫 단어만 쓴다
+  return RegExp('[\uAC00-\uD7A3]').hasMatch(trimmed) ? '$first\uC810' : first;
 }
 
-enum RankingScope {
-  all('all', '전체'),
-  branch('branch', '지점'),
-  size('size', '체급');
+/// 체급 범위 이름 ("소형견" / "Small dogs"). 탭·칩·프로필에 쓴다.
+String sizeScopeLabel(DogSize size) => switch (size) {
+      DogSize.small => L10n.current.rankingSizeSmall,
+      DogSize.medium => L10n.current.rankingSizeMedium,
+      DogSize.large => L10n.current.rankingSizeLarge,
+    };
 
-  const RankingScope(this.dbValue, this.label);
+enum RankingScope {
+  all('all'),
+  branch('branch'),
+  size('size');
+
+  const RankingScope(this.dbValue);
 
   final String dbValue;
-  final String label;
+
+  String get label => switch (this) {
+        RankingScope.all => L10n.current.rankingScopeAll,
+        RankingScope.branch => L10n.current.rankingScopeBranch,
+        RankingScope.size => L10n.current.rankingScopeSize,
+      };
 
   static RankingScope fromDb(String? value) =>
       values.firstWhere((e) => e.dbValue == value, orElse: () => RankingScope.all);
@@ -69,16 +84,27 @@ class RankingQuery {
 
 /// 지난달 수상 칭호 ("10월 전체 1위")
 class RankingTitle {
-  const RankingTitle({required this.periodMonth, required this.scope, required this.label, required this.rank});
+  const RankingTitle({
+    required this.periodMonth,
+    required this.scope,
+    required String label,
+    this.labelEn,
+    required this.rank,
+  }) : _label = label;
 
   final DateTime periodMonth;
   final RankingScope scope;
-  final String label;
+  final String _label;
+
+  /// 서버가 주는 영어 라벨 (title_label_en 등). 없으면 한국어 라벨을 쓴다.
+  final String? labelEn;
   final int rank;
+
+  String get label => L10n.pick(_label, labelEn);
 
   String get text {
     final scopeText = scope == RankingScope.branch ? shortBranchName(label) : label;
-    return '${Fmt.month(periodMonth)} $scopeText $rank위';
+    return L10n.current.rankingTitleText(Fmt.month(periodMonth), scopeText, rank);
   }
 }
 
@@ -93,15 +119,18 @@ class LeaderboardEntry {
     required this.sessionCount,
     required this.distanceMeters,
     required this.participantCount,
-    this.breedLabel,
+    String? breedLabel,
+    this.breedLabelEn,
     this.size,
     this.photoPath,
-    this.mainBranchName,
+    String? mainBranchName,
+    this.mainBranchNameEn,
     this.cheerCount = 0,
     this.cheeredByMe = false,
     this.isMine = false,
     this.title,
-  });
+  })  : _breedLabel = breedLabel,
+        _mainBranchName = mainBranchName;
 
   factory LeaderboardEntry.fromJson(Json json) {
     final titlePeriod = json.strOrNull('title_period');
@@ -110,10 +139,12 @@ class LeaderboardEntry {
       dogId: json.str('dog_id'),
       dogName: json.str('dog_name'),
       breedLabel: json.strOrNull('breed_label'),
+      breedLabelEn: json.strOrNull('breed_label_en'),
       size: DogSize.fromDb(json.strOrNull('size_class')),
       photoPath: json.strOrNull('photo_path'),
       nickname: json.strOrNull('nickname') ?? '',
       mainBranchName: json.strOrNull('main_branch_name'),
+      mainBranchNameEn: json.strOrNull('main_branch_name_en'),
       points: json.intOr('points'),
       sessionCount: json.intOr('session_count'),
       distanceMeters: json.dblOr('distance_meters'),
@@ -127,6 +158,7 @@ class LeaderboardEntry {
               periodMonth: DateTime.parse(titlePeriod),
               scope: RankingScope.fromDb(json.strOrNull('title_scope')),
               label: json.strOrNull('title_label') ?? '',
+              labelEn: json.strOrNull('title_label_en'),
               rank: json.intOr('title_rank'),
             ),
     );
@@ -135,7 +167,8 @@ class LeaderboardEntry {
   final int rank;
   final String dogId;
   final String dogName;
-  final String? breedLabel;
+  final String? _breedLabel;
+  final String? breedLabelEn;
   final DogSize? size;
 
   /// 보호자가 사진 공개를 켰을 때만 있다
@@ -143,7 +176,12 @@ class LeaderboardEntry {
   final String nickname;
 
   /// 이번 달 가장 많이 운동한 지점
-  final String? mainBranchName;
+  final String? _mainBranchName;
+  final String? mainBranchNameEn;
+
+  String? get breedLabel => L10n.pickOrNull(_breedLabel, breedLabelEn);
+
+  String? get mainBranchName => L10n.pickOrNull(_mainBranchName, mainBranchNameEn);
   final int points;
   final int sessionCount;
   final double distanceMeters;
@@ -159,18 +197,20 @@ class ScopeRank {
   const ScopeRank({
     required this.scope,
     required this.scopeKey,
-    required this.label,
+    required String label,
+    this.labelEn,
     required this.rank,
     required this.participantCount,
     required this.points,
     required this.topPercent,
     this.pointsToNext,
-  });
+  }) : _label = label;
 
   factory ScopeRank.fromJson(Json json) => ScopeRank(
         scope: RankingScope.fromDb(json.strOrNull('scope')),
         scopeKey: json.strOrNull('scope_key') ?? 'all',
         label: json.strOrNull('label') ?? '',
+        labelEn: json.strOrNull('label_en'),
         rank: json.intOr('rank'),
         participantCount: json.intOr('participant_count'),
         points: json.intOr('points'),
@@ -182,7 +222,8 @@ class ScopeRank {
   final String scopeKey;
 
   /// 전체 / 지점명 / 소형견·중형견·대형견
-  final String label;
+  final String _label;
+  final String? labelEn;
   final int rank;
   final int participantCount;
   final int points;
@@ -191,8 +232,11 @@ class ScopeRank {
   final int? pointsToNext;
   final int topPercent;
 
-  /// "용산점 1위", "전체 2위"
-  String get shortText => '${scope == RankingScope.branch ? shortBranchName(label) : label} $rank위';
+  String get label => L10n.pick(_label, labelEn);
+
+  /// "용산점 1위", "전체 2위" / "#1 Yongsan", "#2 Overall"
+  String get shortText =>
+      L10n.current.rankingScopeRankShort(scope == RankingScope.branch ? shortBranchName(label) : label, rank);
 }
 
 /// 내 반려견의 월간 점수·순위 (get_my_ranking)
@@ -256,17 +300,19 @@ class BranchBattleEntry {
   const BranchBattleEntry({
     required this.rank,
     required this.branchId,
-    required this.branchName,
+    required String branchName,
+    this.branchNameEn,
     required this.distanceMeters,
     required this.sessionCount,
     required this.dogCount,
     required this.points,
-  });
+  }) : _branchName = branchName;
 
   factory BranchBattleEntry.fromJson(Json json) => BranchBattleEntry(
         rank: json.intOr('rank'),
         branchId: json.str('branch_id'),
         branchName: json.str('branch_name'),
+        branchNameEn: json.strOrNull('branch_name_en'),
         distanceMeters: json.dblOr('distance_meters'),
         sessionCount: json.intOr('session_count'),
         dogCount: json.intOr('dog_count'),
@@ -275,11 +321,14 @@ class BranchBattleEntry {
 
   final int rank;
   final String branchId;
-  final String branchName;
+  final String _branchName;
+  final String? branchNameEn;
   final double distanceMeters;
   final int sessionCount;
   final int dogCount;
   final int points;
+
+  String get branchName => L10n.pick(_branchName, branchNameEn);
 }
 
 /// 명예의 전당 한 줄 (get_hall_of_fame). 이후 랭킹 참여를 철회했으면 isHidden.
@@ -288,27 +337,32 @@ class HallOfFameEntry {
     required this.periodMonth,
     required this.scope,
     required this.scopeKey,
-    required this.scopeLabel,
+    required String scopeLabel,
+    this.scopeLabelEn,
     required this.rank,
     required this.points,
     this.dogId,
     this.dogName,
-    this.breedLabel,
+    String? breedLabel,
+    this.breedLabelEn,
     this.photoPath,
     this.nickname,
     this.isMine = false,
     this.isHidden = false,
-  });
+  })  : _scopeLabel = scopeLabel,
+        _breedLabel = breedLabel;
 
   factory HallOfFameEntry.fromJson(Json json) => HallOfFameEntry(
         periodMonth: DateTime.parse(json.str('period_month')),
         scope: RankingScope.fromDb(json.strOrNull('scope')),
         scopeKey: json.strOrNull('scope_key') ?? 'all',
         scopeLabel: json.strOrNull('scope_label') ?? '',
+        scopeLabelEn: json.strOrNull('scope_label_en'),
         rank: json.intOr('rank'),
         dogId: json.strOrNull('dog_id'),
         dogName: json.strOrNull('dog_name'),
         breedLabel: json.strOrNull('breed_label'),
+        breedLabelEn: json.strOrNull('breed_label_en'),
         photoPath: json.strOrNull('photo_path'),
         nickname: json.strOrNull('nickname'),
         points: json.intOr('points'),
@@ -319,16 +373,22 @@ class HallOfFameEntry {
   final DateTime periodMonth;
   final RankingScope scope;
   final String scopeKey;
-  final String scopeLabel;
+  final String _scopeLabel;
+  final String? scopeLabelEn;
   final int rank;
   final String? dogId;
   final String? dogName;
-  final String? breedLabel;
+  final String? _breedLabel;
+  final String? breedLabelEn;
   final String? photoPath;
   final String? nickname;
   final int points;
   final bool isMine;
   final bool isHidden;
+
+  String get scopeLabel => L10n.pick(_scopeLabel, scopeLabelEn);
+
+  String? get breedLabel => L10n.pickOrNull(_breedLabel, breedLabelEn);
 }
 
 enum BadgeTier {
@@ -345,16 +405,15 @@ enum BadgeTier {
 
 /// 배지 진행률 지표 (DB badges.metric)
 enum BadgeMetric {
-  sessions('sessions', '회'),
-  distanceMeters('distance_meters', 'km'),
-  streakWeeks('streak_weeks', '주'),
-  branches('branches', '곳'),
-  openRuns('open_runs', '번');
+  sessions('sessions'),
+  distanceMeters('distance_meters'),
+  streakWeeks('streak_weeks'),
+  branches('branches'),
+  openRuns('open_runs');
 
-  const BadgeMetric(this.dbValue, this.unit);
+  const BadgeMetric(this.dbValue);
 
   final String dbValue;
-  final String unit;
 
   static BadgeMetric? fromDb(String? value) {
     for (final metric in values) {
@@ -411,19 +470,24 @@ class BadgeStats {
 class BadgeDef {
   const BadgeDef({
     required this.code,
-    required this.name,
-    required this.description,
+    required String name,
+    required String description,
+    this.nameEn,
+    this.descriptionEn,
     required this.icon,
     required this.tier,
     this.metric,
     this.goal,
     this.sortOrder = 0,
-  });
+  })  : _name = name,
+        _description = description;
 
   factory BadgeDef.fromJson(Json json) => BadgeDef(
         code: json.str('code'),
         name: json.str('name'),
         description: json.strOrNull('description') ?? '',
+        nameEn: json.strOrNull('name_en'),
+        descriptionEn: json.strOrNull('description_en'),
         metric: BadgeMetric.fromDb(json.strOrNull('metric')),
         goal: json.dblOrNull('goal'),
         icon: json.strOrNull('icon') ?? 'paw',
@@ -432,8 +496,14 @@ class BadgeDef {
       );
 
   final String code;
-  final String name;
-  final String description;
+  final String _name;
+  final String _description;
+  final String? nameEn;
+  final String? descriptionEn;
+
+  String get name => L10n.pick(_name, nameEn);
+
+  String get description => L10n.pick(_description, descriptionEn);
 
   /// 진행률 지표. 시상대처럼 월간 마감 때 주는 배지는 null.
   final BadgeMetric? metric;
@@ -460,10 +530,18 @@ class BadgeDef {
     final value = stats.valueFor(metric);
     if (metric == BadgeMetric.distanceMeters) {
       final current = (value / 1000).clamp(0, goal / 1000);
-      return '${current.toStringAsFixed(1)} / ${(goal / 1000).toStringAsFixed(1)}${metric.unit}';
+      return L10n.current.badgeProgressDistance(current.toStringAsFixed(1), (goal / 1000).toStringAsFixed(1));
     }
-    final current = value.clamp(0, goal);
-    return '${current.toInt()} / ${goal.toInt()}${metric.unit}';
+    final current = value.clamp(0, goal).toInt();
+    final target = goal.toInt();
+    final l = L10n.current;
+    return switch (metric) {
+      BadgeMetric.sessions => l.badgeProgressSessions(current, target),
+      BadgeMetric.streakWeeks => l.badgeProgressWeeks(current, target),
+      BadgeMetric.branches => l.badgeProgressBranches(current, target),
+      BadgeMetric.openRuns => l.badgeProgressOpenRuns(current, target),
+      BadgeMetric.distanceMeters => throw StateError('handled above'),
+    };
   }
 }
 
@@ -483,16 +561,18 @@ class AwardRecord {
     required this.periodMonth,
     required this.scope,
     required this.scopeKey,
-    required this.scopeLabel,
+    required String scopeLabel,
+    this.scopeLabelEn,
     required this.rank,
     required this.points,
-  });
+  }) : _scopeLabel = scopeLabel;
 
   factory AwardRecord.fromJson(Json json) => AwardRecord(
         periodMonth: DateTime.parse(json.str('period_month')),
         scope: RankingScope.fromDb(json.strOrNull('scope')),
         scopeKey: json.strOrNull('scope_key') ?? 'all',
         scopeLabel: json.strOrNull('scope_label') ?? '',
+        scopeLabelEn: json.strOrNull('scope_label_en'),
         rank: json.intOr('rank'),
         points: json.intOr('points'),
       );
@@ -500,13 +580,16 @@ class AwardRecord {
   final DateTime periodMonth;
   final RankingScope scope;
   final String scopeKey;
-  final String scopeLabel;
+  final String _scopeLabel;
+  final String? scopeLabelEn;
   final int rank;
   final int points;
 
+  String get scopeLabel => L10n.pick(_scopeLabel, scopeLabelEn);
+
   /// "10월 용산점 1위"
   String get text =>
-      RankingTitle(periodMonth: periodMonth, scope: scope, label: scopeLabel, rank: rank).text;
+      RankingTitle(periodMonth: periodMonth, scope: scope, label: _scopeLabel, labelEn: scopeLabelEn, rank: rank).text;
 }
 
 /// 내 반려견의 배지·진행률·수상 기록 (get_dog_achievements)
@@ -544,17 +627,19 @@ class RankingDogProfile {
     required this.cheeredByMe,
     required this.badges,
     required this.awards,
-    this.breedLabel,
+    String? breedLabel,
+    this.breedLabelEn,
     this.size,
     this.photoPath,
     this.rank,
     this.participantCount,
-  });
+  }) : _breedLabel = breedLabel;
 
   factory RankingDogProfile.fromJson(Json json) => RankingDogProfile(
         dogId: json.str('dog_id'),
         dogName: json.str('dog_name'),
         breedLabel: json.strOrNull('breed_label'),
+        breedLabelEn: json.strOrNull('breed_label_en'),
         size: DogSize.fromDb(json.strOrNull('size_class')),
         photoPath: json.strOrNull('photo_path'),
         nickname: json.strOrNull('nickname') ?? '',
@@ -574,7 +659,8 @@ class RankingDogProfile {
 
   final String dogId;
   final String dogName;
-  final String? breedLabel;
+  final String? _breedLabel;
+  final String? breedLabelEn;
   final DogSize? size;
   final String? photoPath;
   final String nickname;
@@ -592,17 +678,23 @@ class RankingDogProfile {
   final bool cheeredByMe;
   final List<EarnedBadge> badges;
   final List<AwardRecord> awards;
+
+  String? get breedLabel => L10n.pickOrNull(_breedLabel, breedLabelEn);
 }
 
 /// 점수 0점인 이유
 enum PointsNote {
-  tooShort('too_short', '5분 미만 운동은 점수에 들어가지 않아요'),
-  dailyLimit('daily_limit', '하루에 한 번만 점수를 받아요');
+  tooShort('too_short'),
+  dailyLimit('daily_limit');
 
-  const PointsNote(this.dbValue, this.message);
+  const PointsNote(this.dbValue);
 
   final String dbValue;
-  final String message;
+
+  String get message => switch (this) {
+        PointsNote.tooShort => L10n.current.rankingPointsNoteTooShort,
+        PointsNote.dailyLimit => L10n.current.rankingPointsNoteDailyLimit,
+      };
 
   static PointsNote? fromDb(String? value) {
     for (final note in values) {

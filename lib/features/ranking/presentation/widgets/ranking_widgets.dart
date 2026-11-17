@@ -5,6 +5,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/brand_mark.dart';
 import '../../../../core/widgets/common.dart';
+import '../../../../l10n/l10n.dart';
 import '../../../dogs/presentation/widgets/dog_avatar.dart';
 import '../../data/ranking_models.dart';
 
@@ -139,7 +140,7 @@ class _PodiumColumn extends StatelessWidget {
 
     return Semantics(
       button: onTap != null,
-      label: '${entry.rank}위 ${entry.dogName}, ${Fmt.points(entry.points)}',
+      label: context.l10n.rankingEntrySemantics(entry.rank, entry.dogName, Fmt.points(entry.points)),
       excludeSemantics: true,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -220,7 +221,7 @@ class LeaderboardTile extends StatelessWidget {
                     ),
                     if (entry.isMine) ...[
                       const SizedBox(width: 6),
-                      StatusBadge(label: '내 반려견', tone: scheme.activeTone, dense: true),
+                      StatusBadge(label: context.l10n.rankingMineBadge, tone: scheme.activeTone, dense: true),
                     ],
                   ],
                 ),
@@ -296,7 +297,7 @@ class BadgeMedallion extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final tierColor = badgeTierColor(badge.tier);
     return Semantics(
-      label: '${badge.name} 배지${earned ? '' : ' (아직 받지 않음)'}',
+      label: earned ? context.l10n.badgeSemantics(badge.name) : context.l10n.badgeSemanticsLocked(badge.name),
       excludeSemantics: true,
       child: Container(
         width: size,
@@ -331,10 +332,12 @@ class PointsChip extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final earned = summary.total > 0;
     final tone = earned ? scheme.activeTone : scheme.neutralTone;
-    final label = summary.voided ? '점수 무효' : (earned ? '+${Fmt.points(summary.total)}' : '0점');
+    final label = summary.voided
+        ? context.l10n.rankingPointsChipVoided
+        : (earned ? '+${Fmt.points(summary.total)}' : context.l10n.rankingPointsChipZero);
     return Semantics(
       button: onTap != null,
-      label: '랭킹 점수 $label',
+      label: context.l10n.rankingPointsChipSemantics(label),
       excludeSemantics: true,
       child: Material(
         color: tone.background,
@@ -392,23 +395,28 @@ Future<void> showPointsBreakdownSheet(BuildContext context, SessionPointsSummary
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('이번 운동 점수', style: theme.textTheme.titleLarge),
+              Text(context.l10n.rankingBreakdownTitle, style: theme.textTheme.titleLarge),
               const SizedBox(height: 4),
               Text(
                 summary.voided
-                    ? '운영자 확인 결과 이 운동의 점수는 무효 처리되었어요.'
-                    : summary.note?.message ?? '꾸준히 운동할수록 점수가 쌓여요.',
+                    ? context.l10n.rankingBreakdownVoided
+                    : summary.note?.message ?? context.l10n.rankingBreakdownDefault,
                 style: TextStyle(color: scheme.onSurfaceVariant),
               ),
               const SizedBox(height: 12),
-              row('출석', summary.attendance, caption: '5분 이상 운동 (하루 1회)'),
-              row('달성', summary.achievement, caption: '프로그램 목표 시간 대비 (최대 10)'),
-              row('거리', summary.distance, caption: '100m당 1점 (최대 20)'),
-              if (summary.weeklyBonus > 0) row('주간 보너스', summary.weeklyBonus, caption: '이번 주 두 번째 운동'),
+              row(context.l10n.rankingBreakdownAttendance, summary.attendance,
+                  caption: context.l10n.rankingBreakdownAttendanceCaption),
+              row(context.l10n.rankingBreakdownGoal, summary.achievement,
+                  caption: context.l10n.rankingBreakdownGoalCaption),
+              row(context.l10n.rankingStatDistance, summary.distance,
+                  caption: context.l10n.rankingBreakdownDistanceCaption),
+              if (summary.weeklyBonus > 0)
+                row(context.l10n.rankingBreakdownWeeklyBonus, summary.weeklyBonus,
+                    caption: context.l10n.rankingBreakdownWeeklyBonusCaption),
               const Divider(height: 24),
               Row(
                 children: [
-                  const Expanded(child: Text('합계', style: TextStyle(fontWeight: FontWeight.w800))),
+                  Expanded(child: Text(context.l10n.rankingBreakdownTotal, style: const TextStyle(fontWeight: FontWeight.w800))),
                   Text(Fmt.points(summary.total), style: AppText.numeric(22, color: scheme.primary)),
                 ],
               ),
@@ -459,22 +467,23 @@ Future<void> showScoreRulesSheet(BuildContext context) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('점수는 이렇게 쌓여요', style: theme.textTheme.titleLarge),
+              Text(context.l10n.rankingRulesTitle, style: theme.textTheme.titleLarge),
               const SizedBox(height: 4),
-              Text('많이보다 꾸준히! 무리한 운동은 점수에 도움이 되지 않아요.',
+              Text(context.l10n.rankingRulesIntro,
                   style: TextStyle(color: scheme.onSurfaceVariant)),
               const SizedBox(height: 18),
-              rule(Icons.how_to_reg_rounded, '출석 10점', '5분 이상 운동하면 받아요. 반려견마다 하루 한 번만 점수를 받아요.'),
-              rule(Icons.flag_rounded, '달성 최대 10점', '프로그램 목표 시간을 채운 만큼 받아요. 중간에 멈춰도 감점은 없어요.'),
-              rule(Icons.route_rounded, '거리 최대 20점', '100m마다 1점이에요. 2km를 넘게 걸어도 20점까지만 받아요.'),
-              rule(Icons.local_fire_department_rounded, '주간 보너스 20점', '한 주(월~일)에 두 번 이상 운동하면 받아요.'),
-              rule(Icons.leaderboard_rounded, '월간 랭킹',
-                  '매달 1일에 새로 시작해요. 전체·지점·체급별로 순위를 매기고, 동점이면 먼저 도달한 반려견이 앞서요.'),
-              rule(Icons.emoji_events_rounded, '명예의 전당',
-                  '달이 끝나면 부문별 1~3위가 명예의 전당에 오르고 「시상대」 배지를 받아요.'),
+              rule(Icons.how_to_reg_rounded, context.l10n.rankingRuleAttendanceTitle,
+                  context.l10n.rankingRuleAttendanceBody),
+              rule(Icons.flag_rounded, context.l10n.rankingRuleGoalTitle, context.l10n.rankingRuleGoalBody),
+              rule(Icons.route_rounded, context.l10n.rankingRuleDistanceTitle, context.l10n.rankingRuleDistanceBody),
+              rule(Icons.local_fire_department_rounded, context.l10n.rankingRuleWeeklyTitle,
+                  context.l10n.rankingRuleWeeklyBody),
+              rule(Icons.leaderboard_rounded, context.l10n.rankingRuleMonthlyTitle,
+                  context.l10n.rankingRuleMonthlyBody),
+              rule(Icons.emoji_events_rounded, context.l10n.rankingRuleHallTitle, context.l10n.rankingRuleHallBody),
               const SizedBox(height: 4),
               Text(
-                '반려견 컨디션이 좋지 않으면 운동을 쉬어 주세요. 이상이 보이면 트레드밀의 비상정지 버튼을 눌러 주세요.',
+                context.l10n.rankingRulesSafety,
                 style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant, height: 1.5),
               ),
             ],

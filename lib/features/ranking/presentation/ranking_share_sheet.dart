@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/brand_mark.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../../dogs/data/dog.dart';
 import '../../dogs/presentation/widgets/dog_avatar.dart';
 import '../data/ranking_models.dart';
@@ -38,6 +39,8 @@ class _ShareSheetState extends State<_ShareSheet> {
 
   Future<void> _share() async {
     setState(() => _sharing = true);
+    final shareText = context.l10n.rankingShareText(widget.dog.name, Fmt.month(widget.ranking.periodMonth));
+    final failedMessage = context.l10n.rankingShareFailed;
     try {
       final boundary = _cardKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
       // 320x400 카드를 1080x1350(인스타그램 4:5)으로 저장
@@ -50,11 +53,11 @@ class _ShareSheetState extends State<_ShareSheet> {
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile.fromData(data.buffer.asUint8List(), mimeType: 'image/png', name: 'pawfit_$month.png')],
-          text: '${widget.dog.name}의 $month PawFit 운동 기록이에요! #PawFit #강아지트레드밀',
+          text: shareText,
         ),
       );
     } catch (_) {
-      if (mounted) context.showMessage('공유하지 못했어요. 잠시 후 다시 시도해 주세요.');
+      if (mounted) context.showMessage(failedMessage);
     } finally {
       if (mounted) setState(() => _sharing = false);
     }
@@ -69,10 +72,10 @@ class _ShareSheetState extends State<_ShareSheet> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('이번 달 기록 자랑하기', style: theme.textTheme.titleLarge),
+            Text(context.l10n.rankingShareTitle, style: theme.textTheme.titleLarge),
             const SizedBox(height: 4),
             Text(
-              '이미지로 저장해 인스타그램·카카오톡에 올려 보세요.',
+              context.l10n.rankingShareHint,
               style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 16),
@@ -91,7 +94,7 @@ class _ShareSheetState extends State<_ShareSheet> {
                       child: CircularProgressIndicator(strokeWidth: 2.2, color: Colors.white),
                     )
                   : const Icon(Icons.ios_share_rounded),
-              label: const Text('이미지로 공유하기'),
+              label: Text(context.l10n.rankingShareButton),
             ),
           ],
         ),
@@ -154,7 +157,7 @@ class RankingShareCard extends StatelessWidget {
               const SizedBox(height: 12),
               if (overall != null) ...[
                 Text(
-                  '전체 ${overall.rank}위',
+                  context.l10n.rankingShareOverall(overall.rank),
                   style: AppText.numeric(34, weight: FontWeight.w800, color: AppColors.medalGold),
                 ),
                 if (otherRanks.isNotEmpty) ...[
@@ -186,9 +189,18 @@ class RankingShareCard extends StatelessWidget {
               const Spacer(),
               Row(
                 children: [
-                  _CardStat(label: '점수', value: Fmt.number(ranking.points), unit: '점'),
-                  _CardStat(label: '운동', value: '${ranking.sessionCount}', unit: '회'),
-                  _CardStat(label: '거리', value: (ranking.distanceMeters / 1000).toStringAsFixed(1), unit: 'km'),
+                  _CardStat(
+                      label: context.l10n.rankingStatPoints,
+                      value: Fmt.number(ranking.points),
+                      unit: context.l10n.rankingUnitPoints),
+                  _CardStat(
+                      label: context.l10n.rankingStatSessions,
+                      value: '${ranking.sessionCount}',
+                      unit: context.l10n.rankingUnitSessions),
+                  _CardStat(
+                      label: context.l10n.rankingStatDistance,
+                      value: (ranking.distanceMeters / 1000).toStringAsFixed(1),
+                      unit: 'km'),
                 ],
               ),
               if (ranking.streakWeeks >= 2) ...[
@@ -199,7 +211,7 @@ class RankingShareCard extends StatelessWidget {
                     const Icon(Icons.local_fire_department_rounded, size: 16, color: AppColors.honey),
                     const SizedBox(width: 4),
                     Text(
-                      '${ranking.streakWeeks}주 연속 운동 중',
+                      context.l10n.rankingShareStreak(ranking.streakWeeks),
                       style: const TextStyle(color: Colors.white, fontSize: 12.5, fontWeight: FontWeight.w700),
                     ),
                   ],
@@ -231,7 +243,8 @@ class _CardStat extends StatelessWidget {
             TextSpan(
               children: [
                 TextSpan(text: value, style: AppText.numeric(20, color: Colors.white)),
-                TextSpan(text: ' $unit', style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.75))),
+                if (unit.isNotEmpty)
+                  TextSpan(text: ' $unit', style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.75))),
               ],
             ),
           ),

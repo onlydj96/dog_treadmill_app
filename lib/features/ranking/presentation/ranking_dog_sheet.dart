@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../../dogs/presentation/widgets/dog_avatar.dart';
 import '../data/ranking_models.dart';
 import '../providers.dart';
@@ -38,7 +39,7 @@ class _RankingDogSheetState extends ConsumerState<_RankingDogSheet> {
       ref
         ..invalidate(rankingDogProfileProvider(profile.dogId))
         ..invalidate(leaderboardProvider);
-      if (mounted) context.showMessage('${profile.dogName}에게 응원을 보냈어요!');
+      if (mounted) context.showMessage(context.l10n.rankingCheerSent(profile.dogName));
     } catch (error) {
       if (mounted) context.showMessage(friendlyError(error));
     } finally {
@@ -66,6 +67,9 @@ class _RankingDogSheetState extends ConsumerState<_RankingDogSheet> {
   }
 }
 
+/// 단위가 없는 언어(영어)에서는 단위를 붙이지 않는다
+String? _unitOrNull(String unit) => unit.isEmpty ? null : unit;
+
 class _ProfileBody extends ConsumerWidget {
   const _ProfileBody({required this.profile, required this.cheering, required this.onCheer});
 
@@ -80,10 +84,11 @@ class _ProfileBody extends ConsumerWidget {
     final catalog = {
       for (final badge in ref.watch(badgeCatalogProvider).valueOrNull ?? const <BadgeDef>[]) badge.code: badge,
     };
+    final l = context.l10n;
     final rank = profile.rank;
     final subtitle = [
       if (profile.breedLabel != null) profile.breedLabel!,
-      if (profile.size != null) '${profile.size!.label}견',
+      if (profile.size != null) sizeScopeLabel(profile.size!),
     ].join(' · ');
 
     return SingleChildScrollView(
@@ -127,34 +132,34 @@ class _ProfileBody extends ConsumerWidget {
               children: [
                 Expanded(
                   child: StatValue(
-                    label: '${Fmt.month(profile.periodMonth)} 순위',
-                    value: rank == null ? '-' : '$rank',
-                    unit: rank == null ? null : '위',
+                    label: l.rankingStatRank(Fmt.month(profile.periodMonth)),
+                    value: rank == null ? '-' : l.rankingRankValue(rank),
+                    unit: rank == null ? null : _unitOrNull(l.rankingRankUnit),
                     valueSize: 22,
                     crossAxisAlignment: CrossAxisAlignment.center,
                   ),
                 ),
                 Expanded(
                   child: StatValue(
-                    label: '점수',
+                    label: l.rankingStatPoints,
                     value: Fmt.number(profile.points),
-                    unit: '점',
+                    unit: _unitOrNull(l.rankingUnitPoints),
                     valueSize: 22,
                     crossAxisAlignment: CrossAxisAlignment.center,
                   ),
                 ),
                 Expanded(
                   child: StatValue(
-                    label: '운동',
+                    label: l.rankingStatSessions,
                     value: '${profile.sessionCount}',
-                    unit: '회',
+                    unit: _unitOrNull(l.rankingUnitSessions),
                     valueSize: 22,
                     crossAxisAlignment: CrossAxisAlignment.center,
                   ),
                 ),
                 Expanded(
                   child: StatValue(
-                    label: '응원',
+                    label: l.rankingStatCheers,
                     value: '${profile.cheerCount}',
                     valueSize: 22,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -164,10 +169,10 @@ class _ProfileBody extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 18),
-          Text('받은 배지 ${profile.badges.length}개', style: theme.textTheme.titleSmall),
+          Text(l.rankingBadgesEarned(profile.badges.length), style: theme.textTheme.titleSmall),
           const SizedBox(height: 10),
           if (profile.badges.isEmpty)
-            Text('아직 받은 배지가 없어요.', style: TextStyle(color: scheme.onSurfaceVariant))
+            Text(l.rankingNoBadgesYet, style: TextStyle(color: scheme.onSurfaceVariant))
           else
             Wrap(
               spacing: 12,
@@ -195,7 +200,7 @@ class _ProfileBody extends ConsumerWidget {
           const SizedBox(height: 22),
           if (profile.isMine)
             Text(
-              profile.participating ? '내 반려견이에요. 꾸준히 운동해서 순위를 올려 보세요!' : '랭킹에 참여하면 다른 회원도 볼 수 있어요.',
+              profile.participating ? l.rankingMyDogJoined : l.rankingMyDogNotJoined,
               textAlign: TextAlign.center,
               style: TextStyle(color: scheme.onSurfaceVariant),
             )
@@ -203,7 +208,7 @@ class _ProfileBody extends ConsumerWidget {
             FilledButton.icon(
               onPressed: profile.cheeredByMe || cheering ? null : onCheer,
               icon: Icon(profile.cheeredByMe ? Icons.favorite_rounded : Icons.favorite_border_rounded),
-              label: Text(profile.cheeredByMe ? '이번 달 응원했어요' : '${profile.dogName} 응원하기'),
+              label: Text(profile.cheeredByMe ? l.rankingCheeredThisMonth : l.rankingCheerDog(profile.dogName)),
               style: FilledButton.styleFrom(backgroundColor: AppColors.coral, foregroundColor: Colors.white),
             ),
         ],

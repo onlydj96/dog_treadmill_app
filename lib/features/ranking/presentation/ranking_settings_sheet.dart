@@ -6,6 +6,7 @@ import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../../consents/data/consent.dart';
 import '../../consents/data/consent_repository.dart';
 import '../../profile/data/app_user.dart';
@@ -94,7 +95,7 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
         ..invalidate(consentsProvider);
       refreshRankingProviders(ref);
       if (!mounted) return;
-      context.showMessage(widget.participating ? '랭킹 설정을 저장했어요.' : '랭킹에 참여했어요! 이번 달 순위에 바로 반영돼요.');
+      context.showMessage(widget.participating ? context.l10n.rankingSettingsSaved : context.l10n.rankingJoined);
       Navigator.of(context).pop(true);
     } catch (error) {
       if (mounted) context.showMessage(friendlyError(error));
@@ -106,10 +107,9 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
   Future<void> _leave() async {
     final confirmed = await confirmDialog(
       context,
-      title: '랭킹에서 나갈까요?',
-      message: '순위표와 명예의 전당에서 닉네임과 반려견 정보가 바로 가려져요. '
-          '점수와 배지는 그대로 쌓이고, 다시 참여하면 이번 달 순위에 바로 반영돼요.',
-      confirmLabel: '나가기',
+      title: context.l10n.rankingLeaveTitle,
+      message: context.l10n.rankingLeaveMessage,
+      confirmLabel: context.l10n.rankingLeaveConfirm,
       destructive: true,
     );
     if (!confirmed || !mounted) return;
@@ -121,7 +121,7 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
       ref.invalidate(consentsProvider);
       refreshRankingProviders(ref);
       if (!mounted) return;
-      context.showMessage('랭킹에서 나갔어요.');
+      context.showMessage(context.l10n.rankingLeft);
       Navigator.of(context).pop(false);
     } catch (error) {
       if (mounted) context.showMessage(friendlyError(error));
@@ -143,11 +143,13 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(widget.participating ? '랭킹 설정' : '랭킹에 참여해 볼까요?', style: theme.textTheme.titleLarge),
+            Text(
+              widget.participating ? context.l10n.rankingSettingsTitle : context.l10n.rankingJoinTitle,
+              style: theme.textTheme.titleLarge,
+            ),
             const SizedBox(height: 6),
             Text(
-              '이번 달 가장 꾸준한 반려견은 누구일까요? 운동할수록 점수가 쌓이고, '
-              '매달 1~3위는 명예의 전당에 올라요.',
+              context.l10n.rankingSettingsIntro,
               style: TextStyle(color: scheme.onSurfaceVariant, height: 1.5),
             ),
             const SizedBox(height: 16),
@@ -157,15 +159,15 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('다른 회원에게 보이는 정보', style: TextStyle(fontWeight: FontWeight.w800)),
+                  Text(context.l10n.rankingVisibleInfoTitle, style: const TextStyle(fontWeight: FontWeight.w800)),
                   const SizedBox(height: 6),
                   Text(
-                    '· 닉네임\n· 반려견 이름·견종·체구, 프로필 사진(선택)\n· 이번 달 점수·운동 횟수, 배지, 수상 기록',
+                    context.l10n.rankingVisibleInfoList,
                     style: TextStyle(color: scheme.onSurfaceVariant, height: 1.6),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    '실명·이메일·연락처는 공개되지 않아요.',
+                    context.l10n.rankingPrivateInfoNote,
                     style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w700, fontSize: 13),
                   ),
                 ],
@@ -177,13 +179,13 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
               enabled: changeableAt == null && !_saving,
               maxLength: 12,
               decoration: InputDecoration(
-                labelText: '닉네임',
+                labelText: context.l10n.rankingNicknameLabel,
                 prefixText: '@',
                 // 길이 규칙은 도움말에 있으므로 글자 수 표시는 숨긴다
                 counterText: '',
                 helperText: changeableAt == null
-                    ? '2~12자 한글·영문·숫자·밑줄(_) · 30일에 한 번 바꿀 수 있어요'
-                    : '${Fmt.dateShort(changeableAt)}부터 다시 바꿀 수 있어요',
+                    ? context.l10n.rankingNicknameHelp
+                    : context.l10n.rankingNicknameChangeableAt(Fmt.dateShort(changeableAt)),
                 helperMaxLines: 2,
               ),
               validator: Validators.nickname,
@@ -191,8 +193,8 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
             const SizedBox(height: 4),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('반려견 사진 공개', style: TextStyle(fontWeight: FontWeight.w700)),
-              subtitle: const Text('끄면 랭킹에 기본 아이콘으로 보여요'),
+              title: Text(context.l10n.rankingShowPhotoTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
+              subtitle: Text(context.l10n.rankingShowPhotoSubtitle),
               value: _showPhoto,
               onChanged: _saving ? null : (value) => setState(() => _showPhoto = value),
             ),
@@ -204,14 +206,14 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
                       dimension: 22,
                       child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
                     )
-                  : Text(widget.participating ? '저장' : '랭킹 참여하기'),
+                  : Text(widget.participating ? context.l10n.commonSave : context.l10n.rankingJoinAction),
             ),
             if (widget.participating) ...[
               const SizedBox(height: 4),
               TextButton(
                 onPressed: _saving ? null : _leave,
                 style: TextButton.styleFrom(foregroundColor: scheme.onSurfaceVariant),
-                child: const Text('랭킹에서 나가기'),
+                child: Text(context.l10n.rankingLeaveAction),
               ),
             ],
           ],
