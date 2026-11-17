@@ -25,11 +25,24 @@ abstract final class DemoAccount {
 }
 
 class _OwnerSeed {
-  const _OwnerSeed(this.id, this.name, this.nickname, this.dogs, {this.ranking = true, this.email});
+  const _OwnerSeed(
+    this.id,
+    this.name,
+    this.nickname,
+    this.dogs, {
+    required this.nameEn,
+    required this.nicknameEn,
+    this.ranking = true,
+    this.email,
+  });
 
   final String id;
   final String name;
   final String nickname;
+
+  /// 데모 전용 영어 값 (`name__en`, `nickname__en`)
+  final String nameEn;
+  final String nicknameEn;
   final List<_DogSeed> dogs;
   final bool ranking;
   final String? email;
@@ -43,6 +56,7 @@ class _DogSeed {
     this.sex,
     this.birthDate,
     this.weightKg, {
+    required this.nameEn,
     required this.home,
     required this.perWeek,
     required this.programs,
@@ -52,6 +66,9 @@ class _DogSeed {
 
   final String id;
   final String name;
+
+  /// 데모 전용 영어 이름 (`name__en`)
+  final String nameEn;
   final String breedId;
   final String sex;
   final String birthDate;
@@ -90,15 +107,19 @@ class MockSeed {
     DemoAccount.userId,
     '이서연',
     '두부망고네',
+    nameEn: 'Seoyeon Lee',
+    nicknameEn: 'TofuMango',
     email: DemoAccount.email,
     [
       _DogSeed(DemoAccount.tofuId, '두부', 'bichon_frise', 'female', '2021-03-14', 6.2,
+          nameEn: 'Tofu',
           home: MockCatalog.yongsan,
           perWeek: 2.8,
           sinceDays: 98,
           steady: true,
           programs: [MockCatalog.jointCare, MockCatalog.jointCare, MockCatalog.gaitCheck, MockCatalog.dailyWalk]),
       _DogSeed(DemoAccount.mangoId, '망고', 'welsh_corgi', 'male', '2022-06-02', 12.8,
+          nameEn: 'Mango',
           home: MockCatalog.yongsan,
           perWeek: 1.8,
           sinceDays: 90,
@@ -107,62 +128,99 @@ class MockSeed {
   );
 
   static const _others = <_OwnerSeed>[
-    _OwnerSeed('5eed0000-0000-4000-8000-000000000001', '김샘플', '콩이맘', [
+    _OwnerSeed('5eed0000-0000-4000-8000-000000000001', '김샘플', '콩이맘', nameEn: 'Sample Kim', nicknameEn: 'BeanMom', [
       _DogSeed('5eedd000-0000-4000-8000-000000000001', '콩이', 'maltese', 'female', '2021-04-02', 3.4,
+          nameEn: 'Bean',
           home: MockCatalog.yongsan,
           perWeek: 3.0,
           programs: [MockCatalog.dailyWalk, MockCatalog.jointCare, MockCatalog.gaitCheck]),
     ]),
-    _OwnerSeed('5eed0000-0000-4000-8000-000000000002', '이샘플', '보리아빠', [
+    _OwnerSeed('5eed0000-0000-4000-8000-000000000002', '이샘플', '보리아빠', nameEn: 'Sample Lee', nicknameEn: 'BarleyDad', [
       _DogSeed('5eedd000-0000-4000-8000-000000000002', '보리', 'golden_retriever', 'male', '2020-08-15', 29.5,
+          nameEn: 'Barley',
           home: MockCatalog.goyang,
           perWeek: 2.6,
           programs: [MockCatalog.dailyWalk, MockCatalog.interval, MockCatalog.weightCare]),
     ]),
-    _OwnerSeed('5eed0000-0000-4000-8000-000000000003', '박샘플', '단풍언니', [
+    _OwnerSeed('5eed0000-0000-4000-8000-000000000003', '박샘플', '단풍언니', nameEn: 'Sample Park', nicknameEn: 'MapleSis', [
       _DogSeed('5eedd000-0000-4000-8000-000000000003', '단풍', 'toy_poodle', 'female', '2022-10-01', 3.1,
+          nameEn: 'Maple',
           home: MockCatalog.yeongdeungpo,
           perWeek: 2.2,
           programs: [MockCatalog.dailyWalk, MockCatalog.firstStep, MockCatalog.gaitCheck]),
     ]),
-    _OwnerSeed('5eed0000-0000-4000-8000-000000000004', '최샘플', '모카집사', [
+    _OwnerSeed('5eed0000-0000-4000-8000-000000000004', '최샘플', '모카집사', nameEn: 'Sample Choi', nicknameEn: 'MochaPal', [
       _DogSeed('5eedd000-0000-4000-8000-000000000004', '모카', 'pomeranian', 'male', '2019-03-20', 2.8,
-          home: MockCatalog.yeongdeungpo, perWeek: 1.4, programs: [MockCatalog.jointCare, MockCatalog.dailyWalk]),
+          nameEn: 'Mocha',
+          home: MockCatalog.yeongdeungpo,
+          perWeek: 1.4,
+          programs: [MockCatalog.jointCare, MockCatalog.dailyWalk]),
       _DogSeed('5eedd000-0000-4000-8000-000000000005', '호두', 'welsh_corgi', 'male', '2021-12-11', 12.4,
-          home: MockCatalog.yeongdeungpo, perWeek: 1.6, programs: [MockCatalog.interval, MockCatalog.dailyWalk]),
+          nameEn: 'Walnut',
+          home: MockCatalog.yeongdeungpo,
+          perWeek: 1.6,
+          programs: [MockCatalog.interval, MockCatalog.dailyWalk]),
     ]),
-    _OwnerSeed('5eed0000-0000-4000-8000-000000000005', '정샘플', '초코러버', [
+    _OwnerSeed('5eed0000-0000-4000-8000-000000000005', '정샘플', '초코러버', nameEn: 'Sample Jung', nicknameEn: 'ChocoLover', [
       _DogSeed('5eedd000-0000-4000-8000-000000000006', '초코', 'shiba_inu', 'female', '2020-05-05', 9.8,
+          nameEn: 'Choco',
           home: MockCatalog.goyang,
           perWeek: 2.8,
           programs: [MockCatalog.interval, MockCatalog.dailyWalk, MockCatalog.weightCare]),
     ]),
     // 랭킹에 참여하지 않은 보호자: 순위표·명예의 전당에는 나오지 않지만 지점 대항전 거리에는 들어간다
-    _OwnerSeed('5eed0000-0000-4000-8000-000000000006', '강샘플', '산책왕', ranking: false, [
-      _DogSeed('5eedd000-0000-4000-8000-000000000007', '해피', 'jindo', 'male', '2018-01-30', 18.0,
-          home: MockCatalog.goyang, perWeek: 2.0, programs: [MockCatalog.dailyWalk, MockCatalog.weightCare]),
-      _DogSeed('5eedd000-0000-4000-8000-000000000008', '구름', 'samoyed', 'female', '2022-02-14', 22.5,
-          home: MockCatalog.goyang, perWeek: 1.5, programs: [MockCatalog.dailyWalk]),
-    ]),
-    _OwnerSeed('5eed0000-0000-4000-8000-000000000007', '윤샘플', '라떼언니', [
+    _OwnerSeed(
+        '5eed0000-0000-4000-8000-000000000006',
+        '강샘플',
+        '산책왕',
+        nameEn: 'Sample Kang',
+        nicknameEn: 'WalkKing',
+        ranking: false,
+        [
+          _DogSeed('5eedd000-0000-4000-8000-000000000007', '해피', 'jindo', 'male', '2018-01-30', 18.0,
+              nameEn: 'Happy',
+              home: MockCatalog.goyang,
+              perWeek: 2.0,
+              programs: [MockCatalog.dailyWalk, MockCatalog.weightCare]),
+          _DogSeed('5eedd000-0000-4000-8000-000000000008', '구름', 'samoyed', 'female', '2022-02-14', 22.5,
+              nameEn: 'Cloud', home: MockCatalog.goyang, perWeek: 1.5, programs: [MockCatalog.dailyWalk]),
+        ]),
+    _OwnerSeed('5eed0000-0000-4000-8000-000000000007', '윤샘플', '라떼언니', nameEn: 'Sample Yoon', nicknameEn: 'LatteSis', [
       _DogSeed('5eedd000-0000-4000-8000-000000000009', '라떼', 'miniature_poodle', 'female', '2020-09-09', 5.1,
-          home: MockCatalog.yongsan, perWeek: 2.0, programs: [MockCatalog.dailyWalk, MockCatalog.gaitCheck]),
+          nameEn: 'Latte',
+          home: MockCatalog.yongsan,
+          perWeek: 2.0,
+          programs: [MockCatalog.dailyWalk, MockCatalog.gaitCheck]),
     ]),
-    _OwnerSeed('5eed0000-0000-4000-8000-000000000008', '장샘플', '뭉치네', [
+    _OwnerSeed('5eed0000-0000-4000-8000-000000000008', '장샘플', '뭉치네', nameEn: 'Sample Jang', nicknameEn: 'BiscuitCrew', [
       _DogSeed('5eedd000-0000-4000-8000-00000000000a', '뭉치', 'beagle', 'male', '2019-11-23', 13.2,
-          home: MockCatalog.yeongdeungpo, perWeek: 2.4, programs: [MockCatalog.interval, MockCatalog.weightCare]),
+          nameEn: 'Biscuit',
+          home: MockCatalog.yeongdeungpo,
+          perWeek: 2.4,
+          programs: [MockCatalog.interval, MockCatalog.weightCare]),
     ]),
-    _OwnerSeed('5eed0000-0000-4000-8000-000000000009', '임샘플', '하루아빠', [
+    _OwnerSeed('5eed0000-0000-4000-8000-000000000009', '임샘플', '하루아빠', nameEn: 'Sample Im', nicknameEn: 'HaruDad', [
       _DogSeed('5eedd000-0000-4000-8000-00000000000b', '하루', 'labrador_retriever', 'female', '2021-01-17', 27.0,
-          home: MockCatalog.goyang, perWeek: 2.0, programs: [MockCatalog.weightCare, MockCatalog.dailyWalk]),
+          nameEn: 'Haru',
+          home: MockCatalog.goyang,
+          perWeek: 2.0,
+          programs: [MockCatalog.weightCare, MockCatalog.dailyWalk]),
     ]),
-    _OwnerSeed('5eed0000-0000-4000-8000-00000000000a', '한샘플', '쿠키맘', [
+    _OwnerSeed('5eed0000-0000-4000-8000-00000000000a', '한샘플', '쿠키맘', nameEn: 'Sample Han', nicknameEn: 'CookieMom', [
       _DogSeed('5eedd000-0000-4000-8000-00000000000c', '쿠키', 'dachshund', 'male', '2020-02-29', 6.0,
-          home: MockCatalog.yongsan, perWeek: 1.2, programs: [MockCatalog.jointCare, MockCatalog.dailyWalk]),
+          nameEn: 'Cookie',
+          home: MockCatalog.yongsan,
+          perWeek: 1.2,
+          programs: [MockCatalog.jointCare, MockCatalog.dailyWalk]),
     ]),
   ];
 
   static const _stopReasons = ['반려견이 지쳐 보여 보호자가 중단', '비상정지 버튼으로 중단', '반려견이 불안해해 일찍 마침'];
+  static const _stopReasonsEn = [
+    'Stopped by the owner because the dog looked tired',
+    'Stopped with the emergency stop button',
+    'Finished early because the dog was anxious',
+  ];
 
   late String _membershipSingle;
   late String _membershipFirstTen;
@@ -224,10 +282,12 @@ class MockSeed {
       ..insert('users', {
         'id': owner.id,
         'name': owner.name,
+        'name__en': owner.nameEn,
         'phone': owner == _demo ? '010-2468-1357' : '010-1000-${sampleNo.toString().padLeft(4, '0')}',
         'role': 'user',
         'notification_prefs': const NotificationPrefs().toJson(),
         'nickname': owner.nickname,
+        'nickname__en': owner.nicknameEn,
         'nickname_updated_at': owner == _demo ? iso(_daysAgo(45)) : null,
         'ranking_show_photo': true,
         'managed_branch_id': null,
@@ -258,6 +318,7 @@ class MockSeed {
         'id': dog.id,
         'owner_id': owner.id,
         'name': dog.name,
+        'name__en': dog.nameEn,
         'breed': breed['name'],
         'breed_id': dog.breedId,
         'is_mixed': false,
@@ -284,14 +345,28 @@ class MockSeed {
         'diseases': [
           {'name': '슬개골 탈구 1기', 'detail': '왼쪽 뒷다리', 'date': toDateString(_today.subtract(const Duration(days: 120)))},
         ],
+        'diseases__en': [
+          {
+            'name': 'Patellar luxation, grade 1',
+            'detail': 'Left hind leg',
+            'date': toDateString(_today.subtract(const Duration(days: 120))),
+          },
+        ],
         'surgeries': <Json>[],
         'medications': [
           {'name': '관절 영양제', 'detail': '하루 1회'},
         ],
+        'medications__en': [
+          {'name': 'Joint supplement', 'detail': 'Once a day'},
+        ],
         'exercise_restrictions': [
           {'name': '점프·급회전 피하기'},
         ],
+        'exercise_restrictions__en': [
+          {'name': 'Avoid jumping and sharp turns'},
+        ],
         'veterinary_notes': '체중을 유지하면서 낮은 강도로 꾸준히 걷는 운동을 권장받았어요.',
+        'veterinary_notes__en': 'The vet recommended steady, low-intensity walking while keeping weight stable.',
         'updated_at': iso(_daysAgo(97)),
       })
       ..insert('dog_health_profiles', {
@@ -308,13 +383,19 @@ class MockSeed {
       ..insert('exercise_plans', {
         'dog_id': DemoAccount.tofuId,
         'program_name': '관절 케어 걷기',
+        'program_name__en': 'Joint Care Walk',
         'target_duration_seconds': 20 * 60,
         'target_speed': 2.6,
         'restrictions': [
           {'name': '경사 없이 평지로'},
           {'name': '점프 금지'},
         ],
+        'restrictions__en': [
+          {'name': 'Flat surface, no incline'},
+          {'name': 'No jumping'},
+        ],
         'notes': '주 2~3회, 처음 3분과 마지막 3분은 더 천천히 걸어요.',
+        'notes__en': 'Two to three times a week. Walk more slowly for the first and last 3 minutes.',
         'is_active': true,
         'created_at': iso(_daysAgo(60)),
       });
@@ -322,7 +403,8 @@ class MockSeed {
 
   /// 1회권(만료) → 10회권(소진) → 10회권(사용 중)
   void _memberships() {
-    String add(String planName, int total, int startDaysAgo, int validityDays, int price, String method) {
+    String add(
+        String planName, String planNameEn, int total, int startDaysAgo, int validityDays, int price, String method) {
       final startsAt = _daysAgo(startDaysAgo, hour: 9);
       final membership = db.insert('memberships', {
         'user_id': DemoAccount.userId,
@@ -339,6 +421,7 @@ class MockSeed {
         'amount': price,
         'status': 'paid',
         'order_name': planName,
+        'order_name__en': planNameEn,
         'method': method,
         'refunded_amount': 0,
         'paid_at': iso(startsAt),
@@ -348,9 +431,9 @@ class MockSeed {
       return membership.str('id');
     }
 
-    _membershipSingle = add('1회 이용권', 1, 99, 30, 25000, '카드');
-    _membershipFirstTen = add('10회 이용권', 10, 84, 90, 220000, '카드');
-    _membershipCurrentTen = add('10회 이용권', 10, 26, 90, 220000, '카카오페이');
+    _membershipSingle = add('1회 이용권', 'Single-session pass', 1, 99, 30, 25000, '카드');
+    _membershipFirstTen = add('10회 이용권', '10-session pass', 10, 84, 90, 220000, '카드');
+    _membershipCurrentTen = add('10회 이용권', '10-session pass', 10, 26, 90, 220000, '카카오페이');
   }
 
   // ---------------------------------------------------------------------
@@ -383,6 +466,7 @@ class MockSeed {
     int? slotIndex,
     int? durationSeconds,
     String? stopReason,
+    String? stopReasonEn,
   }) {
     final branch = branchId ?? (_rnd.nextDouble() < 0.85 ? dog.home : _otherBranch(dog.home));
     final branchRow = db.byId('branches', branch)!;
@@ -434,7 +518,12 @@ class MockSeed {
       'average_speed': (distance / duration * 3.6 * 10).round() / 10,
       'max_speed': (average * (intensity == 'high' ? 1.45 : 1.18) * 10).round() / 10,
       'target_duration_seconds': target,
-      'stop_reason': stopped ? (stopReason ?? _stopReasons[_rnd.nextInt(_stopReasons.length)]) : null,
+      ...() {
+        if (!stopped) return {'stop_reason': null};
+        if (stopReason != null) return {'stop_reason': stopReason, 'stop_reason__en': stopReasonEn};
+        final i = _rnd.nextInt(_stopReasons.length);
+        return {'stop_reason': _stopReasons[i], 'stop_reason__en': _stopReasonsEn[i]};
+      }(),
       'created_at': iso(startedAt),
       'updated_at': iso(endedAt),
     });
@@ -481,6 +570,7 @@ class MockSeed {
       slotIndex: 6,
       durationSeconds: 200,
       stopReason: '처음이라 낯설어해 보호자가 중단',
+      stopReasonEn: 'Stopped by the owner because it was the dog\'s first visit and it seemed unsure',
     ));
 
     // 같은 날 두 번째 운동은 점수 0점 (daily_limit)
@@ -517,6 +607,7 @@ class MockSeed {
             'analysis_status': 'failed',
             'care_notes': <String>[],
             'error_message': '운동 시간이 짧아 분석에 필요한 걸음 수가 부족했어요.',
+            'error_message__en': 'The workout was too short to capture enough steps for analysis.',
           });
           continue;
         }
@@ -655,13 +746,13 @@ class MockSeed {
         status: 'confirmed', membershipId: _membershipCurrentTen);
     _insertDemoBooking(DemoAccount.mangoId, MockCatalog.goyang, MockCatalog.interval,
         Kst.at(_today.add(const Duration(days: 2)), 14 * 60),
-        status: 'pending', note: '처음 가 보는 지점이에요');
+        status: 'pending', note: '처음 가 보는 지점이에요', noteEn: 'First time at this location');
     _insertDemoBooking(DemoAccount.tofuId, MockCatalog.yongsan, MockCatalog.jointCare,
         Kst.at(_today.add(const Duration(days: 6)), 11 * 60),
         status: 'confirmed', membershipId: _membershipCurrentTen);
     _insertDemoBooking(DemoAccount.tofuId, MockCatalog.yongsan, MockCatalog.jointCare,
         Kst.at(_today.subtract(const Duration(days: 10)), 19 * 60),
-        status: 'cancelled', cancelReason: '일정이 바뀌었어요');
+        status: 'cancelled', cancelReason: '일정이 바뀌었어요', cancelReasonEn: 'My plans changed');
     _insertDemoBooking(DemoAccount.mangoId, MockCatalog.yongsan, MockCatalog.dailyWalk,
         Kst.at(_today.subtract(const Duration(days: 17)), 13 * 60),
         status: 'no_show');
@@ -678,7 +769,9 @@ class MockSeed {
     required String status,
     String? membershipId,
     String? note,
+    String? noteEn,
     String? cancelReason,
+    String? cancelReasonEn,
   }) {
     final minutes = db.byId('exercise_programs', programId)!.intOr('duration_minutes');
     final endAt = startAt.add(Duration(minutes: minutes));
@@ -707,7 +800,9 @@ class MockSeed {
       'end_at': iso(endAt),
       'status': status,
       'note': note,
+      'note__en': noteEn,
       'cancel_reason': cancelReason,
+      'cancel_reason__en': cancelReasonEn,
       'cancelled_at': status == 'cancelled' ? iso(startAt.subtract(const Duration(days: 1))) : null,
       'created_at': iso(
           startAt.isAfter(_now) ? _now.subtract(const Duration(days: 1)) : startAt.subtract(const Duration(days: 3))),
@@ -715,10 +810,12 @@ class MockSeed {
   }
 
   void _support() {
-    for (final (title, body, pinned, daysAgo) in MockCatalog.notices) {
+    for (final (i, (title, body, pinned, daysAgo)) in MockCatalog.notices.indexed) {
       db.insert('notices', {
         'title': title,
+        'title_en': CatalogEn.notices[i].$1,
         'body': body,
+        'body_en': CatalogEn.notices[i].$2,
         'is_pinned': pinned,
         'published_at': iso(_daysAgo(daysAgo)),
       });
@@ -727,34 +824,42 @@ class MockSeed {
       'user_id': DemoAccount.userId,
       'category': 'booking',
       'title': '예약 시간을 30분 늦출 수 있을까요?',
+      'title__en': 'Could I move my booking 30 minutes later?',
       'body': '오늘 예약했는데 도착이 조금 늦어질 것 같아요. 앱에서 변경이 안 되는데 어떻게 하면 될까요?',
+      'body__en': 'I booked for today but I\'ll be a bit late. I can\'t change it in the app. What should I do?',
       'status': 'answered',
       'answer': '예약 시작 1시간 전부터는 앱에서 변경할 수 없어요. 이번 예약은 운영팀에서 30분 뒤로 옮겨 드렸어요. '
           '다음에는 시작 1시간 전까지 앱에서 직접 바꿔 주세요.',
+      'answer__en': 'Bookings can\'t be changed in the app within 1 hour of the start time. '
+          'We\'ve moved this one 30 minutes later for you. Next time, please change it in the app up to 1 hour before it starts.',
       'answered_at': iso(_daysAgo(32, hour: 15)),
       'created_at': iso(_daysAgo(32, hour: 13, minute: 20)),
     });
   }
 
   /// 데모 보호자의 최근 알림. 샘플 데이터를 쌓는 동안에는 알림을 끄고, 실제로 받았을 법한 것만 다시 만든다.
+  /// 실제 DB 트리거와 같이 한국어 title/body에 data.msg·data.args를 함께 저장한다 (docs/i18n.md).
   void _notifications() {
-    void add(String type, String title, String body, Json data, String createdAt, {required bool read}) {
+    void add(String type, String title, String body, String msg, Json args, Json data, String createdAt,
+        {required bool read}) {
       db.insert('notifications', {
         'user_id': DemoAccount.userId,
         'type': type,
         'title': title,
         'body': body,
-        'data': data,
+        'data': {...data, 'msg': msg, 'args': args},
         'is_read': read,
         'created_at': createdAt,
       });
     }
 
+    Json dogArgs(String dogId) => MockDb.dogNameArgs(db.byId('dogs', dogId)!);
+
     final recentReport = db
         .where('analysis_reports', (r) => r['dog_id'] == DemoAccount.tofuId && r['analysis_status'] == 'completed')
         .reduce((a, b) => a.str('created_at').compareTo(b.str('created_at')) >= 0 ? a : b);
-    add('analysis', 'AI 보행 분석 리포트가 도착했어요', '두부의 운동 분석 결과를 확인해 보세요.', {'report_id': recentReport['id']},
-        recentReport.str('completed_at'),
+    add('analysis', 'AI 보행 분석 리포트가 도착했어요', '두부의 운동 분석 결과를 확인해 보세요.', 'analysis_completed', dogArgs(DemoAccount.tofuId),
+        {'report_id': recentReport['id']}, recentReport.str('completed_at'),
         read: false);
 
     // 시상대 배지는 월간 수상 알림으로 함께 알린다 (배지 알림을 따로 만들지 않음)
@@ -768,15 +873,38 @@ class MockSeed {
       ..sort((a, b) => b.str('earned_at').compareTo(a.str('earned_at')));
     for (final (i, badge) in badges.take(2).indexed) {
       final dogName = badge['dog_id'] == DemoAccount.tofuId ? '두부' : '망고';
-      final name = db.find('badges', (b) => b['code'] == badge['badge_code'])!['name'];
-      add('ranking', '새 배지를 받았어요', '$dogName의 「$name」 배지가 도착했어요. 배지함에서 확인해 보세요.',
-          {'dog_id': badge['dog_id'], 'badge_code': badge['badge_code']}, badge.str('earned_at'),
+      final badgeRow = db.find('badges', (b) => b['code'] == badge['badge_code'])!;
+      final name = badgeRow['name'];
+      add(
+          'ranking',
+          '새 배지를 받았어요',
+          '$dogName의 「$name」 배지가 도착했어요. 배지함에서 확인해 보세요.',
+          'badge_earned',
+          {
+            ...dogArgs(badge.str('dog_id')),
+            'badge_code': badge['badge_code'],
+            'badge_name': name,
+            'badge_name_en': badgeRow['name_en'],
+          },
+          {'dog_id': badge['dog_id'], 'badge_code': badge['badge_code']},
+          badge.str('earned_at'),
           read: i > 0);
     }
 
     final cheer = db.find('ranking_cheers', (c) => c['dog_id'] == DemoAccount.tofuId && c['user_id'] == _others[0].id);
     if (cheer != null) {
-      add('ranking', '응원이 도착했어요', '콩이맘님이 두부를 응원했어요.', {'dog_id': DemoAccount.tofuId}, cheer.str('created_at'),
+      add(
+          'ranking',
+          '응원이 도착했어요',
+          '콩이맘님이 두부를 응원했어요.',
+          'cheer_received',
+          {
+            ...dogArgs(DemoAccount.tofuId),
+            'nickname': _others[0].nickname,
+            'nickname__en': _others[0].nicknameEn,
+          },
+          {'dog_id': DemoAccount.tofuId},
+          cheer.str('created_at'),
           read: false);
     }
 
@@ -794,6 +922,20 @@ class MockSeed {
           'ranking',
           '$month월 랭킹 시상대에 올랐어요',
           '${RankingApi.josa(dogName, '가', '이')} $month월 랭킹 $summary에 올랐어요. 명예의 전당에서 확인해 보세요.',
+          'monthly_award',
+          {
+            ...dogArgs(dogId),
+            'month': month,
+            'awards': [
+              for (final a in mine)
+                {
+                  'scope': a['scope'],
+                  'label': ranking.scopeLabel(a.str('scope'), a.str('scope_key')),
+                  'label_en': ranking.scopeLabelEn(a.str('scope'), a.str('scope_key')),
+                  'rank': a['rank'],
+                },
+            ],
+          },
           {'period_month': previousMonth, 'dog_id': dogId},
           mine.first.str('created_at'),
           read: true);
@@ -805,7 +947,13 @@ class MockSeed {
       final points = db
           .where('exercise_points', (p) => p['session_id'] == mango.first['id'])
           .fold<int>(0, (sum, p) => sum + p.intOr('points'));
-      add('exercise', '운동을 완료했어요', '망고의 운동이 끝났어요. $points점을 받았어요! 운동 기록을 확인해 보세요.', {'session_id': mango.first['id']},
+      add(
+          'exercise',
+          '운동을 완료했어요',
+          '망고의 운동이 끝났어요. $points점을 받았어요! 운동 기록을 확인해 보세요.',
+          'exercise_completed',
+          {...dogArgs(DemoAccount.mangoId), 'points': points},
+          {'session_id': mango.first['id']},
           mango.first.str('ended_at'),
           read: true);
     }

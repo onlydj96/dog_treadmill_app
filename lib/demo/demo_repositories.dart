@@ -33,6 +33,14 @@ DateTime _monthOf(DateTime month) => DateTime.utc(month.year, month.month);
 
 int _byText(Json a, Json b, String key) => a.str(key).compareTo(b.str(key));
 
+// 목업 행의 `<키>__en`(데모 전용 영어 샘플 값)을 현재 언어로 바꾸고 지운 뒤 모델에 넘긴다 (demo_text.dart).
+// 언어를 바꾸면 이 저장소 Provider가 다시 만들어져(demoOverrides) 화면이 데이터를 다시 불러온다.
+List<T> _map<T>(Iterable<Json> rows, T Function(Json json) fromJson) =>
+    [for (final r in rows) fromJson(localizeRow(r))];
+
+/// `dogs` 행 + 카탈로그 견종 영어 이름 (`breed_catalog`) — 현재 언어로
+Json _dogJson(MockDb db, Json dog) => localizeRow(db.dogWithBreedCatalog(dog));
+
 abstract class _DemoRepository {
   _DemoRepository(this.server);
 
@@ -94,13 +102,13 @@ class DemoDogRepository extends _DemoRepository implements DogRepository {
     await wait();
     final rows = db.where('dogs', (d) => d['owner_id'] == ownerId && d['deleted_at'] == null).toList()
       ..sort((a, b) => _byText(a, b, 'created_at'));
-    return rows.map(Dog.fromJson).toList();
+    return rows.map((d) => Dog.fromJson(_dogJson(db, d))).toList();
   }
 
   @override
   Future<Dog> fetchDog(String dogId) async {
     await wait();
-    return Dog.fromJson(db.byId('dogs', dogId) ?? rowNotFound());
+    return Dog.fromJson(_dogJson(db, db.byId('dogs', dogId) ?? rowNotFound()));
   }
 
   @override
@@ -113,17 +121,18 @@ class DemoDogRepository extends _DemoRepository implements DogRepository {
       'deleted_at': null,
     };
     server.applyBreedCatalog(row);
-    return Dog.fromJson(db.insert('dogs', row));
+    return Dog.fromJson(_dogJson(db, db.insert('dogs', row)));
   }
 
   @override
   Future<Dog> updateDog(String dogId, DogDraft draft) async {
     await wait();
     final row = db.byId('dogs', dogId) ?? rowNotFound();
-    final values = draft.toJson();
+    // 이름을 새로 입력했으니 샘플 영어 이름(name__en)은 버린다
+    final values = <String, dynamic>{...draft.toJson(), 'name__en': null};
     server.applyBreedCatalog(values);
     db.update('dogs', row, values);
-    return Dog.fromJson(row);
+    return Dog.fromJson(_dogJson(db, row));
   }
 
   @override
@@ -138,7 +147,7 @@ class DemoDogRepository extends _DemoRepository implements DogRepository {
     await wait();
     final rows = db.where('breeds', (b) => b['is_active'] == true).toList()
       ..sort((a, b) => a.intOr('sort_order').compareTo(b.intOr('sort_order')));
-    return rows.map(Breed.fromJson).toList();
+    return _map(rows, Breed.fromJson);
   }
 
   @override
@@ -146,14 +155,14 @@ class DemoDogRepository extends _DemoRepository implements DogRepository {
     await wait();
     final rows = db.where('health_conditions', (c) => c['is_active'] == true).toList()
       ..sort((a, b) => a.intOr('sort_order').compareTo(b.intOr('sort_order')));
-    return rows.map(HealthCondition.fromJson).toList();
+    return _map(rows, HealthCondition.fromJson);
   }
 
   @override
   Future<DogHealthProfile?> fetchHealthProfile(String dogId) async {
     await wait();
     final row = db.find('dog_health_profiles', (p) => p['dog_id'] == dogId);
-    return row == null ? null : DogHealthProfile.fromJson(row);
+    return row == null ? null : DogHealthProfile.fromJson(localizeRow(row));
   }
 
   @override
@@ -163,6 +172,9 @@ class DemoDogRepository extends _DemoRepository implements DogRepository {
       ...profile.toJson(),
       'condition_codes': server.normalizeConditionCodes(profile.conditionCodes),
       'updated_at': iso(db.now()),
+      // 입력한 값으로 바뀌므로 샘플 영어 값은 버린다
+      for (final key in const ['diseases', 'surgeries', 'medications', 'exercise_restrictions', 'veterinary_notes'])
+        '$key$demoEnglishSuffix': null,
     };
     final existing = db.find('dog_health_profiles', (p) => p['dog_id'] == profile.dogId);
     existing == null ? db.insert('dog_health_profiles', values) : db.update('dog_health_profiles', existing, values);
@@ -205,7 +217,7 @@ class DemoBookingRepository extends _DemoRepository implements BookingRepository
   Future<List<Branch>> fetchBranches() async {
     await wait();
     final rows = db.where('branches', (b) => b['is_active'] == true).toList()..sort((a, b) => _byText(a, b, 'name'));
-    return rows.map(Branch.fromJson).toList();
+    return _map(rows, Branch.fromJson);
   }
 
   @override
@@ -213,7 +225,7 @@ class DemoBookingRepository extends _DemoRepository implements BookingRepository
     await wait();
     final rows = db.where('exercise_programs', (p) => p['is_active'] == true).toList()
       ..sort((a, b) => a.intOr('sort_order').compareTo(b.intOr('sort_order')));
-    return rows.map(ExerciseProgram.fromJson).toList();
+    return _map(rows, ExerciseProgram.fromJson);
   }
 
   @override
@@ -250,20 +262,20 @@ class DemoBookingRepository extends _DemoRepository implements BookingRepository
   @override
   Future<List<Booking>> fetchBookings(String userId) async {
     await wait();
-    return server.booking.bookingsOf(userId).map(Booking.fromJson).toList();
+    return _map(server.booking.bookingsOf(userId), Booking.fromJson);
   }
 
   @override
   Future<Booking> fetchBooking(String bookingId) async {
     await wait();
-    return Booking.fromJson(server.booking.booking(bookingId));
+    return Booking.fromJson(localizeRow(server.booking.booking(bookingId)));
   }
 
   @override
   Future<Booking?> fetchNextBooking(String dogId) async {
     await wait();
     final row = server.booking.nextBooking(dogId);
-    return row == null ? null : Booking.fromJson(row);
+    return row == null ? null : Booking.fromJson(localizeRow(row));
   }
 
   @override
@@ -294,7 +306,7 @@ class DemoExerciseRepository extends _DemoRepository implements ExerciseReposito
     return db.watch('exercise_sessions', () {
       final rows = db.where('exercise_sessions', (s) => s['dog_id'] == dogId).toList()
         ..sort((a, b) => _byText(b, a, 'created_at'));
-      return rows.isEmpty ? null : ExerciseSession.fromJson({...rows.first});
+      return rows.isEmpty ? null : ExerciseSession.fromJson(localizeRow(rows.first));
     });
   }
 
@@ -303,7 +315,7 @@ class DemoExerciseRepository extends _DemoRepository implements ExerciseReposito
     await wait();
     final rows = db.where('exercise_sessions', (s) => s['dog_id'] == dogId).toList()
       ..sort((a, b) => _byText(b, a, 'created_at'));
-    return rows.take(limit).map((s) => ExerciseSession.fromJson(_embed(s))).toList();
+    return rows.take(limit).map((s) => ExerciseSession.fromJson(localizeRow(_embed(s)))).toList();
   }
 
   /// `*, treadmill:treadmills(id, device_name), reports:analysis_reports(...), points:exercise_points(...)`
@@ -377,13 +389,13 @@ class DemoAnalysisRepository extends _DemoRepository implements AnalysisReposito
   @override
   Future<List<AnalysisReport>> fetchReports(String dogId, {int limit = 30}) async {
     await wait();
-    return _reportsOf(dogId).take(limit).map((r) => AnalysisReport.fromJson(_embed(r))).toList();
+    return _reportsOf(dogId).take(limit).map((r) => AnalysisReport.fromJson(localizeRow(_embed(r)))).toList();
   }
 
   @override
   Future<AnalysisReport> fetchReport(String reportId) async {
     await wait();
-    return AnalysisReport.fromJson(_embed(db.byId('analysis_reports', reportId) ?? rowNotFound()));
+    return AnalysisReport.fromJson(localizeRow(_embed(db.byId('analysis_reports', reportId) ?? rowNotFound())));
   }
 
   @override
@@ -392,7 +404,7 @@ class DemoAnalysisRepository extends _DemoRepository implements AnalysisReposito
     final row = _reportsOf(dogId)
         .where((r) => r['analysis_status'] == 'completed' && r.dateTime('created_at').isBefore(before))
         .firstOrNull;
-    return row == null ? null : AnalysisReport.fromJson(_embed(row));
+    return row == null ? null : AnalysisReport.fromJson(localizeRow(_embed(row)));
   }
 
   /// 데모에는 촬영 영상이 없다 (원본·스켈레톤 영상 목록을 비워 재생 버튼이 나오지 않는다).
@@ -413,7 +425,7 @@ class DemoAnalysisRepository extends _DemoRepository implements AnalysisReposito
     await wait();
     final rows = db.where('exercise_plans', (p) => p['dog_id'] == dogId && p['is_active'] == true).toList()
       ..sort((a, b) => _byText(b, a, 'created_at'));
-    return rows.isEmpty ? null : ExercisePlan.fromJson(rows.first);
+    return rows.isEmpty ? null : ExercisePlan.fromJson(localizeRow(rows.first));
   }
 }
 
@@ -425,7 +437,17 @@ class DemoMembershipRepository extends _DemoRepository implements MembershipRepo
     await wait();
     final rows = db.where('memberships', (m) => m['user_id'] == userId).toList()
       ..sort((a, b) => _byText(b, a, 'expires_at'));
-    return rows.map(Membership.fromJson).toList();
+    // `*, plan:membership_plans(name_en)` — 구매 시점에 복사한 plan_name으로 상품을 찾는다 (상품이 없으면 null)
+    return [
+      for (final m in rows)
+        Membership.fromJson(localizeRow({
+          ...m,
+          'plan': () {
+            final plan = db.find('membership_plans', (p) => p['name'] == m['plan_name']);
+            return plan == null ? null : {'name_en': plan['name_en']};
+          }(),
+        })),
+    ];
   }
 
   @override
@@ -433,7 +455,7 @@ class DemoMembershipRepository extends _DemoRepository implements MembershipRepo
     await wait();
     final rows = db.where('membership_plans', (p) => p['is_active'] == true).toList()
       ..sort((a, b) => a.intOr('sort_order').compareTo(b.intOr('sort_order')));
-    return rows.map(MembershipPlan.fromJson).toList();
+    return _map(rows, MembershipPlan.fromJson);
   }
 
   @override
@@ -441,7 +463,7 @@ class DemoMembershipRepository extends _DemoRepository implements MembershipRepo
     await wait();
     final rows = db.where('payments', (p) => p['user_id'] == userId).toList()
       ..sort((a, b) => _byText(b, a, 'created_at'));
-    return rows.take(100).map(Payment.fromJson).toList();
+    return _map(rows.take(100), Payment.fromJson);
   }
 }
 
@@ -454,7 +476,7 @@ class DemoNotificationRepository extends _DemoRepository implements Notification
     return db.watch('notifications', () {
       final rows = db.where('notifications', (n) => n['user_id'] == userId).toList()
         ..sort((a, b) => _byText(b, a, 'created_at'));
-      return rows.take(50).map((n) => AppNotification.fromJson({...n})).toList();
+      return _map(rows.take(50), AppNotification.fromJson);
     });
   }
 
@@ -489,7 +511,7 @@ class DemoUserRepository extends _DemoRepository implements UserRepository {
   @override
   Future<AppUser> fetchUser(String userId) async {
     await wait();
-    return AppUser.fromJson(_user(userId));
+    return AppUser.fromJson(localizeRow(_user(userId)));
   }
 
   @override
@@ -497,6 +519,7 @@ class DemoUserRepository extends _DemoRepository implements UserRepository {
     await wait();
     db.update('users', _user(userId), {
       'name': name.trim(),
+      'name__en': null,
       'phone': (phone == null || phone.trim().isEmpty) ? null : phone.trim(),
     });
   }
@@ -562,38 +585,38 @@ class DemoRankingRepository extends _DemoRepository implements RankingRepository
           scopeKey: query.scopeKey,
           limit: query.limit,
         )
-        .map(LeaderboardEntry.fromJson)
+        .map((r) => LeaderboardEntry.fromJson(localizeRow(r)))
         .toList();
   }
 
   @override
   Future<MyRanking> fetchMyRanking(String dogId, DateTime month) async {
     await wait();
-    return MyRanking.fromJson(server.ranking.myRanking(dogId, _monthOf(month)));
+    return MyRanking.fromJson(localizeRow(server.ranking.myRanking(dogId, _monthOf(month))));
   }
 
   @override
   Future<List<BranchBattleEntry>> fetchBranchBattle(DateTime month) async {
     await wait();
-    return server.ranking.branchBattle(_monthOf(month)).map(BranchBattleEntry.fromJson).toList();
+    return _map(server.ranking.branchBattle(_monthOf(month)), BranchBattleEntry.fromJson);
   }
 
   @override
   Future<List<HallOfFameEntry>> fetchHallOfFame({int months = 6}) async {
     await wait();
-    return server.ranking.hallOfFame(months: months).map(HallOfFameEntry.fromJson).toList();
+    return _map(server.ranking.hallOfFame(months: months), HallOfFameEntry.fromJson);
   }
 
   @override
   Future<RankingDogProfile> fetchDogProfile(String dogId, DateTime month) async {
     await wait();
-    return RankingDogProfile.fromJson(server.ranking.dogProfile(dogId, _monthOf(month)));
+    return RankingDogProfile.fromJson(localizeRow(server.ranking.dogProfile(dogId, _monthOf(month))));
   }
 
   @override
   Future<DogAchievements> fetchAchievements(String dogId) async {
     await wait();
-    return DogAchievements.fromJson(server.ranking.achievements(dogId));
+    return DogAchievements.fromJson(localizeRow(server.ranking.achievements(dogId)));
   }
 
   @override
@@ -601,7 +624,7 @@ class DemoRankingRepository extends _DemoRepository implements RankingRepository
     await wait();
     final rows = db.where('badges', (b) => b['is_active'] == true).toList()
       ..sort((a, b) => a.intOr('sort_order').compareTo(b.intOr('sort_order')));
-    return rows.map(BadgeDef.fromJson).toList();
+    return _map(rows, BadgeDef.fromJson);
   }
 
   @override
@@ -622,7 +645,7 @@ class DemoSupportRepository extends _DemoRepository implements SupportRepository
         final pinned = (b['is_pinned'] == true ? 1 : 0) - (a['is_pinned'] == true ? 1 : 0);
         return pinned != 0 ? pinned : _byText(b, a, 'published_at');
       });
-    return rows.take(limit).map(Notice.fromJson).toList();
+    return _map(rows.take(limit), Notice.fromJson);
   }
 
   @override
@@ -630,7 +653,7 @@ class DemoSupportRepository extends _DemoRepository implements SupportRepository
     await wait();
     final rows = db.where('faqs', (f) => f['is_active'] == true).toList()
       ..sort((a, b) => a.intOr('sort_order').compareTo(b.intOr('sort_order')));
-    return rows.map(Faq.fromJson).toList();
+    return _map(rows, Faq.fromJson);
   }
 
   @override
@@ -638,7 +661,7 @@ class DemoSupportRepository extends _DemoRepository implements SupportRepository
     await wait();
     final rows = db.where('inquiries', (i) => i['user_id'] == userId).toList()
       ..sort((a, b) => _byText(b, a, 'created_at'));
-    return rows.map(Inquiry.fromJson).toList();
+    return _map(rows, Inquiry.fromJson);
   }
 
   @override

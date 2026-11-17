@@ -30,6 +30,7 @@ class BookingApi {
     final program = db.byId('exercise_programs', booking['program_id'] as String?);
     final dog = db.byId('dogs', booking['dog_id'] as String?);
     final branch = db.byId('branches', booking['branch_id'] as String?);
+    final dogWithCatalog = dog == null ? null : db.dogWithBreedCatalog(dog);
     return {
       ...booking,
       'branch': branch == null ? null : {...branch},
@@ -42,7 +43,9 @@ class BookingApi {
           : {
               'id': dog['id'],
               'name': dog['name'],
+              'name__en': dog['name__en'],
               'breed': dog['breed'],
+              'breed_catalog': dogWithCatalog!['breed_catalog'],
               'profile_image_path': dog['profile_image_path'],
             },
       'session': [

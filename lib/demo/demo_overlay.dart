@@ -14,6 +14,8 @@ import '../features/dogs/data/dog.dart';
 import '../features/dogs/providers.dart';
 import '../features/exercise/data/exercise_session.dart';
 import '../features/exercise/providers.dart';
+import '../l10n/app_language.dart';
+import '../l10n/l10n.dart';
 import 'demo_app.dart';
 import 'mock_server/mock_server.dart';
 
@@ -64,7 +66,7 @@ class _DemoOverlayState extends ConsumerState<DemoOverlay> {
                 );
               }),
               child: _DemoPill(
-                label: loggedIn ? 'DEMO' : 'DEMO · 데모 계정으로 시작',
+                label: loggedIn ? 'DEMO' : context.l10n.demoPillStart,
                 live: live,
                 onTap: loggedIn ? _openControls : () => ref.read(demoAuthProvider).signInDemo(),
               ),
@@ -101,7 +103,7 @@ class _DemoPill extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Semantics(
       button: true,
-      label: '데모 컨트롤',
+      label: context.l10n.demoControlTitle,
       child: Material(
         color: scheme.inverseSurface.withValues(alpha: 0.92),
         shape: const StadiumBorder(),
@@ -174,6 +176,8 @@ class _DemoControlSheetState extends ConsumerState<DemoControlSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final language = ref.watch(appLanguageProvider);
     final server = ref.watch(mockServerProvider);
     final dog = ref.watch(selectedDogProvider).valueOrNull;
     final live = ref.watch(liveSessionProvider).valueOrNull;
@@ -189,18 +193,25 @@ class _DemoControlSheetState extends ConsumerState<DemoControlSheet> {
               children: [
                 const Icon(Icons.science_rounded, color: AppColors.honeyDeep),
                 const SizedBox(width: 8),
-                Text('데모 컨트롤', style: theme.textTheme.titleLarge),
+                Text(l10n.demoControlTitle, style: theme.textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 6),
             Text(
-              '목업 서버로 동작하는 데모 앱이에요. 실제 서버·결제·트레드밀과 연결되지 않고, '
-              '앱을 다시 켜면 처음 상태로 돌아가요.',
+              l10n.demoIntro,
               style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
             ),
+            // 발표 중 언어를 바로 바꾸는 줄 (마이페이지 › 설정 › 언어와 같은 선택 시트)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.language_rounded),
+              title: Text(l10n.languageMenuTitle),
+              trailing: Text(language.nativeName, style: theme.textTheme.labelLarge),
+              onTap: () => showLanguagePicker(context),
+            ),
             _SectionTitle(
-              title: '트레드밀 기기',
-              detail: dog == null ? '반려견을 먼저 등록해 주세요.' : '${dog.name} · 매장 기기가 보내는 운동 기록을 흉내 내요.',
+              title: l10n.demoSectionTreadmill,
+              detail: dog == null ? l10n.demoAddDogFirst : l10n.demoTreadmillDetail(dog.name),
             ),
             if (live != null)
               _LiveSessionControls(session: live, onAct: _act)
@@ -208,42 +219,41 @@ class _DemoControlSheetState extends ConsumerState<DemoControlSheet> {
               FilledButton.icon(
                 onPressed: dog == null ? null : () => _startExercise(dog),
                 icon: const Icon(Icons.directions_run_rounded),
-                label: const Text('운동 시작'),
+                label: Text(l10n.demoStartWorkout),
               ),
             const SizedBox(height: 12),
-            Text('시뮬레이션 속도', style: theme.textTheme.labelLarge),
+            Text(l10n.demoSpeedTitle, style: theme.textTheme.labelLarge),
             const SizedBox(height: 6),
             SegmentedButton<double>(
-              segments: const [
-                ButtonSegment(value: 1, label: Text('실제 시간')),
-                ButtonSegment(value: 10, label: Text('10배')),
-                ButtonSegment(value: 30, label: Text('30배')),
+              segments: [
+                ButtonSegment(value: 1, label: Text(l10n.demoSpeedReal)),
+                ButtonSegment(value: 10, label: Text(l10n.demoSpeed10x)),
+                ButtonSegment(value: 30, label: Text(l10n.demoSpeed30x)),
               ],
               selected: {server.treadmill.speedFactor},
               onSelectionChanged: (value) => setState(() => server.treadmill.speedFactor = value.first),
             ),
-            const _SectionTitle(title: 'AI 분석 서버', detail: '운동이 끝나고 몇 초 뒤 보행 분석 리포트가 도착해요.'),
+            _SectionTitle(title: l10n.demoSectionAi, detail: l10n.demoAiDetail),
             OutlinedButton.icon(
-              onPressed:
-                  pendingAnalysis ? () => _act('AI 분석이 끝났어요. 알림을 확인해 보세요.', server.analysis.completeAllPending) : null,
+              onPressed: pendingAnalysis ? () => _act(l10n.demoAiFinished, server.analysis.completeAllPending) : null,
               icon: const Icon(Icons.auto_graph_rounded),
-              label: Text(pendingAnalysis ? '대기 중인 분석 바로 끝내기' : '대기 중인 분석 없음'),
+              label: Text(pendingAnalysis ? l10n.demoFinishPending : l10n.demoNoPending),
             ),
-            const _SectionTitle(title: '다른 보호자', detail: '랭킹에 참여한 다른 보호자의 응원을 받아요.'),
+            _SectionTitle(title: l10n.demoSectionOwners, detail: l10n.demoOwnersDetail),
             OutlinedButton.icon(
               onPressed: dog == null ? null : () => _receiveCheer(dog),
               icon: const Icon(Icons.favorite_rounded),
-              label: const Text('응원 받기'),
+              label: Text(l10n.demoReceiveCheer),
             ),
-            const _SectionTitle(title: '데이터'),
+            _SectionTitle(title: l10n.demoSectionData),
             OutlinedButton.icon(
               onPressed: _reset,
               icon: const Icon(Icons.restart_alt_rounded),
-              label: const Text('처음 상태로 되돌리기'),
+              label: Text(l10n.demoReset),
             ),
             const SizedBox(height: 12),
             Text(
-              '데모 계정 ${DemoAccount.email} · ${DemoAccount.password}',
+              l10n.demoAccount(DemoAccount.email, DemoAccount.password),
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
             ),
@@ -255,7 +265,7 @@ class _DemoControlSheetState extends ConsumerState<DemoControlSheet> {
 
   void _startExercise(Dog dog) {
     _act(
-      '${dog.name}의 운동이 시작됐어요. 실시간 기록이 운동 탭에 표시돼요.',
+      context.l10n.demoWorkoutStarted(dog.name),
       () => _server.treadmill.startForDog(dog.id),
       goTo: AppRoutes.exercise,
     );
@@ -263,23 +273,23 @@ class _DemoControlSheetState extends ConsumerState<DemoControlSheet> {
 
   void _receiveCheer(Dog dog) {
     if (!_server.db.hasConsent(dog.ownerId, 'ranking')) {
-      context.showMessage('랭킹에 참여해야 응원을 받을 수 있어요. 마이페이지 > 동의 관리에서 바꿀 수 있어요.');
+      context.showMessage(context.l10n.demoCheerNeedsConsent);
       return;
     }
     final nickname = _server.cheerFromAnotherUser(dog.id);
     if (nickname == null) {
-      context.showMessage('이번 달에는 다른 보호자가 모두 응원했어요.');
+      context.showMessage(context.l10n.demoCheerAllDone);
       return;
     }
-    _closeWith('$nickname님이 ${RankingApi.josa(dog.name, '를', '을')} 응원했어요. 알림을 확인해 보세요.');
+    _closeWith(context.l10n.demoCheerReceived(nickname, particle(dog.name, '를', '을')));
   }
 
   Future<void> _reset() async {
     final confirmed = await confirmDialog(
       context,
-      title: '처음 상태로 되돌릴까요?',
-      message: '데모에서 만든 예약·운동 기록·설정이 모두 지워지고 샘플 데이터로 다시 시작해요.',
-      confirmLabel: '되돌리기',
+      title: context.l10n.demoResetTitle,
+      message: context.l10n.demoResetMessage,
+      confirmLabel: context.l10n.demoResetConfirm,
     );
     if (!confirmed || !mounted) return;
     final restart = ref.read(demoRestartProvider);
@@ -297,6 +307,7 @@ class _LiveSessionControls extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final treadmill = ref.read(mockServerProvider).treadmill;
     final paused = session.status == SessionStatus.paused;
     final target = session.targetDurationSeconds;
@@ -326,11 +337,11 @@ class _LiveSessionControls extends ConsumerWidget {
             Expanded(
               child: OutlinedButton(
                 onPressed: () => onAct(
-                  paused ? '운동을 다시 시작했어요.' : '트레드밀을 잠시 멈췄어요.',
+                  paused ? l10n.demoResumed : l10n.demoPaused,
                   () => treadmill.setPaused(session.id, paused: !paused),
                   close: false,
                 ),
-                child: Text(paused ? '다시 시작' : '일시정지'),
+                child: Text(paused ? l10n.demoResume : l10n.demoPause),
               ),
             ),
             const SizedBox(width: 8),
@@ -338,17 +349,23 @@ class _LiveSessionControls extends ConsumerWidget {
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(foregroundColor: AppColors.coral),
                 onPressed: () => onAct(
-                  '비상정지로 운동이 중단됐어요. 받은 만큼 점수가 쌓여요.',
-                  () => treadmill.finish(session.id, completed: false, stopReason: '비상정지 버튼으로 중단'),
+                  l10n.demoEmergencyDone,
+                  // 기기가 서버에 남기는 중단 사유 (한국어 기본값 + 데모 영어 값)
+                  () => treadmill.finish(
+                    session.id,
+                    completed: false,
+                    stopReason: '비상정지 버튼으로 중단',
+                    stopReasonEn: 'Stopped with the emergency stop button',
+                  ),
                 ),
-                child: const Text('비상정지'),
+                child: Text(l10n.demoEmergencyStop),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: FilledButton(
-                onPressed: () => onAct('운동을 마쳤어요. 점수와 배지, AI 리포트를 확인해 보세요.', () => treadmill.completeNow(session.id)),
-                child: const Text('바로 완료'),
+                onPressed: () => onAct(l10n.demoFinishedDone, () => treadmill.completeNow(session.id)),
+                child: Text(l10n.demoFinishNow),
               ),
             ),
           ],

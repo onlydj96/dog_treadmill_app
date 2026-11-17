@@ -417,4 +417,131 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverStopReasonByStaff => 'Stopped by staff';
+
+  @override
+  String get demoPillStart => 'DEMO · Start with demo account';
+
+  @override
+  String get demoControlTitle => 'Demo controls';
+
+  @override
+  String get demoIntro =>
+      'This demo app runs on a mock server. It isn\'t connected to a real server, payments, or treadmills, and it goes back to its starting state when you restart the app.';
+
+  @override
+  String get demoSectionTreadmill => 'Treadmill device';
+
+  @override
+  String get demoAddDogFirst => 'Add a dog first.';
+
+  @override
+  String demoTreadmillDetail(String dog) {
+    return '$dog · Simulates the workout data sent by the store\'s treadmill.';
+  }
+
+  @override
+  String get demoStartWorkout => 'Start workout';
+
+  @override
+  String get demoSpeedTitle => 'Simulation speed';
+
+  @override
+  String get demoSpeedReal => 'Real time';
+
+  @override
+  String get demoSpeed10x => '10x';
+
+  @override
+  String get demoSpeed30x => '30x';
+
+  @override
+  String get demoSectionAi => 'AI analysis server';
+
+  @override
+  String get demoAiDetail =>
+      'A gait analysis report arrives a few seconds after a workout ends.';
+
+  @override
+  String get demoAiFinished => 'AI analysis is done. Check your notifications.';
+
+  @override
+  String get demoFinishPending => 'Finish pending analysis now';
+
+  @override
+  String get demoNoPending => 'No pending analysis';
+
+  @override
+  String get demoSectionOwners => 'Other owners';
+
+  @override
+  String get demoOwnersDetail =>
+      'Get a cheer from another owner in the rankings.';
+
+  @override
+  String get demoReceiveCheer => 'Get a cheer';
+
+  @override
+  String get demoSectionData => 'Data';
+
+  @override
+  String get demoReset => 'Reset to starting state';
+
+  @override
+  String demoAccount(String email, String password) {
+    return 'Demo account $email · $password';
+  }
+
+  @override
+  String demoWorkoutStarted(String dog) {
+    return '$dog\'s workout has started. Live data shows on the Workout tab.';
+  }
+
+  @override
+  String get demoCheerNeedsConsent =>
+      'Join the rankings to get cheers. You can change this under Account > Consent settings.';
+
+  @override
+  String get demoCheerAllDone =>
+      'Every other owner has already cheered this month.';
+
+  @override
+  String demoCheerReceived(String nickname, String dog) {
+    return '$nickname cheered $dog. Check your notifications.';
+  }
+
+  @override
+  String get demoResetTitle => 'Reset to the starting state?';
+
+  @override
+  String get demoResetMessage =>
+      'Bookings, workout history, and settings you made in the demo will be erased and the sample data will start over.';
+
+  @override
+  String get demoResetConfirm => 'Reset';
+
+  @override
+  String get demoResumed => 'Workout resumed.';
+
+  @override
+  String get demoPaused => 'Treadmill paused.';
+
+  @override
+  String get demoResume => 'Resume';
+
+  @override
+  String get demoPause => 'Pause';
+
+  @override
+  String get demoEmergencyDone =>
+      'The workout was stopped with the emergency stop. You keep the points you\'ve earned so far.';
+
+  @override
+  String get demoEmergencyStop => 'Emergency stop';
+
+  @override
+  String get demoFinishedDone =>
+      'Workout finished. Check your points, badges, and AI report.';
+
+  @override
+  String get demoFinishNow => 'Finish now';
 }

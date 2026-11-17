@@ -739,6 +739,228 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'운영자 판단에 의한 중단'**
   String get serverStopReasonByStaff;
+
+  /// No description provided for @demoPillStart.
+  ///
+  /// In ko, this message translates to:
+  /// **'DEMO · 데모 계정으로 시작'**
+  String get demoPillStart;
+
+  /// No description provided for @demoControlTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모 컨트롤'**
+  String get demoControlTitle;
+
+  /// No description provided for @demoIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'목업 서버로 동작하는 데모 앱이에요. 실제 서버·결제·트레드밀과 연결되지 않고, 앱을 다시 켜면 처음 상태로 돌아가요.'**
+  String get demoIntro;
+
+  /// No description provided for @demoSectionTreadmill.
+  ///
+  /// In ko, this message translates to:
+  /// **'트레드밀 기기'**
+  String get demoSectionTreadmill;
+
+  /// No description provided for @demoAddDogFirst.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견을 먼저 등록해 주세요.'**
+  String get demoAddDogFirst;
+
+  /// No description provided for @demoTreadmillDetail.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog} · 매장 기기가 보내는 운동 기록을 흉내 내요.'**
+  String demoTreadmillDetail(String dog);
+
+  /// No description provided for @demoStartWorkout.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 시작'**
+  String get demoStartWorkout;
+
+  /// No description provided for @demoSpeedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'시뮬레이션 속도'**
+  String get demoSpeedTitle;
+
+  /// No description provided for @demoSpeedReal.
+  ///
+  /// In ko, this message translates to:
+  /// **'실제 시간'**
+  String get demoSpeedReal;
+
+  /// No description provided for @demoSpeed10x.
+  ///
+  /// In ko, this message translates to:
+  /// **'10배'**
+  String get demoSpeed10x;
+
+  /// No description provided for @demoSpeed30x.
+  ///
+  /// In ko, this message translates to:
+  /// **'30배'**
+  String get demoSpeed30x;
+
+  /// No description provided for @demoSectionAi.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 분석 서버'**
+  String get demoSectionAi;
+
+  /// No description provided for @demoAiDetail.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동이 끝나고 몇 초 뒤 보행 분석 리포트가 도착해요.'**
+  String get demoAiDetail;
+
+  /// No description provided for @demoAiFinished.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 분석이 끝났어요. 알림을 확인해 보세요.'**
+  String get demoAiFinished;
+
+  /// No description provided for @demoFinishPending.
+  ///
+  /// In ko, this message translates to:
+  /// **'대기 중인 분석 바로 끝내기'**
+  String get demoFinishPending;
+
+  /// No description provided for @demoNoPending.
+  ///
+  /// In ko, this message translates to:
+  /// **'대기 중인 분석 없음'**
+  String get demoNoPending;
+
+  /// No description provided for @demoSectionOwners.
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 보호자'**
+  String get demoSectionOwners;
+
+  /// No description provided for @demoOwnersDetail.
+  ///
+  /// In ko, this message translates to:
+  /// **'랭킹에 참여한 다른 보호자의 응원을 받아요.'**
+  String get demoOwnersDetail;
+
+  /// No description provided for @demoReceiveCheer.
+  ///
+  /// In ko, this message translates to:
+  /// **'응원 받기'**
+  String get demoReceiveCheer;
+
+  /// No description provided for @demoSectionData.
+  ///
+  /// In ko, this message translates to:
+  /// **'데이터'**
+  String get demoSectionData;
+
+  /// No description provided for @demoReset.
+  ///
+  /// In ko, this message translates to:
+  /// **'처음 상태로 되돌리기'**
+  String get demoReset;
+
+  /// No description provided for @demoAccount.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모 계정 {email} · {password}'**
+  String demoAccount(String email, String password);
+
+  /// No description provided for @demoWorkoutStarted.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dog}의 운동이 시작됐어요. 실시간 기록이 운동 탭에 표시돼요.'**
+  String demoWorkoutStarted(String dog);
+
+  /// No description provided for @demoCheerNeedsConsent.
+  ///
+  /// In ko, this message translates to:
+  /// **'랭킹에 참여해야 응원을 받을 수 있어요. 마이페이지 > 동의 관리에서 바꿀 수 있어요.'**
+  String get demoCheerNeedsConsent;
+
+  /// No description provided for @demoCheerAllDone.
+  ///
+  /// In ko, this message translates to:
+  /// **'이번 달에는 다른 보호자가 모두 응원했어요.'**
+  String get demoCheerAllDone;
+
+  /// No description provided for @demoCheerReceived.
+  ///
+  /// In ko, this message translates to:
+  /// **'{nickname}님이 {dog} 응원했어요. 알림을 확인해 보세요.'**
+  String demoCheerReceived(String nickname, String dog);
+
+  /// No description provided for @demoResetTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'처음 상태로 되돌릴까요?'**
+  String get demoResetTitle;
+
+  /// No description provided for @demoResetMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모에서 만든 예약·운동 기록·설정이 모두 지워지고 샘플 데이터로 다시 시작해요.'**
+  String get demoResetMessage;
+
+  /// No description provided for @demoResetConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'되돌리기'**
+  String get demoResetConfirm;
+
+  /// No description provided for @demoResumed.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동을 다시 시작했어요.'**
+  String get demoResumed;
+
+  /// No description provided for @demoPaused.
+  ///
+  /// In ko, this message translates to:
+  /// **'트레드밀을 잠시 멈췄어요.'**
+  String get demoPaused;
+
+  /// No description provided for @demoResume.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 시작'**
+  String get demoResume;
+
+  /// No description provided for @demoPause.
+  ///
+  /// In ko, this message translates to:
+  /// **'일시정지'**
+  String get demoPause;
+
+  /// No description provided for @demoEmergencyDone.
+  ///
+  /// In ko, this message translates to:
+  /// **'비상정지로 운동이 중단됐어요. 받은 만큼 점수가 쌓여요.'**
+  String get demoEmergencyDone;
+
+  /// No description provided for @demoEmergencyStop.
+  ///
+  /// In ko, this message translates to:
+  /// **'비상정지'**
+  String get demoEmergencyStop;
+
+  /// No description provided for @demoFinishedDone.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동을 마쳤어요. 점수와 배지, AI 리포트를 확인해 보세요.'**
+  String get demoFinishedDone;
+
+  /// No description provided for @demoFinishNow.
+  ///
+  /// In ko, this message translates to:
+  /// **'바로 완료'**
+  String get demoFinishNow;
 }
 
 class _AppLocalizationsDelegate

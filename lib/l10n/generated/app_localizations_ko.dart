@@ -364,4 +364,126 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get serverStopReasonByStaff => '운영자 판단에 의한 중단';
+
+  @override
+  String get demoPillStart => 'DEMO · 데모 계정으로 시작';
+
+  @override
+  String get demoControlTitle => '데모 컨트롤';
+
+  @override
+  String get demoIntro =>
+      '목업 서버로 동작하는 데모 앱이에요. 실제 서버·결제·트레드밀과 연결되지 않고, 앱을 다시 켜면 처음 상태로 돌아가요.';
+
+  @override
+  String get demoSectionTreadmill => '트레드밀 기기';
+
+  @override
+  String get demoAddDogFirst => '반려견을 먼저 등록해 주세요.';
+
+  @override
+  String demoTreadmillDetail(String dog) {
+    return '$dog · 매장 기기가 보내는 운동 기록을 흉내 내요.';
+  }
+
+  @override
+  String get demoStartWorkout => '운동 시작';
+
+  @override
+  String get demoSpeedTitle => '시뮬레이션 속도';
+
+  @override
+  String get demoSpeedReal => '실제 시간';
+
+  @override
+  String get demoSpeed10x => '10배';
+
+  @override
+  String get demoSpeed30x => '30배';
+
+  @override
+  String get demoSectionAi => 'AI 분석 서버';
+
+  @override
+  String get demoAiDetail => '운동이 끝나고 몇 초 뒤 보행 분석 리포트가 도착해요.';
+
+  @override
+  String get demoAiFinished => 'AI 분석이 끝났어요. 알림을 확인해 보세요.';
+
+  @override
+  String get demoFinishPending => '대기 중인 분석 바로 끝내기';
+
+  @override
+  String get demoNoPending => '대기 중인 분석 없음';
+
+  @override
+  String get demoSectionOwners => '다른 보호자';
+
+  @override
+  String get demoOwnersDetail => '랭킹에 참여한 다른 보호자의 응원을 받아요.';
+
+  @override
+  String get demoReceiveCheer => '응원 받기';
+
+  @override
+  String get demoSectionData => '데이터';
+
+  @override
+  String get demoReset => '처음 상태로 되돌리기';
+
+  @override
+  String demoAccount(String email, String password) {
+    return '데모 계정 $email · $password';
+  }
+
+  @override
+  String demoWorkoutStarted(String dog) {
+    return '$dog의 운동이 시작됐어요. 실시간 기록이 운동 탭에 표시돼요.';
+  }
+
+  @override
+  String get demoCheerNeedsConsent =>
+      '랭킹에 참여해야 응원을 받을 수 있어요. 마이페이지 > 동의 관리에서 바꿀 수 있어요.';
+
+  @override
+  String get demoCheerAllDone => '이번 달에는 다른 보호자가 모두 응원했어요.';
+
+  @override
+  String demoCheerReceived(String nickname, String dog) {
+    return '$nickname님이 $dog 응원했어요. 알림을 확인해 보세요.';
+  }
+
+  @override
+  String get demoResetTitle => '처음 상태로 되돌릴까요?';
+
+  @override
+  String get demoResetMessage =>
+      '데모에서 만든 예약·운동 기록·설정이 모두 지워지고 샘플 데이터로 다시 시작해요.';
+
+  @override
+  String get demoResetConfirm => '되돌리기';
+
+  @override
+  String get demoResumed => '운동을 다시 시작했어요.';
+
+  @override
+  String get demoPaused => '트레드밀을 잠시 멈췄어요.';
+
+  @override
+  String get demoResume => '다시 시작';
+
+  @override
+  String get demoPause => '일시정지';
+
+  @override
+  String get demoEmergencyDone => '비상정지로 운동이 중단됐어요. 받은 만큼 점수가 쌓여요.';
+
+  @override
+  String get demoEmergencyStop => '비상정지';
+
+  @override
+  String get demoFinishedDone => '운동을 마쳤어요. 점수와 배지, AI 리포트를 확인해 보세요.';
+
+  @override
+  String get demoFinishNow => '바로 완료';
 }

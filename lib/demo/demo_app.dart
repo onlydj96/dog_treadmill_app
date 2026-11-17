@@ -17,6 +17,7 @@ import '../features/notifications/data/notification_repository.dart';
 import '../features/profile/data/user_repository.dart';
 import '../features/ranking/providers.dart';
 import '../features/support/data/support_repository.dart';
+import '../l10n/app_language.dart';
 import 'demo_auth.dart';
 import 'demo_overlay.dart';
 import 'demo_repositories.dart';
@@ -38,6 +39,12 @@ final _demoUserIdProvider = Provider<String?>((ref) {
   ref.onDispose(() => auth.removeListener(onChange));
   return auth.userId;
 });
+
+/// 저장소 Provider가 앱 언어를 구독하게 한다 (언어가 바뀌면 저장소가 새로 만들어진다)
+MockServer _inLanguage(Ref ref, MockServer server) {
+  ref.watch(appLanguageProvider);
+  return server;
+}
 
 /// 실제 앱과 같은 화면·Provider를 쓰고, 서버에 닿는 Provider(저장소·인증·라우터)만 목업 서버 구현으로 바꾼다.
 List<Override> demoOverrides({
@@ -63,16 +70,19 @@ List<Override> demoOverrides({
     }),
 
     authRepositoryProvider.overrideWithValue(DemoAuthRepository(server, auth)),
-    dogRepositoryProvider.overrideWithValue(DemoDogRepository(server)),
-    bookingRepositoryProvider.overrideWithValue(DemoBookingRepository(server)),
-    exerciseRepositoryProvider.overrideWithValue(DemoExerciseRepository(server)),
-    analysisRepositoryProvider.overrideWithValue(DemoAnalysisRepository(server)),
-    membershipRepositoryProvider.overrideWithValue(DemoMembershipRepository(server)),
-    notificationRepositoryProvider.overrideWithValue(DemoNotificationRepository(server)),
-    userRepositoryProvider.overrideWithValue(DemoUserRepository(server)),
+    // 화면에 보이는 문구가 담긴 결과를 돌려주는 저장소는 언어 설정에 의존한다: 언어를 바꾸면 저장소가 다시 만들어져
+    // 이 저장소를 보는 Provider가 데이터를 다시 불러온다 (샘플 데이터의 `__en` 값이 현재 언어로 바뀐다).
+    // 인증·라우터 override는 언어와 무관하게 두어 언어를 바꿔도 이동 상태가 초기화되지 않는다.
+    dogRepositoryProvider.overrideWith((ref) => DemoDogRepository(_inLanguage(ref, server))),
+    bookingRepositoryProvider.overrideWith((ref) => DemoBookingRepository(_inLanguage(ref, server))),
+    exerciseRepositoryProvider.overrideWith((ref) => DemoExerciseRepository(_inLanguage(ref, server))),
+    analysisRepositoryProvider.overrideWith((ref) => DemoAnalysisRepository(_inLanguage(ref, server))),
+    membershipRepositoryProvider.overrideWith((ref) => DemoMembershipRepository(_inLanguage(ref, server))),
+    notificationRepositoryProvider.overrideWith((ref) => DemoNotificationRepository(_inLanguage(ref, server))),
+    userRepositoryProvider.overrideWith((ref) => DemoUserRepository(_inLanguage(ref, server))),
     consentRepositoryProvider.overrideWithValue(DemoConsentRepository(server)),
-    rankingRepositoryProvider.overrideWithValue(DemoRankingRepository(server)),
-    supportRepositoryProvider.overrideWithValue(DemoSupportRepository(server)),
+    rankingRepositoryProvider.overrideWith((ref) => DemoRankingRepository(_inLanguage(ref, server))),
+    supportRepositoryProvider.overrideWith((ref) => DemoSupportRepository(_inLanguage(ref, server))),
   ];
 }
 
