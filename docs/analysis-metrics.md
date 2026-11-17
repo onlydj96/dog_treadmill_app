@@ -3,6 +3,7 @@
 AI 서버(FastAPI)가 `analysis_reports`에 결과를 저장할 때 따라야 하는 형식입니다.
 앱(`lib/features/health/data/analysis_models.dart`)은 이 구조를 그대로 읽어 화면에 표시합니다.
 모든 필드는 선택값이며, 없는 값은 앱에서 `-`로 표시합니다.
+앱은 한국어·영어로 표시하므로 사람이 읽는 문구는 영어 값을 함께 저장합니다 ([영어 문구](#영어-문구-다국어)).
 
 ## 처리 흐름
 
@@ -30,7 +31,7 @@ AI 서버는 `service_role` 키로 접속합니다(RLS 우회). 키는 서버에
 ## 15개 관절 Keypoint
 
 `joint` / `key` 값은 아래 키를 사용합니다. 앱은 이 키로 측면 스켈레톤 도식에 위치를 표시하고,
-`label`을 생략하면 한글 이름을 자동으로 채웁니다.
+`label`(한국어)·`label_en`(영어)을 생략하면 현재 언어의 관절 이름(`DogKeypoint.label`)을 자동으로 채웁니다.
 
 | key | 이름 | key | 이름 |
 |---|---|---|---|
@@ -53,6 +54,7 @@ AI 서버는 `service_role` 키로 접속합니다(RLS 우회). 키는 서버에
     {
       "key": "right_stifle",
       "label": "오른쪽 뒷다리 무릎",
+      "label_en": "Right hind knee",
       "rom_deg": 44.0,
       "mean_angle_deg": 128.4,
       "min_angle_deg": 106.0,
@@ -99,11 +101,19 @@ AI 서버는 `service_role` 키로 접속합니다(RLS 우회). 키는 서버에
   "anomaly_score": 0.34,
   "confidence": 0.87,
   "findings": [
-    { "joint": "right_stifle", "description": "가동 범위가 기준선보다 12% 줄었어요.", "severity": "caution" }
+    {
+      "joint": "right_stifle",
+      "description": "가동 범위가 기준선보다 12% 줄었어요.",
+      "description_en": "Range of motion is 12% lower than the baseline.",
+      "severity": "caution"
+    }
   ],
-  "notes": ["측면 카메라에서 왼쪽 뒷다리가 일부 가려져 신뢰도가 다소 낮아요."]
+  "notes": ["측면 카메라에서 왼쪽 뒷다리가 일부 가려져 신뢰도가 다소 낮아요."],
+  "notes_en": ["The left hind leg was partly hidden from the side camera, so confidence is a little lower."]
 }
 ```
+
+- `findings[].label`·`label_en`: 관절 이름을 바꿔 보여 줄 때만 넣습니다. 없으면 `joint` 키로 앱의 관절 이름을 씁니다.
 
 - `level`, `severity`: `normal`(특이사항 없음) / `caution`(관찰 필요) / `warning`(주의 필요)
 - `anomaly_score`: 평소 보행 패턴과의 차이(0~1). `confidence`: 분석 신뢰도(0~1).
@@ -112,7 +122,24 @@ AI 서버는 `service_role` 키로 접속합니다(RLS 우회). 키는 서버에
 
 ## 기타 컬럼
 
-- `summary` (text): 분석 결과 요약 1~2문장.
-- `care_notes` (jsonb, 문자열 배열): 운동 관리 참고사항.
+- `summary` (text): 분석 결과 요약 1~2문장. 영어는 `summary_en` (text).
+- `care_notes` (jsonb, 문자열 배열): 운동 관리 참고사항. 영어는 `care_notes_en` (jsonb 문자열 배열, 기본값 `[]`, 배열이 아니면 DB가 거절).
 - `fatigue_metrics` (jsonb): 피로 징후 분석(추후 개발). 현재 앱에서는 표시하지 않습니다.
 - `model_version` (text): 예) `gait-v0.3`. 리포트 상단에 표시됩니다.
+
+## 영어 문구 (다국어)
+
+앱은 영어 화면에서 영어 값이 비어 있지 않으면 그것을, 비어 있으면 한국어 값을 보여 줍니다 ([docs/i18n.md](i18n.md)).
+AI 서버는 결과를 저장할 때 사람이 읽는 문구마다 **같은 이름 + `_en`** 으로 영어 값을 함께 씁니다.
+
+| 위치 | 한국어 | 영어 |
+|---|---|---|
+| `analysis_reports` 컬럼 | `summary` | `summary_en` |
+| `analysis_reports` 컬럼 | `care_notes` | `care_notes_en` (같은 순서·같은 개수 권장) |
+| `joint_metrics.joints[]` | `label` | `label_en` |
+| `anomaly_metrics.findings[]` | `label`, `description` | `label_en`, `description_en` |
+| `anomaly_metrics` | `notes` | `notes_en` (같은 순서·같은 개수 권장) |
+
+- 관절 라벨은 `label_en`이 없으면 앱이 영어 관절 이름을(한국어 화면은 `label`, 없으면 앱의 한국어 이름) 쓰므로 키(`key`/`joint`)만 넣어도 됩니다.
+- 영어 문구도 진단 표현을 피하고 관찰된 변화만 서술합니다.
+- 이전 리포트처럼 영어 값이 없으면 영어 화면에서도 한국어 문구가 보입니다.
