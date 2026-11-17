@@ -5270,6 +5270,348 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'이용권'**
   String get serverPaymentMethodPass;
+
+  /// No description provided for @keypointNose.
+  ///
+  /// In ko, this message translates to:
+  /// **'코'**
+  String get keypointNose;
+
+  /// No description provided for @keypointWithers.
+  ///
+  /// In ko, this message translates to:
+  /// **'기갑(어깨 위)'**
+  String get keypointWithers;
+
+  /// No description provided for @keypointTailBase.
+  ///
+  /// In ko, this message translates to:
+  /// **'꼬리 시작점'**
+  String get keypointTailBase;
+
+  /// No description provided for @keypointLeftElbow.
+  ///
+  /// In ko, this message translates to:
+  /// **'왼쪽 앞다리 팔꿈치'**
+  String get keypointLeftElbow;
+
+  /// No description provided for @keypointLeftCarpus.
+  ///
+  /// In ko, this message translates to:
+  /// **'왼쪽 앞발목'**
+  String get keypointLeftCarpus;
+
+  /// No description provided for @keypointLeftFrontPaw.
+  ///
+  /// In ko, this message translates to:
+  /// **'왼쪽 앞발'**
+  String get keypointLeftFrontPaw;
+
+  /// No description provided for @keypointRightElbow.
+  ///
+  /// In ko, this message translates to:
+  /// **'오른쪽 앞다리 팔꿈치'**
+  String get keypointRightElbow;
+
+  /// No description provided for @keypointRightCarpus.
+  ///
+  /// In ko, this message translates to:
+  /// **'오른쪽 앞발목'**
+  String get keypointRightCarpus;
+
+  /// No description provided for @keypointRightFrontPaw.
+  ///
+  /// In ko, this message translates to:
+  /// **'오른쪽 앞발'**
+  String get keypointRightFrontPaw;
+
+  /// No description provided for @keypointLeftStifle.
+  ///
+  /// In ko, this message translates to:
+  /// **'왼쪽 뒷다리 무릎'**
+  String get keypointLeftStifle;
+
+  /// No description provided for @keypointLeftHock.
+  ///
+  /// In ko, this message translates to:
+  /// **'왼쪽 뒷발목(비절)'**
+  String get keypointLeftHock;
+
+  /// No description provided for @keypointLeftHindPaw.
+  ///
+  /// In ko, this message translates to:
+  /// **'왼쪽 뒷발'**
+  String get keypointLeftHindPaw;
+
+  /// No description provided for @keypointRightStifle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오른쪽 뒷다리 무릎'**
+  String get keypointRightStifle;
+
+  /// No description provided for @keypointRightHock.
+  ///
+  /// In ko, this message translates to:
+  /// **'오른쪽 뒷발목(비절)'**
+  String get keypointRightHock;
+
+  /// No description provided for @keypointRightHindPaw.
+  ///
+  /// In ko, this message translates to:
+  /// **'오른쪽 뒷발'**
+  String get keypointRightHindPaw;
+
+  /// No description provided for @analysisReportTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 분석 리포트'**
+  String get analysisReportTitle;
+
+  /// No description provided for @analysisModelVersion.
+  ///
+  /// In ko, this message translates to:
+  /// **'모델 {version}'**
+  String analysisModelVersion(String version);
+
+  /// No description provided for @analysisStatDuration.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 시간'**
+  String get analysisStatDuration;
+
+  /// No description provided for @analysisStatDistance.
+  ///
+  /// In ko, this message translates to:
+  /// **'이동 거리'**
+  String get analysisStatDistance;
+
+  /// No description provided for @analysisStatAvgSpeed.
+  ///
+  /// In ko, this message translates to:
+  /// **'평균 속도'**
+  String get analysisStatAvgSpeed;
+
+  /// No description provided for @analysisPendingFailedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석을 완료하지 못했어요'**
+  String get analysisPendingFailedTitle;
+
+  /// No description provided for @analysisPendingTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 영상을 분석하고 있어요'**
+  String get analysisPendingTitle;
+
+  /// No description provided for @analysisPendingFailedMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'영상 품질이나 촬영 각도 문제로 분석하지 못했어요. 헬스장에서 확인 후 다시 분석해 드릴게요.'**
+  String get analysisPendingFailedMessage;
+
+  /// No description provided for @analysisPendingMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'관절 움직임과 보행 패턴을 분석 중이에요. 완료되면 알림으로 알려 드릴게요.'**
+  String get analysisPendingMessage;
+
+  /// No description provided for @analysisSummaryTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 결과 요약'**
+  String get analysisSummaryTitle;
+
+  /// No description provided for @analysisAnomalySection.
+  ///
+  /// In ko, this message translates to:
+  /// **'이상 움직임 탐지'**
+  String get analysisAnomalySection;
+
+  /// No description provided for @analysisConfidenceValue.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 신뢰도 {percent}%'**
+  String analysisConfidenceValue(String percent);
+
+  /// No description provided for @analysisPatternDiffCaption.
+  ///
+  /// In ko, this message translates to:
+  /// **'평소 보행 패턴과의 차이'**
+  String get analysisPatternDiffCaption;
+
+  /// No description provided for @analysisScaleSimilar.
+  ///
+  /// In ko, this message translates to:
+  /// **'비슷함'**
+  String get analysisScaleSimilar;
+
+  /// No description provided for @analysisScaleDifferent.
+  ///
+  /// In ko, this message translates to:
+  /// **'차이 큼'**
+  String get analysisScaleDifferent;
+
+  /// No description provided for @analysisNoAnomaly.
+  ///
+  /// In ko, this message translates to:
+  /// **'평소와 다른 관절 패턴이 발견되지 않았어요.'**
+  String get analysisNoAnomaly;
+
+  /// No description provided for @analysisVsBaseline.
+  ///
+  /// In ko, this message translates to:
+  /// **'기준선 대비 {value}'**
+  String analysisVsBaseline(String value);
+
+  /// No description provided for @analysisStepsCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}보'**
+  String analysisStepsCount(int count);
+
+  /// No description provided for @analysisStrideTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'걸음걸이 주기'**
+  String get analysisStrideTime;
+
+  /// No description provided for @analysisUnitSeconds.
+  ///
+  /// In ko, this message translates to:
+  /// **'초'**
+  String get analysisUnitSeconds;
+
+  /// No description provided for @analysisGaitVariability.
+  ///
+  /// In ko, this message translates to:
+  /// **'보행 변동성'**
+  String get analysisGaitVariability;
+
+  /// No description provided for @analysisFrontSymmetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'앞다리 대칭'**
+  String get analysisFrontSymmetry;
+
+  /// No description provided for @analysisHindSymmetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'뒷다리 대칭'**
+  String get analysisHindSymmetry;
+
+  /// No description provided for @analysisGaitSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'보행 패턴 분석'**
+  String get analysisGaitSection;
+
+  /// No description provided for @analysisRhythmScore.
+  ///
+  /// In ko, this message translates to:
+  /// **'보행 리듬 점수'**
+  String get analysisRhythmScore;
+
+  /// No description provided for @analysisJointSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'관절 움직임 분석 · {count}개 관절'**
+  String analysisJointSection(int count);
+
+  /// No description provided for @analysisLegendNear.
+  ///
+  /// In ko, this message translates to:
+  /// **'왼쪽 다리 (카메라 쪽)'**
+  String get analysisLegendNear;
+
+  /// No description provided for @analysisLegendFar.
+  ///
+  /// In ko, this message translates to:
+  /// **'오른쪽 다리'**
+  String get analysisLegendFar;
+
+  /// No description provided for @analysisColJoint.
+  ///
+  /// In ko, this message translates to:
+  /// **'관절'**
+  String get analysisColJoint;
+
+  /// No description provided for @analysisColRom.
+  ///
+  /// In ko, this message translates to:
+  /// **'가동 범위'**
+  String get analysisColRom;
+
+  /// No description provided for @analysisColVsBaseline.
+  ///
+  /// In ko, this message translates to:
+  /// **'기준선 대비'**
+  String get analysisColVsBaseline;
+
+  /// No description provided for @analysisAngleRange.
+  ///
+  /// In ko, this message translates to:
+  /// **'각도 {min}°~{max}°'**
+  String analysisAngleRange(String min, String max);
+
+  /// No description provided for @analysisPatternDiff.
+  ///
+  /// In ko, this message translates to:
+  /// **'패턴 차이'**
+  String get analysisPatternDiff;
+
+  /// No description provided for @analysisCompareTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이전 운동 대비 변화 ({date})'**
+  String analysisCompareTitle(String date);
+
+  /// No description provided for @analysisVideoSkeleton.
+  ///
+  /// In ko, this message translates to:
+  /// **'스켈레톤 영상'**
+  String get analysisVideoSkeleton;
+
+  /// No description provided for @analysisVideoSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 영상'**
+  String get analysisVideoSection;
+
+  /// No description provided for @analysisCareNotes.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 관리 참고사항'**
+  String get analysisCareNotes;
+
+  /// No description provided for @healthNoChange.
+  ///
+  /// In ko, this message translates to:
+  /// **'변화 없음'**
+  String get healthNoChange;
+
+  /// No description provided for @healthBaselineLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'기준선'**
+  String get healthBaselineLabel;
+
+  /// No description provided for @healthSkeletonSemantics.
+  ///
+  /// In ko, this message translates to:
+  /// **'측면에서 본 반려견 관절 도식'**
+  String get healthSkeletonSemantics;
+
+  /// No description provided for @healthSkeletonSemanticsFlagged.
+  ///
+  /// In ko, this message translates to:
+  /// **'측면에서 본 반려견 관절 도식, {details}'**
+  String healthSkeletonSemanticsFlagged(String details);
+
+  /// No description provided for @healthJointLevel.
+  ///
+  /// In ko, this message translates to:
+  /// **'{joint} {level}'**
+  String healthJointLevel(String joint, String level);
 }
 
 class _AppLocalizationsDelegate

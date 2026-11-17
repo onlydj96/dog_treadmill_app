@@ -3183,4 +3183,209 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverPaymentMethodPass => 'Pass';
+
+  @override
+  String get keypointNose => 'Nose';
+
+  @override
+  String get keypointWithers => 'Withers (top of shoulders)';
+
+  @override
+  String get keypointTailBase => 'Base of tail';
+
+  @override
+  String get keypointLeftElbow => 'Left front elbow';
+
+  @override
+  String get keypointLeftCarpus => 'Left front wrist (carpus)';
+
+  @override
+  String get keypointLeftFrontPaw => 'Left front paw';
+
+  @override
+  String get keypointRightElbow => 'Right front elbow';
+
+  @override
+  String get keypointRightCarpus => 'Right front wrist (carpus)';
+
+  @override
+  String get keypointRightFrontPaw => 'Right front paw';
+
+  @override
+  String get keypointLeftStifle => 'Left hind knee (stifle)';
+
+  @override
+  String get keypointLeftHock => 'Left hind ankle (hock)';
+
+  @override
+  String get keypointLeftHindPaw => 'Left hind paw';
+
+  @override
+  String get keypointRightStifle => 'Right hind knee (stifle)';
+
+  @override
+  String get keypointRightHock => 'Right hind ankle (hock)';
+
+  @override
+  String get keypointRightHindPaw => 'Right hind paw';
+
+  @override
+  String get analysisReportTitle => 'AI analysis report';
+
+  @override
+  String analysisModelVersion(String version) {
+    return 'Model $version';
+  }
+
+  @override
+  String get analysisStatDuration => 'Workout time';
+
+  @override
+  String get analysisStatDistance => 'Distance';
+
+  @override
+  String get analysisStatAvgSpeed => 'Avg speed';
+
+  @override
+  String get analysisPendingFailedTitle => 'We couldn\'t finish the analysis';
+
+  @override
+  String get analysisPendingTitle => 'We\'re analyzing your workout video';
+
+  @override
+  String get analysisPendingFailedMessage =>
+      'The video quality or camera angle got in the way. The gym will check it and run the analysis again.';
+
+  @override
+  String get analysisPendingMessage =>
+      'We\'re analyzing joint movement and gait patterns. We\'ll notify you when it\'s done.';
+
+  @override
+  String get analysisSummaryTitle => 'Analysis summary';
+
+  @override
+  String get analysisAnomalySection => 'Unusual movement check';
+
+  @override
+  String analysisConfidenceValue(String percent) {
+    return 'Confidence $percent%';
+  }
+
+  @override
+  String get analysisPatternDiffCaption =>
+      'Difference from the usual gait pattern';
+
+  @override
+  String get analysisScaleSimilar => 'Similar';
+
+  @override
+  String get analysisScaleDifferent => 'Very different';
+
+  @override
+  String get analysisNoAnomaly => 'No unusual joint patterns found.';
+
+  @override
+  String analysisVsBaseline(String value) {
+    return '$value vs baseline';
+  }
+
+  @override
+  String analysisStepsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count steps',
+      one: '1 step',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get analysisStrideTime => 'Stride time';
+
+  @override
+  String get analysisUnitSeconds => 's';
+
+  @override
+  String get analysisGaitVariability => 'Gait variability';
+
+  @override
+  String get analysisFrontSymmetry => 'Front leg symmetry';
+
+  @override
+  String get analysisHindSymmetry => 'Hind leg symmetry';
+
+  @override
+  String get analysisGaitSection => 'Gait pattern analysis';
+
+  @override
+  String get analysisRhythmScore => 'Gait rhythm score';
+
+  @override
+  String analysisJointSection(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count joints',
+      one: '1 joint',
+    );
+    return 'Joint movement analysis · $_temp0';
+  }
+
+  @override
+  String get analysisLegendNear => 'Left legs (camera side)';
+
+  @override
+  String get analysisLegendFar => 'Right legs';
+
+  @override
+  String get analysisColJoint => 'Joint';
+
+  @override
+  String get analysisColRom => 'Range';
+
+  @override
+  String get analysisColVsBaseline => 'vs baseline';
+
+  @override
+  String analysisAngleRange(String min, String max) {
+    return 'Angle $min°–$max°';
+  }
+
+  @override
+  String get analysisPatternDiff => 'Pattern difference';
+
+  @override
+  String analysisCompareTitle(String date) {
+    return 'Change since your last workout ($date)';
+  }
+
+  @override
+  String get analysisVideoSkeleton => 'Skeleton video';
+
+  @override
+  String get analysisVideoSection => 'Workout videos';
+
+  @override
+  String get analysisCareNotes => 'Workout care notes';
+
+  @override
+  String get healthNoChange => 'No change';
+
+  @override
+  String get healthBaselineLabel => 'Baseline';
+
+  @override
+  String get healthSkeletonSemantics =>
+      'Side-view diagram of your dog\'s joints';
+
+  @override
+  String healthSkeletonSemanticsFlagged(String details) {
+    return 'Side-view diagram of your dog\'s joints, $details';
+  }
+
+  @override
+  String healthJointLevel(String joint, String level) {
+    return '$joint: $level';
+  }
 }

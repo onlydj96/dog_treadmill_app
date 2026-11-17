@@ -137,7 +137,7 @@ VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
 |---|---|---|
 | 진입점 | `lib/main.dart` | `lib/main_demo.dart` |
 | 서버 | Supabase (원격·로컬) | `lib/demo/mock_server` (앱 메모리) |
-| Android 설치 | `com.example.dog_treadmill_app` · PawFit | `com.example.dog_treadmill_app.demo` · PawFit 데모 |
+| Android 설치 | `com.example.dog_treadmill_app` · PawFit | `com.example.dog_treadmill_app.demo` · PawFit 데모 (영어 기기: PawFit Demo) |
 | 데이터 | 실제 회원 데이터 | 샘플 데이터. 앱을 다시 켜면 처음 상태 |
 
 - **분리**: 실제 앱 코드는 `lib/demo/`를 import하지 않습니다(`test/demo/separation_test.dart`가 검사). 그래서 실제 앱 빌드에는 목업 서버·샘플 데이터가 들어가지 않습니다. Android는 진입점이 `main_demo.dart`면 패키지 이름을 바꿔(`android/app/build.gradle`) 한 기기에 두 앱을 함께 설치할 수 있습니다. iOS는 번들 ID를 나누지 않아 데모를 설치하면 실제 앱을 덮어씁니다.
@@ -155,9 +155,9 @@ VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
 | 명령 | 내용 |
 |---|---|
 | `flutter analyze` | 정적 분석 (strict-casts, strict-raw-types) |
-| `flutter test` | 단위·위젯 테스트 159개(영어 화면 포함) (통합 테스트는 키가 없으면 건너뜀) |
+| `flutter test` | 단위·위젯 테스트 169개(영어 화면 포함) (통합 테스트는 키가 없으면 건너뜀) |
 | `flutter test test/demo` | 그중 데모 앱 34개: 목업 서버 규칙(예약·체크인·점수·배지·순위·응원·닉네임·인증), 데모 시연 흐름, 실제 앱↔데모 코드 분리 |
-| `npx supabase test db` | pgTAP 205개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 셀프 체크인, 이용권 차감·복구, 운동 세션, 알림 설정, 랭킹(점수 규칙·하루 1회·주간 보너스·한국 시간 월 경계·공개 범위·닉네임·응원·배지·무효 처리·월간 마감, 영어 콘텐츠·영어 라벨·알림 msg/args·영어 닉네임) |
+| `npx supabase test db` | pgTAP 206개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 셀프 체크인, 이용권 차감·복구, 운동 세션, 알림 설정, 랭킹(점수 규칙·하루 1회·주간 보너스·한국 시간 월 경계·공개 범위·닉네임·응원·배지·무효 처리·월간 마감, 영어 콘텐츠·영어 라벨·알림 msg/args·영어 닉네임) |
 | `flutter test test/integration --dart-define-from-file=<로컬 키 파일>` | 로컬 Supabase 대상 21개: 저장소 계층 전체, Realtime, Storage(랭킹 공개 사진 포함), Edge Function, 랭킹 흐름 |
 
 통합 테스트 키 파일에는 `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`가 필요하며,

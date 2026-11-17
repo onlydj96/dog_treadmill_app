@@ -156,26 +156,28 @@ class StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = Text(
+      label,
+      style: TextStyle(
+        fontSize: dense ? 11.5 : 12.5,
+        fontWeight: FontWeight.w700,
+        color: tone.foreground,
+      ),
+    );
     return Container(
       padding: EdgeInsets.symmetric(horizontal: dense ? 8 : 10, vertical: dense ? 3 : 5),
       decoration: BoxDecoration(color: tone.background, borderRadius: BorderRadius.circular(999)),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: dense ? 13 : 15, color: tone.foreground),
-            const SizedBox(width: 4),
-          ],
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: dense ? 11.5 : 12.5,
-              fontWeight: FontWeight.w700,
-              color: tone.foreground,
+      // 아이콘이 없으면 글자를 바로 넣어, 긴 문구(건강 정보 항목, 영어 등)가 넘치지 않고 줄바꿈되게 한다.
+      child: icon == null
+          ? text
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: dense ? 13 : 15, color: tone.foreground),
+                const SizedBox(width: 4),
+                text,
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
