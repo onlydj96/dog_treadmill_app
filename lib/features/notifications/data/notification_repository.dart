@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/supabase/supabase_providers.dart';
@@ -137,7 +138,8 @@ String _when(Map<String, dynamic> args) =>
             : l.notificationCheerReceivedBody(nickname, dog),
       );
     case 'monthly_award':
-      final month = Fmt.month(DateTime(2000, (args['month'] as num).toInt()));
+      final monthDate = DateTime(2000, (args['month'] as num).toInt());
+      final month = L10n.isEnglish ? DateFormat('MMMM', L10n.intlLocale).format(monthDate) : Fmt.month(monthDate);
       final summary = [
         for (final award
             in (args['awards'] as List).cast<Map<String, dynamic>>())

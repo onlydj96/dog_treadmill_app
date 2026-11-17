@@ -9,3 +9,21 @@ String localizedStopReason(String reason) => switch (reason.trim()) {
       '운영자 판단에 의한 중단' => L10n.current.serverStopReasonByStaff,
       _ => reason,
     };
+
+/// 예약 취소 사유 선택지. 운영자가 한 언어로 모아 볼 수 있게 서버(bookings.cancel_reason)에는 한국어로 저장한다.
+List<String> cancelReasonPresets(AppLocalizations l) => [
+      l.bookingCancelReasonSchedule,
+      l.bookingCancelReasonCondition,
+      l.bookingCancelReasonRebook,
+      l.bookingCancelReasonOther,
+    ];
+
+/// 서버에 저장할 취소 사유 (선택지 순서 [index]의 한국어 문구)
+String cancelReasonForServer(int index) =>
+    cancelReasonPresets(lookupAppLocalizations(AppLanguage.ko.locale))[index];
+
+/// 저장된 취소 사유가 선택지 문구면 현재 언어로 바꾼다. 직접 적은 사유는 그대로.
+String localizedCancelReason(String reason) {
+  final index = cancelReasonPresets(lookupAppLocalizations(AppLanguage.ko.locale)).indexOf(reason.trim());
+  return index < 0 ? reason : cancelReasonPresets(L10n.current)[index];
+}

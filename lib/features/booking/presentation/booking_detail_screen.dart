@@ -11,6 +11,7 @@ import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/brand_mark.dart';
 import '../../../core/widgets/common.dart';
 import '../../../l10n/l10n.dart';
+import '../../../l10n/server_text.dart';
 import '../data/booking_models.dart';
 import '../providers.dart';
 import 'widgets/booking_widgets.dart';
@@ -207,7 +208,7 @@ class _InfoCard extends StatelessWidget {
               label: l10n.bookingInfoCancellation,
               value: [
                 if (booking.cancelledAt != null) Fmt.dateTime(booking.cancelledAt!),
-                if (booking.cancelReason != null) booking.cancelReason!,
+                if (booking.cancelReason != null) localizedCancelReason(booking.cancelReason!),
               ].join('\n'),
             ),
         ],
@@ -359,12 +360,7 @@ class _CancelReasonSheetState extends State<_CancelReasonSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = context.l10n;
-    final reasons = [
-      l10n.bookingCancelReasonSchedule,
-      l10n.bookingCancelReasonCondition,
-      l10n.bookingCancelReasonRebook,
-      l10n.bookingCancelReasonOther,
-    ];
+    final reasons = cancelReasonPresets(l10n);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
@@ -390,7 +386,7 @@ class _CancelReasonSheetState extends State<_CancelReasonSheet> {
             ),
             const SizedBox(height: 20),
             FilledButton(
-              onPressed: () => Navigator.of(context).pop(reasons[_selected]),
+              onPressed: () => Navigator.of(context).pop(cancelReasonForServer(_selected)),
               style: FilledButton.styleFrom(backgroundColor: AppColors.coral),
               child: Text(l10n.bookingCancelConfirmAction),
             ),

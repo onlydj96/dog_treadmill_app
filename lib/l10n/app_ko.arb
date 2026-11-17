@@ -285,7 +285,13 @@
   "signupRequiredConsent": "필수 약관에 동의해 주세요.",
   "signupVerifyTitle": "인증 메일을 보냈어요",
   "signupVerifyBody": "{email}으로 보낸 메일의 링크를 눌러 가입을 완료한 뒤 로그인해 주세요.",
-  "@signupVerifyBody": {"placeholders": {"email": {"type": "String"}}},
+  "@signupVerifyBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "signupSubmit": "가입하기",
   "signupAgreeAll": "전체 동의",
   "signupAgreeAllDesc": "선택 항목을 포함한 모든 항목에 동의합니다.",
@@ -315,10 +321,28 @@
   "consentGranted": "동의",
   "consentNotGranted": "미동의",
   "consentStatusLine": "{state} · {date} · v{version}",
-  "@consentStatusLine": {"placeholders": {"state": {"type": "String"}, "date": {"type": "String"}, "version": {"type": "String"}}},
+  "@consentStatusLine": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "myPageTitle": "마이페이지",
   "myPageGreeting": "{name}님",
-  "@myPageGreeting": {"placeholders": {"name": {"type": "String"}}},
+  "@myPageGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "myPageMyDogs": "내 반려견",
   "myPageUsageGroup": "이용 내역",
   "myPageMembership": "이용권 및 멤버십",
@@ -363,44 +387,164 @@
   "notificationUnreadLabel": "읽지 않은 알림",
   "notificationBookingConfirmedTitle": "예약이 확정되었어요",
   "notificationBookingConfirmedBody": "{dog} · {when} 예약이 확정되었습니다.",
-  "@notificationBookingConfirmedBody": {"placeholders": {"dog": {"type": "String"}, "when": {"type": "String"}}},
+  "@notificationBookingConfirmedBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "notificationBookingCancelledTitle": "예약이 취소되었어요",
   "notificationBookingCancelledBody": "{dog} · {when} 예약이 헬스장 사정으로 취소되었습니다.",
-  "@notificationBookingCancelledBody": {"placeholders": {"dog": {"type": "String"}, "when": {"type": "String"}}},
+  "@notificationBookingCancelledBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "notificationBookingNoShowTitle": "미방문 처리되었어요",
   "notificationBookingNoShowBody": "{dog} · {when} 예약이 미방문으로 처리되었습니다.",
-  "@notificationBookingNoShowBody": {"placeholders": {"dog": {"type": "String"}, "when": {"type": "String"}}},
+  "@notificationBookingNoShowBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "notificationExerciseStartedTitle": "운동을 시작했어요",
   "notificationExerciseStartedBody": "{dog}의 트레드밀 운동이 시작되었습니다. 실시간 현황을 확인해 보세요.",
-  "@notificationExerciseStartedBody": {"placeholders": {"dog": {"type": "String"}}},
+  "@notificationExerciseStartedBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
   "notificationExerciseCompletedTitle": "운동을 완료했어요",
   "notificationExerciseCompletedBody": "{dog}의 운동이 끝났어요. 운동 기록을 확인해 보세요.",
-  "@notificationExerciseCompletedBody": {"placeholders": {"dog": {"type": "String"}}},
+  "@notificationExerciseCompletedBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
   "notificationExerciseCompletedPointsBody": "{dog}의 운동이 끝났어요. {points}을 받았어요! 운동 기록을 확인해 보세요.",
-  "@notificationExerciseCompletedPointsBody": {"placeholders": {"dog": {"type": "String"}, "points": {"type": "String"}}},
+  "@notificationExerciseCompletedPointsBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
+    }
+  },
   "notificationExerciseStoppedTitle": "운동이 중단되었어요",
   "notificationExerciseStoppedBody": "{dog}의 운동이 중단되었습니다. 사유: {reason}",
-  "@notificationExerciseStoppedBody": {"placeholders": {"dog": {"type": "String"}, "reason": {"type": "String"}}},
+  "@notificationExerciseStoppedBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "notificationAnalysisCompletedTitle": "AI 보행 분석 리포트가 도착했어요",
   "notificationAnalysisCompletedBody": "{dog}의 운동 분석 결과를 확인해 보세요.",
-  "@notificationAnalysisCompletedBody": {"placeholders": {"dog": {"type": "String"}}},
+  "@notificationAnalysisCompletedBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
   "notificationAnalysisFailedTitle": "AI 분석을 완료하지 못했어요",
   "notificationAnalysisFailedBody": "{dog}의 영상 분석 중 문제가 발생했습니다. 헬스장에서 확인 후 다시 분석합니다.",
-  "@notificationAnalysisFailedBody": {"placeholders": {"dog": {"type": "String"}}},
+  "@notificationAnalysisFailedBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
   "notificationBadgeEarnedTitle": "새 배지를 받았어요",
   "notificationBadgeEarnedBody": "{dog}의 「{badge}」 배지가 도착했어요. 배지함에서 확인해 보세요.",
-  "@notificationBadgeEarnedBody": {"placeholders": {"dog": {"type": "String"}, "badge": {"type": "String"}}},
+  "@notificationBadgeEarnedBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "badge": {
+        "type": "String"
+      }
+    }
+  },
   "notificationCheerReceivedTitle": "응원이 도착했어요",
   "notificationCheerReceivedBody": "{nickname}님이 {dog} 응원했어요.",
-  "@notificationCheerReceivedBody": {"placeholders": {"nickname": {"type": "String"}, "dog": {"type": "String"}}},
+  "@notificationCheerReceivedBody": {
+    "placeholders": {
+      "nickname": {
+        "type": "String"
+      },
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
   "notificationCheerReceivedAnonymousBody": "다른 보호자가 {dog} 응원했어요.",
-  "@notificationCheerReceivedAnonymousBody": {"placeholders": {"dog": {"type": "String"}}},
+  "@notificationCheerReceivedAnonymousBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
   "notificationMonthlyAwardTitle": "{month} 랭킹 시상대에 올랐어요",
-  "@notificationMonthlyAwardTitle": {"placeholders": {"month": {"type": "String"}}},
+  "@notificationMonthlyAwardTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
   "notificationMonthlyAwardBody": "{dog} {month} 랭킹 {summary}에 올랐어요. 명예의 전당에서 확인해 보세요.",
-  "@notificationMonthlyAwardBody": {"placeholders": {"dog": {"type": "String"}, "month": {"type": "String"}, "summary": {"type": "String"}}},
+  "@notificationMonthlyAwardBody": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
   "notificationMonthlyAwardItem": "{label} {rank}위",
-  "@notificationMonthlyAwardItem": {"placeholders": {"label": {"type": "String"}, "rank": {"type": "int"}}},
+  "@notificationMonthlyAwardItem": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
   "noticeTitle": "공지사항",
   "noticeEmpty": "등록된 공지사항이 없어요",
   "faqTitle": "자주 묻는 질문",
@@ -426,5 +570,1452 @@
   "inquiryCreated": "문의를 접수했어요. 답변이 등록되면 문의 내역에서 확인할 수 있어요.",
   "inquiryStatusAnswered": "답변 완료",
   "inquiryStatusClosed": "종료",
-  "inquiryStatusPending": "답변 대기"
+  "inquiryStatusPending": "답변 대기",
+  "bookingHours24": "24시간",
+  "bookingIntensityLow": "저강도",
+  "bookingIntensityMedium": "중강도",
+  "bookingIntensityHigh": "고강도",
+  "bookingStatusPending": "예약 대기",
+  "bookingStatusConfirmed": "예약 확정",
+  "bookingStatusCheckedIn": "체크인 완료",
+  "bookingStatusCompleted": "이용 완료",
+  "bookingStatusCancelled": "취소",
+  "bookingStatusNoShow": "미방문",
+  "membershipStatusRefunded": "환불",
+  "membershipStatusCancelled": "취소",
+  "membershipStatusExpired": "만료",
+  "membershipStatusUsedUp": "소진",
+  "membershipStatusAvailable": "사용 가능",
+  "paymentStatusPending": "결제 대기",
+  "paymentStatusPaid": "결제 완료",
+  "paymentStatusCancelled": "결제 취소",
+  "paymentStatusRefunded": "환불 완료",
+  "paymentStatusPartialRefunded": "부분 환불",
+  "paymentStatusFailed": "결제 실패",
+  "homeNotificationsTooltip": "알림",
+  "homeGreeting": "{name}님, 안녕하세요",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreetingNoDog": "반려견을 등록하고 시작해 볼까요?",
+  "homeGreetingWithDog": "오늘도 {dog} 건강하게 걸어요",
+  "@homeGreetingWithDog": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "homeDogTapHint": "{dog} 정보 보기",
+  "@homeDogTapHint": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "homeProfileIncomplete": "프로필을 완성해 주세요",
+  "homeRankOverallThisMonth": "이번 달 전체 {rank}위",
+  "@homeRankOverallThisMonth": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSwitchDog": "전환",
+  "homeStatMonthWorkouts": "이번 달 운동",
+  "homeUnitTimes": "회",
+  "homeStatMonthDistance": "이번 달 거리",
+  "homeStatLatestSymmetry": "최근 좌우 대칭",
+  "homeNoDogTitle": "반려견을 등록해 주세요",
+  "homeNoDogBody": "건강 정보와 운동 제한 사항을 함께 등록하면\n예약할 때 주의할 점을 알려 드려요.",
+  "homeNoDogAction": "반려견 등록하기",
+  "homeLiveTapHint": "실시간 운동 현황 보기",
+  "homeQuickBook": "운동 예약",
+  "homeQuickBookCaption": "빈 시간 확인",
+  "homeQuickReport": "AI 리포트",
+  "homeQuickReportCaption": "보행 분석",
+  "homeQuickHistory": "운동 기록",
+  "homeQuickHistoryCaption": "전체 이력",
+  "homeNextBookingTitle": "다음 예약",
+  "homeNextBookingAll": "예약 내역",
+  "homeNextBookingEmpty": "예정된 예약이 없어요.",
+  "homeNextBookingEmptyAction": "예약하기",
+  "homeRankingTitle": "{month} 랭킹",
+  "@homeRankingTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "homeRankingAll": "전체 랭킹",
+  "homeRankingWaitingTitle": "이번 달 첫 운동을 기다리고 있어요",
+  "homeRankingWaitingCaption": "운동을 마치면 점수가 쌓이고 바로 랭킹에 올라요.",
+  "homeRankingJoinTitle": "참여하면 전체 {rank}위예요",
+  "@homeRankingJoinTitle": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "homeRankingJoinCaption": "랭킹에 참여하고 {dog} 자랑해 보세요.",
+  "@homeRankingJoinCaption": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "homeRankingMineTitle": "{dog} · 전체 {rank}위",
+  "@homeRankingMineTitle": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "homeRankingHoldingFirst": "{points} · 1위를 지키고 있어요!",
+  "@homeRankingHoldingFirst": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "homeRankingPointsToNext": "{points} · {gap}점 더 받으면 순위가 올라요",
+  "@homeRankingPointsToNext": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "gap": {
+        "type": "int"
+      }
+    }
+  },
+  "homeRankingStreak": "{weeks}주 연속 운동",
+  "@homeRankingStreak": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "homeRankingJoinAction": "랭킹 참여하기",
+  "homeRecentTitle": "최근 운동",
+  "homeRecentAll": "전체 기록",
+  "homeRecentEmpty": "아직 운동 기록이 없어요. 첫 운동을 예약해 보세요!",
+  "homeAnalysisTitle": "AI 보행 분석",
+  "homeAnalysisAction": "건강 리포트",
+  "homeAnalysisPending": "최근 운동 영상을 분석하고 있어요. 완료되면 알려 드릴게요.",
+  "homeAnalysisNeedsConsent": "운동 영상 촬영에 동의하면 AI 보행 분석 리포트를 받을 수 있어요.",
+  "homeAnalysisEmpty": "운동을 마치면 AI 보행 분석 리포트가 여기에 표시돼요.",
+  "homeAnalysisConsentAction": "동의하기",
+  "homeAnalysisSymmetry": "좌우 대칭성",
+  "homeAnalysisCadence": "분당 걸음 수",
+  "homeUnitSteps": "보",
+  "homeNoticesTitle": "공지사항",
+  "homeNoticesAll": "전체보기",
+  "bookingListTitle": "예약",
+  "bookingPaymentHistory": "결제·환불 내역",
+  "bookingTabUpcoming": "예정된 예약",
+  "bookingTabPast": "지난 예약",
+  "bookingEmptyUpcoming": "예정된 예약이 없어요",
+  "bookingEmptyPast": "지난 예약이 없어요",
+  "bookingEmptyUpcomingHint": "원하는 시간에 트레드밀을 예약해 보세요.",
+  "bookingUsablePasses": "사용 가능한 이용권",
+  "bookingSessionsUnit": "{count, plural, other{ 회}}",
+  "@bookingSessionsUnit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingNewWorkout": "새 운동 예약",
+  "bookingCheckInTitle": "체크인할까요?",
+  "bookingCheckInMessage": "매장에 도착했을 때 체크인해 주세요.",
+  "bookingCheckInMessageWithMachine": "매장에 도착했을 때 체크인해 주세요.\n배정된 트레드밀: {machine}",
+  "@bookingCheckInMessageWithMachine": {
+    "placeholders": {
+      "machine": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingCheckInAction": "체크인",
+  "bookingCheckedIn": "체크인했어요.",
+  "bookingCheckedInWithMachine": "체크인했어요. 트레드밀 {machine}에서 운동을 시작해 주세요.",
+  "@bookingCheckedInWithMachine": {
+    "placeholders": {
+      "machine": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingDefaultProgramName": "트레드밀 운동",
+  "bookingToday": "오늘",
+  "bookingDateSemantics": "{month} {day}일 {weekday}요일",
+  "@bookingDateSemantics": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "day": {
+        "type": "int"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingDateSemanticsToday": "{label}, 오늘",
+  "@bookingDateSemanticsToday": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingSlotsEmpty": "선택한 날짜에 예약 가능한 시간이 없어요.",
+  "bookingPeriodDawn": "새벽",
+  "bookingPeriodMorning": "오전",
+  "bookingPeriodAfternoon": "오후",
+  "bookingPeriodEvening": "저녁",
+  "bookingSlotSemanticsAvailable": "{time}, 잔여 {count}대",
+  "@bookingSlotSemanticsAvailable": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingSlotSemanticsFull": "{time}, 마감",
+  "@bookingSlotSemanticsFull": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingSlotLeft": "잔여 {count}",
+  "@bookingSlotLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingSlotFull": "마감",
+  "bookingDetailTitle": "예약 상세",
+  "bookingNoteCancelled": "취소된 예약이에요.",
+  "bookingNoteNoShow": "방문하지 않아 미방문 처리된 예약이에요.",
+  "bookingStepReceived": "접수",
+  "bookingStepConfirmed": "확정",
+  "bookingStepCheckedIn": "체크인",
+  "bookingStepCompleted": "이용 완료",
+  "bookingInfoDog": "반려견",
+  "bookingInfoLocation": "지점",
+  "bookingInfoTreadmill": "트레드밀",
+  "bookingInfoProgram": "프로그램",
+  "bookingInfoPayment": "결제",
+  "bookingInfoNote": "메모",
+  "bookingInfoCancellation": "취소",
+  "bookingDurationMinutes": "{minutes}분",
+  "@bookingDurationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingPayWithPass": "이용권 1회 사용",
+  "bookingPayOnSite": "현장 결제",
+  "bookingCancelledToast": "예약을 취소했어요.",
+  "bookingRescheduledToast": "예약 시간을 변경했어요.",
+  "bookingViewWorkoutHistory": "운동 기록 보기",
+  "bookingAtMachine": "트레드밀 {machine}에서",
+  "@bookingAtMachine": {
+    "placeholders": {
+      "machine": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingAtAssignedMachine": "배정된 트레드밀에서",
+  "bookingPayOnSiteNotice": "\n현장 결제 예약이라 이용 전에 매장에서 결제해 주세요.",
+  "bookingGuideCheckedIn": "체크인했어요. {atMachine} 운동을 시작하고, 운동하는 동안 반려견 곁을 지켜 주세요. 운동이 시작되면 운동 탭에서 실시간으로 볼 수 있어요.{payOnSite}",
+  "@bookingGuideCheckedIn": {
+    "placeholders": {
+      "atMachine": {
+        "type": "String"
+      },
+      "payOnSite": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingGuideEnded": "예약 시간이 지나 체크인할 수 없어요.",
+  "bookingGuideCheckInOpen": "매장에 도착하면 체크인하고 {atMachine} 운동을 시작해 주세요.{payOnSite}",
+  "@bookingGuideCheckInOpen": {
+    "placeholders": {
+      "atMachine": {
+        "type": "String"
+      },
+      "payOnSite": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingGuideModifiable": "예약 시작 1시간 전까지 변경·취소할 수 있어요.\n이용 당일 {time}부터 앱에서 체크인할 수 있어요.",
+  "@bookingGuideModifiable": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingGuideModifiableWithPass": "예약 시작 1시간 전까지 변경·취소할 수 있어요. 취소하면 이용권 횟수가 복구돼요.\n이용 당일 {time}부터 앱에서 체크인할 수 있어요.",
+  "@bookingGuideModifiableWithPass": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingGuideLocked": "{time}부터 앱에서 체크인할 수 있어요.\n예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요.",
+  "@bookingGuideLocked": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingCancelAction": "예약 취소",
+  "bookingRescheduleAction": "시간 변경",
+  "bookingInquiryAction": "1:1 문의하기",
+  "bookingCancelReasonSchedule": "일정이 변경되었어요",
+  "bookingCancelReasonCondition": "반려견 컨디션이 좋지 않아요",
+  "bookingCancelReasonRebook": "다른 시간으로 다시 예약할게요",
+  "bookingCancelReasonOther": "기타",
+  "bookingCancelSheetTitle": "예약을 취소할까요?",
+  "bookingCancelSheetSubtitle": "취소 사유를 선택해 주세요.",
+  "bookingCancelConfirmAction": "예약 취소하기",
+  "bookingRescheduleTitle": "예약 시간 변경",
+  "bookingRescheduleCurrent": "현재 {when} · {branch}",
+  "@bookingRescheduleCurrent": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingRescheduleNoProgram": "프로그램 정보가 없어 시간을 변경할 수 없어요. 1:1 문의로 알려 주세요.",
+  "bookingReschedulePick": "변경할 시간을 선택해 주세요",
+  "bookingRescheduleSubmit": "{time} 예약으로 변경",
+  "@bookingRescheduleSubmit": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingConfirmedToast": "예약이 확정되었어요.",
+  "bookingReceivedToast": "예약이 접수되었어요. 이용 당일 매장에서 결제해 주세요.",
+  "bookingNewTitle": "운동 예약",
+  "bookingStepDog": "반려견",
+  "bookingStepBranch": "지점",
+  "bookingStepProgram": "운동 프로그램",
+  "bookingStepDate": "날짜",
+  "bookingStepTime": "시간",
+  "bookingStepPayment": "결제",
+  "bookingStepNote": "메모 (선택)",
+  "bookingNeedDogMessage": "예약하려면 먼저 반려견을 등록해 주세요.",
+  "bookingNeedDogAction": "등록하기",
+  "bookingTimeHint": "지점과 운동 프로그램을 선택하면 예약 가능한 시간이 표시돼요.",
+  "bookingPassValidUntil": "~ {date}까지",
+  "@bookingPassValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingPassRemaining": "잔여 {count}회",
+  "@bookingPassRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingPayOnSiteBody": "예약 대기로 접수되고, 이용 당일 매장에서 결제해요.",
+  "bookingNoteHint": "반려견에 대해 남겨 둘 내용을 적어 주세요. (예: 낯선 소리에 예민해요)",
+  "bookingSelfServiceHint": "무인 매장이에요. 이용 당일 예약 시작 15분 전부터 앱에서 체크인하고, 배정된 트레드밀에서 운동을 시작해 주세요.\n예약 시작 1시간 전까지 앱에서 변경·취소할 수 있어요. 이용권으로 예약한 경우 취소하면 횟수가 복구돼요.",
+  "bookingSummaryIncomplete": "반려견, 지점, 프로그램, 시간을 선택해 주세요.",
+  "bookingSummary": "{dog} · {when}\n{program} {duration} · {payment}",
+  "@bookingSummary": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      },
+      "program": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "payment": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingSummaryPayWithPass": "이용권 1회 차감",
+  "bookingAppPaymentTitle": "앱 결제",
+  "bookingAppPaymentBody": "카드·간편결제로 바로 결제하고 예약을 확정해요.",
+  "bookingComingSoon": "준비 중",
+  "bookingRestrictionNotice": "운동 제한 사항: {restrictions}\n무인 매장이라 보호자가 직접 확인해야 해요. 제한 사항에 맞는 프로그램을 고르고, 운동하는 동안 곁에서 지켜봐 주세요.",
+  "@bookingRestrictionNotice": {
+    "placeholders": {
+      "restrictions": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingSubmit": "예약하기",
+  "membershipTitle": "이용권",
+  "membershipPaymentHistory": "결제 내역",
+  "membershipOwnedTitle": "보유 이용권",
+  "membershipOwnedEmpty": "보유한 이용권이 없어요. 아래 상품을 구매하면 앱에서 바로 예약에 사용할 수 있어요.",
+  "membershipPlansTitle": "이용권 상품",
+  "membershipPurchaseNote": "상품을 누르면 결제 방법을 볼 수 있어요. 앱 결제는 준비 중이라 지금은 매장에서 구매할 수 있고, 구매하면 바로 보유 이용권에 반영돼요.",
+  "membershipDaysLeft": "D-{days}",
+  "@membershipDaysLeft": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "membershipSessionsLeft": "/ {total}회 남음",
+  "@membershipSessionsLeft": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "membershipPlanSessionsBadge": "{count}회",
+  "@membershipPlanSessionsBadge": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "membershipValidDays": "유효기간 {days}일",
+  "@membershipValidDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "membershipPricePerSession": "회당 {price}",
+  "@membershipPricePerSession": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "membershipPurchaseSummary": "{price} · {count}회 · 유효기간 {days}일",
+  "@membershipPurchaseSummary": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "membershipAppPaymentTitle": "앱 결제",
+  "membershipAppPaymentBody": "카드·간편결제로 결제하면 바로 보유 이용권에 추가돼요.",
+  "membershipComingSoon": "준비 중",
+  "membershipStorePaymentTitle": "매장 결제",
+  "membershipStorePaymentBody": "지금은 매장에서 구매할 수 있어요. 구매하면 바로 앱의 보유 이용권에 반영돼요.",
+  "membershipAppPaymentUnavailable": "앱 결제 준비 중",
+  "paymentHistoryTitle": "결제·환불 내역",
+  "paymentEmpty": "결제 내역이 없어요",
+  "paymentDefaultOrderName": "이용권 결제",
+  "paymentRefunded": "환불 {amount}",
+  "@paymentRefunded": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentRefundedOn": "환불 {amount} ({date})",
+  "@paymentRefundedOn": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dogSexMale": "수컷",
+  "dogSexFemale": "암컷",
+  "dogSizeSmall": "소형",
+  "dogSizeMedium": "중형",
+  "dogSizeLarge": "대형",
+  "dogWeightHintSmall": "10kg 미만",
+  "dogWeightHintMedium": "10~25kg",
+  "dogWeightHintLarge": "25kg 이상",
+  "dogMixedLabel": "믹스견({breed})",
+  "@dogMixedLabel": {
+    "placeholders": {
+      "breed": {
+        "type": "String"
+      }
+    }
+  },
+  "dogMixedBreed": "믹스견",
+  "dogAgeApprox": "약 {age}",
+  "@dogAgeApprox": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "dogSizeDog": "{size}견",
+  "@dogSizeDog": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dogBrachycephalic": "단두종",
+  "dogRegisterTitle": "반려견 등록",
+  "dogEditTitle": "반려견 정보 수정",
+  "dogRegistered": "{name} 등록되었어요.",
+  "@dogRegistered": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dogUpdated": "반려견 정보를 수정했어요.",
+  "dogSavedPhotoFailed": "정보는 저장했지만 사진을 올리지 못했어요. {error}",
+  "@dogSavedPhotoFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "dogPhotoLoadFailed": "사진을 불러오지 못했어요. 권한을 확인해 주세요.",
+  "dogRequiredCheck": "표시된 필수 항목을 확인해 주세요.",
+  "dogPickGallery": "앨범에서 선택",
+  "dogPickCamera": "사진 촬영",
+  "dogBirthDatePickerHelp": "생년월일 선택",
+  "dogAgeRequired": "나이를 입력해 주세요.",
+  "dogAgeMax": "30살 이하로 입력해 주세요.",
+  "dogAgeMin": "1개월 이상으로 입력해 주세요.",
+  "dogAgeMonthsRange": "0~11개월",
+  "dogSectionBasic": "기본 정보",
+  "dogNameLabel": "이름 *",
+  "dogNameRequired": "이름을 입력해 주세요.",
+  "dogMixedSwitch": "믹스견이에요",
+  "dogMixedSwitchHint": "두 견종 이상이 섞였거나 견종을 잘 모르는 경우",
+  "dogBreedLabelMixed": "섞인 견종 (선택)",
+  "dogBreedLabel": "견종 *",
+  "dogBreedHintMixed": "예: 말티즈, 푸들",
+  "dogBreedHint": "예: 말티즈",
+  "dogBreedRequired": "견종을 입력해 주세요. 잘 모르면 믹스견을 선택해 주세요.",
+  "dogBreedNotListed": "목록에 없는 견종이에요. 아래에서 체구를 골라 주세요.",
+  "dogSizeLabel": "체구 *",
+  "dogSizeRequired": "체구를 선택해 주세요.",
+  "dogSizeInfoHint": "다 자란 몸무게 기준 · {options}",
+  "@dogSizeInfoHint": {
+    "placeholders": {
+      "options": {
+        "type": "String"
+      }
+    }
+  },
+  "dogBrachySwitch": "주둥이가 짧은 단두종이에요",
+  "dogBrachySwitchHint": "퍼그·시츄·불독처럼 코가 눌린 얼굴형",
+  "dogAgeLabel": "나이 *",
+  "dogBirthDate": "생년월일",
+  "dogAgeEstimate": "추정 나이",
+  "dogCurrentAge": "현재 {age}",
+  "@dogCurrentAge": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "dogBirthDateRequired": "생년월일을 선택해 주세요.",
+  "dogPleaseSelect": "선택해 주세요",
+  "dogAge": "나이",
+  "dogAgeYearsSuffix": "살",
+  "dogAgeMonthsLabel": "개월 (선택)",
+  "dogAgeMonthsSuffix": "개월",
+  "dogSex": "성별",
+  "dogNeutered": "중성화",
+  "dogNeuteredLabel": "중성화 *",
+  "dogNeuteredYes": "했어요",
+  "dogNeuteredNo": "안 했어요",
+  "dogNeuteredRequired": "중성화 여부를 선택해 주세요.",
+  "dogWeight": "체중",
+  "dogWeightLabel": "체중 *",
+  "dogWeightEnter": "체중을 입력해 주세요.",
+  "dogWeightInvalid": "올바른 체중을 입력해 주세요.",
+  "dogSectionHealth": "건강 정보",
+  "dogHealthIntro": "운동 강도와 주의사항을 정하는 데 쓰여요. 정확하게 입력해 주세요.",
+  "dogConditionsRequired": "해당하는 항목이나 '해당 없음'을 골라 주세요.",
+  "dogConditionsTitleRequired": "질병·주의사항 *",
+  "dogConditionsTitle": "질병·주의사항",
+  "dogConditionsHelp": "진단받았거나 치료 중인 항목을 모두 골라 주세요.",
+  "dogConditionNone": "해당 없음",
+  "dogDiseasesTitle": "질환 상세",
+  "dogDiseasesEmpty": "적어 둔 진단명이 없어요.",
+  "dogDiseaseNameLabel": "진단명 (예: 슬개골 탈구)",
+  "dogDiseaseDetailLabel": "상태·단계 (선택)",
+  "dogSurgeriesTitle": "수술 및 치료 이력",
+  "dogSurgeriesEmpty": "등록된 이력이 없어요.",
+  "dogSurgeryNameLabel": "수술·치료명",
+  "dogSurgeryDetailLabel": "병원·메모 (선택)",
+  "dogMedicationsTitle": "복용 중인 약물",
+  "dogMedicationsEmpty": "복용 중인 약물이 없어요.",
+  "dogMedicationNameLabel": "약 이름",
+  "dogMedicationDetailLabel": "용량·복용 주기 (선택)",
+  "dogRestrictionsTitle": "운동 제한 사항",
+  "dogRestrictionsEmpty": "운동 제한 사항이 없어요.",
+  "dogRestrictionNameLabel": "제한 내용 (예: 경사 운동 금지)",
+  "dogRestrictionDetailLabel": "상세 설명 (선택)",
+  "dogHealthItemAddTitle": "{title} 추가",
+  "@dogHealthItemAddTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "dogDatePickOptional": "날짜 선택 (선택)",
+  "dogVetNotes": "수의사 권고사항",
+  "dogVetNotesHint": "예: 주 3회, 20분 이내 저속 보행 권장",
+  "dogSubmitSave": "저장하기",
+  "dogSubmitRegister": "등록하기",
+  "dogDeleteTitle": "{name} 정보를 삭제할까요?",
+  "@dogDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dogDeleteMessage": "목록에서 사라지며 새 예약을 할 수 없어요. 지금까지의 운동·분석 기록은 헬스장에 보관됩니다.",
+  "dogDeleted": "{name} 정보를 삭제했어요.",
+  "@dogDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dogProfileTitle": "반려견 정보",
+  "dogDeleteMenu": "반려견 삭제",
+  "dogBookWorkout": "{name} 운동 예약하기",
+  "@dogBookWorkout": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dogProfileEmptySummary": "프로필 정보를 입력해 주세요",
+  "dogTotalWorkouts": "누적 운동",
+  "dogUnitTimes": "회",
+  "dogTotalTime": "누적 시간",
+  "dogUnitMinutes": "분",
+  "dogTotalDistance": "누적 거리",
+  "dogBreed": "견종",
+  "dogSize": "체구",
+  "dogAgeEstimated": "{age} (추정)",
+  "@dogAgeEstimated": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "dogNoHealthInfo": "등록된 건강 정보가 없어요. 수정 화면에서 입력할 수 있어요.",
+  "dogBadgeSection": "배지 {earned}/{total}",
+  "@dogBadgeSection": {
+    "placeholders": {
+      "earned": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dogBadgeCollection": "배지함",
+  "dogFirstBadgeHint": "첫 운동을 마치면 「첫 발걸음」 배지를 받아요.",
+  "dogNextBadge": "다음 배지 · {name}",
+  "@dogNextBadge": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dogPlanSection": "맞춤 운동 계획",
+  "dogPlanProgram": "프로그램",
+  "dogPlanTargetTime": "목표 시간",
+  "dogPlanTargetSpeed": "목표 속도",
+  "dogPlanNotes": "메모",
+  "dogListTitle": "반려견 관리",
+  "dogListRegister": "반려견 등록",
+  "dogListEmptyTitle": "등록된 반려견이 없어요",
+  "dogListEmptyMessage": "반려견을 등록하고 운동 예약과 AI 분석을 시작해 보세요.",
+  "dogShownOnHome": "홈에 표시 중",
+  "dogSwitcherTitle": "반려견 선택",
+  "dogSwitcherAdd": "반려견 추가",
+  "exerciseStatusReady": "준비 중",
+  "exerciseStatusRunning": "운동 중",
+  "exerciseStatusPaused": "일시정지",
+  "exerciseStatusCompleted": "운동 완료",
+  "exerciseStatusStopped": "운동 중단",
+  "exerciseHistoryTitle": "운동 기록",
+  "exerciseHistoryTitleDog": "{dog}의 운동 기록",
+  "@exerciseHistoryTitleDog": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseTitle": "운동",
+  "exerciseTitleDog": "{dog}의 운동",
+  "@exerciseTitleDog": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseNoDogTitle": "등록된 반려견이 없어요",
+  "exerciseNoDogHistoryMessage": "반려견을 등록하면 운동 기록을 볼 수 있어요.",
+  "exerciseNoDogLiveMessage": "반려견을 등록하면 운동 현황과 기록을 볼 수 있어요.",
+  "exerciseRegisterDog": "반려견 등록",
+  "exerciseNoRecordsTitle": "아직 운동 기록이 없어요",
+  "exerciseNoRecordsHistoryMessage": "운동을 마치면 날짜별 기록이 쌓여요.",
+  "exerciseNoRecordsSummaryMessage": "운동을 마치면 시간, 거리, 속도가 기록돼요.",
+  "exerciseSessionCount": "{count}회",
+  "@exerciseSessionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseTotalsTitle": "누적 운동 기록",
+  "exerciseStatTotalWorkouts": "총 운동",
+  "exerciseStatTotalTime": "총 시간",
+  "exerciseStatTotalDistance": "총 거리",
+  "exerciseStatBestSpeed": "최고 속도",
+  "exerciseUnitTimes": "회",
+  "exerciseUnitMinutes": "분",
+  "exerciseCompletedToast": "운동을 완료했어요!",
+  "exerciseStoppedToast": "운동이 중단되었어요.",
+  "exerciseLive": "실시간",
+  "exerciseElapsed": "경과 시간",
+  "exerciseTarget": "목표 {duration}",
+  "@exerciseTarget": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseCurrentSpeed": "현재 속도",
+  "exerciseDistance": "이동 거리",
+  "exerciseStartTime": "시작 시간",
+  "exerciseTreadmill": "트레드밀",
+  "exerciseUnmannedNotice": "무인 매장이에요. 운동하는 동안 반려견 곁을 지켜 주시고, 이상하면 트레드밀의 비상정지 버튼을 눌러 주세요.",
+  "exerciseNoLiveTitle": "진행 중인 운동이 없어요",
+  "exerciseNoLiveMessage": "운동이 시작되면 이곳에서 실시간으로 확인할 수 있어요.",
+  "exerciseBookWorkout": "운동 예약하기",
+  "exerciseNextBooking": "다음 예약",
+  "exerciseMyBookings": "예약 내역",
+  "exerciseMonthSummary": "{month}월 운동 요약",
+  "@exerciseMonthSummary": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseStatCount": "운동 횟수",
+  "exerciseStatTotalWorkoutTime": "총 운동 시간",
+  "exerciseRecentRecords": "최근 운동 기록",
+  "exerciseAllRecords": "전체 기록",
+  "exerciseTreadmillName": "트레드밀 {name}",
+  "@exerciseTreadmillName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseWorkoutTime": "운동 시간",
+  "exerciseAvgMax": "평균 / 최고",
+  "exerciseStopReason": "중단 사유: {reason}",
+  "@exerciseStopReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "exercisePointsVoided": "운영자 확인 후 무효 처리된 기록이에요",
+  "exercisePointsWeeklyBonus": "주간 보너스 {points} 포함",
+  "@exercisePointsWeeklyBonus": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "exercisePointsDefault": "랭킹 점수",
+  "exerciseReportAi": "AI 리포트",
+  "exerciseReportFailed": "분석 실패",
+  "exerciseReportPending": "분석 중",
+  "analysisStatusQueued": "분석 대기",
+  "analysisStatusProcessing": "분석 중",
+  "analysisStatusCompleted": "분석 완료",
+  "analysisStatusFailed": "분석 실패",
+  "analysisLevelNormal": "특이사항 없음",
+  "analysisLevelCaution": "관찰 필요",
+  "analysisLevelWarning": "주의 필요",
+  "analysisCameraFront": "정면 영상",
+  "analysisCameraSide": "측면 영상",
+  "healthTitle": "건강",
+  "healthTitleDog": "{dog}의 건강 분석",
+  "@healthTitleDog": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "healthNoDogMessage": "반려견을 등록하고 운동하면 AI 보행 분석 결과를 볼 수 있어요.",
+  "healthReports": "분석 리포트",
+  "healthPendingBanner": "운동 영상 {count}건을 분석하고 있어요. 완료되면 알림으로 알려 드릴게요.",
+  "@healthPendingBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "healthPreparingTitle": "첫 분석 리포트를 준비하고 있어요",
+  "healthPreparingMessage": "운동 영상으로 관절 움직임과 보행 패턴을 분석 중이에요. 완료되면 알림으로 알려 드릴게요.",
+  "healthConsentTitle": "운동 영상 촬영 동의가 필요해요",
+  "healthConsentMessage": "AI 보행 분석 리포트는 운동 영상으로 만들어요. 동의하면 다음 운동부터 관절 움직임과 보행 패턴을 분석해 드려요.",
+  "healthConsentAction": "동의하러 가기",
+  "healthNoReportTitle": "아직 분석 리포트가 없어요",
+  "healthNoReportMessage": "트레드밀 운동을 마치면 촬영 영상으로 관절 움직임과 보행 패턴을 분석해 드려요.",
+  "healthLatestAnalysis": "최근 분석",
+  "healthSymmetry": "좌우 대칭성",
+  "healthCadence": "분당 걸음 수",
+  "healthRhythm": "보행 리듬",
+  "healthUnitPoints": "점",
+  "healthConfidence": "분석 신뢰도",
+  "healthViewReport": "리포트 자세히 보기 →",
+  "healthTrendSymmetryDesc": "좌우 다리 움직임이 얼마나 비슷한지 보여줘요. 높을수록 균형 잡힌 보행이에요.",
+  "healthTrendCadenceDesc": "1분 동안의 걸음 수예요. 평소 기준선과 크게 달라지면 관찰이 필요해요.",
+  "healthTrendVariabilityDesc": "걸음걸이 주기가 얼마나 일정한지 보여줘요. 낮을수록 리듬이 안정적이에요.",
+  "healthTrendTitle": "보행 변화 추이",
+  "healthTrendSegSymmetry": "대칭성",
+  "healthTrendSegCadence": "걸음 수",
+  "healthTrendSegVariability": "변동성",
+  "healthTrendNeedMore": "추이를 보려면 분석 결과가 2건 이상 필요해요.",
+  "healthJointRomTitle": "관절 가동 범위 변화",
+  "healthAllJoints": "전체 관절",
+  "healthPlanTitle": "맞춤 운동 계획",
+  "healthPlanTargetTime": "목표 시간",
+  "healthPlanTargetSpeed": "목표 속도",
+  "healthVideoPause": "일시정지",
+  "healthVideoPlay": "재생",
+  "rankingScopeAll": "전체",
+  "rankingScopeBranch": "지점",
+  "rankingScopeSize": "체급",
+  "rankingSizeSmall": "소형견",
+  "rankingSizeMedium": "중형견",
+  "rankingSizeLarge": "대형견",
+  "rankingTitleText": "{month} {scope} {rank}위",
+  "@rankingTitleText": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "scope": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingScopeRankShort": "{scope} {rank}위",
+  "@rankingScopeRankShort": {
+    "placeholders": {
+      "scope": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "badgeProgressSessions": "{current} / {goal}회",
+  "@badgeProgressSessions": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "badgeProgressDistance": "{current} / {goal}km",
+  "@badgeProgressDistance": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "badgeProgressWeeks": "{current} / {goal}주",
+  "@badgeProgressWeeks": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "badgeProgressBranches": "{current} / {goal}곳",
+  "@badgeProgressBranches": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "badgeProgressOpenRuns": "{current} / {goal}번",
+  "@badgeProgressOpenRuns": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingPointsNoteTooShort": "5분 미만 운동은 점수에 들어가지 않아요",
+  "rankingPointsNoteDailyLimit": "하루에 한 번만 점수를 받아요",
+  "badgeCollectionTitle": "배지함",
+  "badgeCollectionTitleDog": "{dog}의 배지함",
+  "@badgeCollectionTitleDog": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "badgeEarnedHeading": "받은 배지 ",
+  "badgeStatSessions": "운동",
+  "badgeStatDistance": "누적 거리",
+  "badgeStatStreak": "연속 운동",
+  "badgeStatBranches": "방문 지점",
+  "badgeSectionAwards": "수상 기록",
+  "badgeSectionBadges": "배지",
+  "badgeEarnedOn": "{date} 획득",
+  "@badgeEarnedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "badgeAwardedAtMonthEnd": "월간 랭킹 마감 때 받아요",
+  "rankingUnitSessions": "회",
+  "rankingUnitPoints": "점",
+  "rankingUnitWeeks": "주",
+  "@rankingUnitWeeks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingUnitBranches": "곳",
+  "@rankingUnitBranches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingRankValue": "{rank}",
+  "@rankingRankValue": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingRankUnit": "위",
+  "rankingStatPoints": "점수",
+  "rankingStatSessions": "운동",
+  "rankingStatCheers": "응원",
+  "rankingStatDistance": "거리",
+  "rankingStatRank": "{month} 순위",
+  "@rankingStatRank": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingCheerSent": "{dog}에게 응원을 보냈어요!",
+  "@rankingCheerSent": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingBadgesEarned": "받은 배지 {count}개",
+  "@rankingBadgesEarned": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingNoBadgesYet": "아직 받은 배지가 없어요.",
+  "rankingMyDogJoined": "내 반려견이에요. 꾸준히 운동해서 순위를 올려 보세요!",
+  "rankingMyDogNotJoined": "랭킹에 참여하면 다른 회원도 볼 수 있어요.",
+  "rankingCheeredThisMonth": "이번 달 응원했어요",
+  "rankingCheerDog": "{dog} 응원하기",
+  "@rankingCheerDog": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "boardTitle": "매장 랭킹 보드",
+  "rankingTitle": "랭킹",
+  "rankingShareTooltip": "자랑하기",
+  "rankingMenuTooltip": "랭킹 메뉴",
+  "rankingMenuSettings": "참여·닉네임 설정",
+  "rankingMenuRules": "점수 규칙",
+  "rankingTabDogs": "반려견 랭킹",
+  "rankingTabBattle": "지점 대항전",
+  "rankingTabHall": "명예의 전당",
+  "rankingEmptyTitle": "아직 순위에 오른 반려견이 없어요",
+  "rankingEmptyCurrent": "이번 달 첫 운동을 마치면 바로 랭킹에 올라요.",
+  "rankingEmptyPast": "이 달에는 운동 기록이 없어요.",
+  "rankingParticipants": "참여 반려견 {count}마리",
+  "@rankingParticipants": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingParticipantsTop": "참여 반려견 {count}마리 · 상위 {top}마리",
+  "@rankingParticipantsTop": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "top": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingPrevMonth": "이전 달",
+  "rankingNextMonth": "다음 달",
+  "rankingMonthInProgress": "진행 중 · 운동이 끝나면 바로 반영돼요",
+  "rankingMonthPast": "지난 달 기록",
+  "rankingJoinPrompt": "{dog}도 랭킹에 올려 보세요",
+  "@rankingJoinPrompt": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingJoinPromptRank": "참여하면 {dog} 전체 {rank}위예요",
+  "@rankingJoinPromptRank": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingJoinPublicInfo": "닉네임과 반려견 정보만 공개돼요.",
+  "rankingJoinButton": "참여하기",
+  "rankingMyBarNoScore": "{dog} · 이 랭킹에서는 아직 점수가 없어요",
+  "@rankingMyBarNoScore": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingMyBarRank": "{dog} · {rank}위",
+  "@rankingMyBarRank": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingMyBarRankIfJoined": "{dog} · 참여하면 {rank}위",
+  "@rankingMyBarRankIfJoined": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingMyBarNoPoints": "운동을 마치면 점수가 쌓여요",
+  "rankingMyBarKeepFirst": "{points} · 1위를 지키고 있어요!",
+  "@rankingMyBarKeepFirst": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingMyBarPointsToNext": "{points} · {gap}점 더 받으면 순위가 올라요",
+  "@rankingMyBarPointsToNext": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "gap": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingBattleIntro": "지점에서 운동한 모든 반려견의 거리를 더해요. 우리 반려견이 걸은 만큼 우리 지점이 앞서요!",
+  "rankingBattleMine": "내 지점",
+  "rankingBattleStats": "운동 {sessions}회 · 반려견 {dogs}마리",
+  "@rankingBattleStats": {
+    "placeholders": {
+      "sessions": {
+        "type": "int"
+      },
+      "dogs": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingHallEmptyTitle": "아직 명예의 전당이 비어 있어요",
+  "rankingHallEmptyMessage": "매달 1일에 지난달 부문별 1~3위가 이곳에 올라요.",
+  "rankingHallMonthTitle": "{month} 명예의 전당",
+  "@rankingHallMonthTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingPrivateDog": "비공개 반려견",
+  "rankingHallChampions": "부문별 1위",
+  "rankingSettingsSaved": "랭킹 설정을 저장했어요.",
+  "rankingJoined": "랭킹에 참여했어요! 이번 달 순위에 바로 반영돼요.",
+  "rankingLeaveTitle": "랭킹에서 나갈까요?",
+  "rankingLeaveMessage": "순위표와 명예의 전당에서 닉네임과 반려견 정보가 바로 가려져요. 점수와 배지는 그대로 쌓이고, 다시 참여하면 이번 달 순위에 바로 반영돼요.",
+  "rankingLeaveConfirm": "나가기",
+  "rankingLeft": "랭킹에서 나갔어요.",
+  "rankingSettingsTitle": "랭킹 설정",
+  "rankingJoinTitle": "랭킹에 참여해 볼까요?",
+  "rankingSettingsIntro": "이번 달 가장 꾸준한 반려견은 누구일까요? 운동할수록 점수가 쌓이고, 매달 1~3위는 명예의 전당에 올라요.",
+  "rankingVisibleInfoTitle": "다른 회원에게 보이는 정보",
+  "rankingVisibleInfoList": "· 닉네임\n· 반려견 이름·견종·체구, 프로필 사진(선택)\n· 이번 달 점수·운동 횟수, 배지, 수상 기록",
+  "rankingPrivateInfoNote": "실명·이메일·연락처는 공개되지 않아요.",
+  "rankingNicknameLabel": "닉네임",
+  "rankingNicknameHelp": "2~12자 한글·영문·숫자·밑줄(_) · 30일에 한 번 바꿀 수 있어요",
+  "rankingNicknameChangeableAt": "{date}부터 다시 바꿀 수 있어요",
+  "@rankingNicknameChangeableAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingShowPhotoTitle": "반려견 사진 공개",
+  "rankingShowPhotoSubtitle": "끄면 랭킹에 기본 아이콘으로 보여요",
+  "rankingJoinAction": "랭킹 참여하기",
+  "rankingLeaveAction": "랭킹에서 나가기",
+  "rankingShareText": "{dog}의 {month} PawFit 운동 기록이에요! #PawFit #강아지트레드밀",
+  "@rankingShareText": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingShareFailed": "공유하지 못했어요. 잠시 후 다시 시도해 주세요.",
+  "rankingShareTitle": "이번 달 기록 자랑하기",
+  "rankingShareHint": "이미지로 저장해 인스타그램·카카오톡에 올려 보세요.",
+  "rankingShareButton": "이미지로 공유하기",
+  "rankingShareOverall": "전체 {rank}위",
+  "@rankingShareOverall": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "rankingShareStreak": "{weeks}주 연속 운동 중",
+  "@rankingShareStreak": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "boardHeadline": "{branch} 이번 달 랭킹",
+  "@boardHeadline": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
+  "boardSubtitle": "{month} · 운동이 끝나면 바로 반영돼요",
+  "@boardSubtitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "boardJoinHint": "PawFit 앱에서 「랭킹 참여」를 켜면 우리 아이 이름이 여기에 올라와요!",
+  "boardBattleRank": "지점 대항전 {rank}위 · {distance}",
+  "@boardBattleRank": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "boardEmptyTitle": "이번 달 1등의 주인공이 되어 보세요!",
+  "boardEmptyMessage": "이 지점에서 운동을 마치면 바로 순위에 올라요.",
+  "rankingEntrySemantics": "{rank}위 {dog}, {points}",
+  "@rankingEntrySemantics": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      },
+      "dog": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingMineBadge": "내 반려견",
+  "badgeSemantics": "{name} 배지",
+  "@badgeSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "badgeSemanticsLocked": "{name} 배지 (아직 받지 않음)",
+  "@badgeSemanticsLocked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingPointsChipVoided": "점수 무효",
+  "rankingPointsChipZero": "0점",
+  "rankingPointsChipSemantics": "랭킹 점수 {label}",
+  "@rankingPointsChipSemantics": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "rankingBreakdownTitle": "이번 운동 점수",
+  "rankingBreakdownVoided": "운영자 확인 결과 이 운동의 점수는 무효 처리되었어요.",
+  "rankingBreakdownDefault": "꾸준히 운동할수록 점수가 쌓여요.",
+  "rankingBreakdownAttendance": "출석",
+  "rankingBreakdownAttendanceCaption": "5분 이상 운동 (하루 1회)",
+  "rankingBreakdownGoal": "달성",
+  "rankingBreakdownGoalCaption": "프로그램 목표 시간 대비 (최대 10)",
+  "rankingBreakdownDistanceCaption": "100m당 1점 (최대 20)",
+  "rankingBreakdownWeeklyBonus": "주간 보너스",
+  "rankingBreakdownWeeklyBonusCaption": "이번 주 두 번째 운동",
+  "rankingBreakdownTotal": "합계",
+  "rankingRulesTitle": "점수는 이렇게 쌓여요",
+  "rankingRulesIntro": "많이보다 꾸준히! 무리한 운동은 점수에 도움이 되지 않아요.",
+  "rankingRuleAttendanceTitle": "출석 10점",
+  "rankingRuleAttendanceBody": "5분 이상 운동하면 받아요. 반려견마다 하루 한 번만 점수를 받아요.",
+  "rankingRuleGoalTitle": "달성 최대 10점",
+  "rankingRuleGoalBody": "프로그램 목표 시간을 채운 만큼 받아요. 중간에 멈춰도 감점은 없어요.",
+  "rankingRuleDistanceTitle": "거리 최대 20점",
+  "rankingRuleDistanceBody": "100m마다 1점이에요. 2km를 넘게 걸어도 20점까지만 받아요.",
+  "rankingRuleWeeklyTitle": "주간 보너스 20점",
+  "rankingRuleWeeklyBody": "한 주(월~일)에 두 번 이상 운동하면 받아요.",
+  "rankingRuleMonthlyTitle": "월간 랭킹",
+  "rankingRuleMonthlyBody": "매달 1일에 새로 시작해요. 전체·지점·체급별로 순위를 매기고, 동점이면 먼저 도달한 반려견이 앞서요.",
+  "rankingRuleHallTitle": "명예의 전당",
+  "rankingRuleHallBody": "달이 끝나면 부문별 1~3위가 명예의 전당에 오르고 「시상대」 배지를 받아요.",
+  "rankingRulesSafety": "반려견 컨디션이 좋지 않으면 운동을 쉬어 주세요. 이상이 보이면 트레드밀의 비상정지 버튼을 눌러 주세요.",
+  "demoPillStart": "DEMO · 데모 계정으로 시작",
+  "demoControlTitle": "데모 컨트롤",
+  "demoIntro": "목업 서버로 동작하는 데모 앱이에요. 실제 서버·결제·트레드밀과 연결되지 않고, 앱을 다시 켜면 처음 상태로 돌아가요.",
+  "demoSectionTreadmill": "트레드밀 기기",
+  "demoAddDogFirst": "반려견을 먼저 등록해 주세요.",
+  "demoTreadmillDetail": "{dog} · 매장 기기가 보내는 운동 기록을 흉내 내요.",
+  "@demoTreadmillDetail": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "demoStartWorkout": "운동 시작",
+  "demoSpeedTitle": "시뮬레이션 속도",
+  "demoSpeedReal": "실제 시간",
+  "demoSpeed10x": "10배",
+  "demoSpeed30x": "30배",
+  "demoSectionAi": "AI 분석 서버",
+  "demoAiDetail": "운동이 끝나고 몇 초 뒤 보행 분석 리포트가 도착해요.",
+  "demoAiFinished": "AI 분석이 끝났어요. 알림을 확인해 보세요.",
+  "demoFinishPending": "대기 중인 분석 바로 끝내기",
+  "demoNoPending": "대기 중인 분석 없음",
+  "demoSectionOwners": "다른 보호자",
+  "demoOwnersDetail": "랭킹에 참여한 다른 보호자의 응원을 받아요.",
+  "demoReceiveCheer": "응원 받기",
+  "demoSectionData": "데이터",
+  "demoReset": "처음 상태로 되돌리기",
+  "demoAccount": "데모 계정 {email} · {password}",
+  "@demoAccount": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      },
+      "password": {
+        "type": "String"
+      }
+    }
+  },
+  "demoWorkoutStarted": "{dog}의 운동이 시작됐어요. 실시간 기록이 운동 탭에 표시돼요.",
+  "@demoWorkoutStarted": {
+    "placeholders": {
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "demoCheerNeedsConsent": "랭킹에 참여해야 응원을 받을 수 있어요. 마이페이지 > 동의 관리에서 바꿀 수 있어요.",
+  "demoCheerAllDone": "이번 달에는 다른 보호자가 모두 응원했어요.",
+  "demoCheerReceived": "{nickname}님이 {dog} 응원했어요. 알림을 확인해 보세요.",
+  "@demoCheerReceived": {
+    "placeholders": {
+      "nickname": {
+        "type": "String"
+      },
+      "dog": {
+        "type": "String"
+      }
+    }
+  },
+  "demoResetTitle": "처음 상태로 되돌릴까요?",
+  "demoResetMessage": "데모에서 만든 예약·운동 기록·설정이 모두 지워지고 샘플 데이터로 다시 시작해요.",
+  "demoResetConfirm": "되돌리기",
+  "demoResumed": "운동을 다시 시작했어요.",
+  "demoPaused": "트레드밀을 잠시 멈췄어요.",
+  "demoResume": "다시 시작",
+  "demoPause": "일시정지",
+  "demoEmergencyDone": "비상정지로 운동이 중단됐어요. 받은 만큼 점수가 쌓여요.",
+  "demoEmergencyStop": "비상정지",
+  "demoFinishedDone": "운동을 마쳤어요. 점수와 배지, AI 리포트를 확인해 보세요.",
+  "demoFinishNow": "바로 완료"
 }

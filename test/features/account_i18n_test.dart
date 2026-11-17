@@ -129,9 +129,9 @@ void main() {
       expect(_n('cheer_received', {'dog_name': 'Kongi', 'nickname': 'Minsu'}).body, 'Minsu cheered for Kongi.');
       expect(_n('cheer_received', {'dog_name': 'Kongi', 'nickname': null}).body, 'Another owner cheered for Kongi.');
       final award = _n('monthly_award', {'dog_name': 'Kongi', 'month': 11, 'awards': _awards});
-      expect(award.title, 'Podium finish in Nov rankings');
+      expect(award.title, 'Podium finish in November rankings');
       expect(award.body,
-          "Kongi placed in the Nov rankings: #1 Overall · #2 Yongsan I'Park Mall. Check the Hall of Fame to see it.");
+          "Kongi placed in the November rankings: #1 Overall · #2 Yongsan I'Park Mall. Check the Hall of Fame to see it.");
     });
 
     test('모르는 msg는 원본 문구', () {
