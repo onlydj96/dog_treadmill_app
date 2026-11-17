@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/brand_mark.dart';
+import '../../../l10n/l10n.dart';
 import '../../booking/providers.dart';
 import '../../dogs/presentation/widgets/dog_avatar.dart';
 import '../data/ranking_models.dart';
@@ -82,20 +83,20 @@ class _StoreBoardScreenState extends ConsumerState<StoreBoardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '$branchName 이번 달 랭킹',
+                            context.l10n.boardHeadline(branchName),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800),
                           ),
                           Text(
-                            '${Fmt.yearMonth(_month)} · 운동이 끝나면 바로 반영돼요',
+                            context.l10n.boardSubtitle(Fmt.yearMonth(_month)),
                             style: const TextStyle(color: AppColors.mintLight, fontSize: 14),
                           ),
                         ],
                       ),
                     ),
                     IconButton(
-                      tooltip: '닫기',
+                      tooltip: context.l10n.commonClose,
                       color: Colors.white54,
                       onPressed: () => context.canPop() ? context.pop() : context.go(AppRoutes.ranking),
                       icon: const Icon(Icons.close_rounded),
@@ -150,15 +151,15 @@ class _StoreBoardScreenState extends ConsumerState<StoreBoardScreen> {
                     children: [
                       const Icon(Icons.phone_iphone_rounded, color: AppColors.honey),
                       const SizedBox(width: 10),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'PawFit 앱에서 「랭킹 참여」를 켜면 우리 아이 이름이 여기에 올라와요!',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                          context.l10n.boardJoinHint,
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                       ),
                       if (myBattle != null)
                         Text(
-                          '지점 대항전 ${myBattle.rank}위 · ${Fmt.km(myBattle.distanceMeters)}',
+                          context.l10n.boardBattleRank(myBattle.rank, Fmt.km(myBattle.distanceMeters)),
                           style: AppText.numeric(16, color: AppColors.honey),
                         ),
                     ],
@@ -227,20 +228,20 @@ class _EmptyBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.emoji_events_rounded, color: AppColors.honey, size: 64),
-          SizedBox(height: 16),
+          const Icon(Icons.emoji_events_rounded, color: AppColors.honey, size: 64),
+          const SizedBox(height: 16),
           Text(
-            '이번 달 1등의 주인공이 되어 보세요!',
-            style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800),
+            context.l10n.boardEmptyTitle,
+            style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800),
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Text(
-            '이 지점에서 운동을 마치면 바로 순위에 올라요.',
-            style: TextStyle(color: AppColors.mintLight, fontSize: 16),
+            context.l10n.boardEmptyMessage,
+            style: const TextStyle(color: AppColors.mintLight, fontSize: 16),
           ),
         ],
       ),

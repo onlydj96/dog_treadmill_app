@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_messages.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../../dogs/providers.dart';
 import '../data/ranking_models.dart';
 import '../providers.dart';
@@ -33,7 +34,7 @@ class BadgeCollectionScreen extends ConsumerWidget {
     final error = achievements.error ?? catalog.error;
 
     return Scaffold(
-      appBar: AppBar(title: Text(dogName == null ? '배지함' : '$dogName의 배지함')),
+      appBar: AppBar(title: Text(dogName == null ? context.l10n.badgeCollectionTitle : context.l10n.badgeCollectionTitleDog(dogName))),
       body: data != null && badges != null
           ? RefreshIndicator(onRefresh: refresh, child: _Collection(achievements: data, catalog: badges))
           : error != null
@@ -49,6 +50,9 @@ class BadgeCollectionScreen extends ConsumerWidget {
     );
   }
 }
+
+/// 단위가 없는 언어(영어)에서는 단위를 붙이지 않는다
+String? _unitOrNull(String unit) => unit.isEmpty ? null : unit;
 
 class _Collection extends StatelessWidget {
   const _Collection({required this.achievements, required this.catalog});
@@ -74,7 +78,7 @@ class _Collection extends StatelessWidget {
               Text.rich(
                 TextSpan(
                   children: [
-                    const TextSpan(text: '받은 배지 '),
+                    TextSpan(text: context.l10n.badgeEarnedHeading),
                     TextSpan(text: '$earnedCount', style: const TextStyle(color: AppColors.mintDeep)),
                     TextSpan(text: ' / ${catalog.length}'),
                   ],
@@ -86,9 +90,9 @@ class _Collection extends StatelessWidget {
                 children: [
                   Expanded(
                     child: StatValue(
-                      label: '운동',
+                      label: context.l10n.badgeStatSessions,
                       value: '${stats.sessions}',
-                      unit: '회',
+                      unit: _unitOrNull(context.l10n.rankingUnitSessions),
                       valueSize: 20,
                       color: AppColors.mintInk,
                       labelColor: AppColors.mintDeep,
@@ -96,7 +100,7 @@ class _Collection extends StatelessWidget {
                   ),
                   Expanded(
                     child: StatValue(
-                      label: '누적 거리',
+                      label: context.l10n.badgeStatDistance,
                       value: (stats.distanceMeters / 1000).toStringAsFixed(1),
                       unit: 'km',
                       valueSize: 20,
@@ -106,9 +110,9 @@ class _Collection extends StatelessWidget {
                   ),
                   Expanded(
                     child: StatValue(
-                      label: '연속 운동',
+                      label: context.l10n.badgeStatStreak,
                       value: '${stats.streakWeeks}',
-                      unit: '주',
+                      unit: context.l10n.rankingUnitWeeks(stats.streakWeeks),
                       valueSize: 20,
                       color: AppColors.mintInk,
                       labelColor: AppColors.mintDeep,
@@ -116,9 +120,9 @@ class _Collection extends StatelessWidget {
                   ),
                   Expanded(
                     child: StatValue(
-                      label: '방문 지점',
+                      label: context.l10n.badgeStatBranches,
                       value: '${stats.branches}',
-                      unit: '곳',
+                      unit: context.l10n.rankingUnitBranches(stats.branches),
                       valueSize: 20,
                       color: AppColors.mintInk,
                       labelColor: AppColors.mintDeep,
@@ -131,7 +135,7 @@ class _Collection extends StatelessWidget {
         ),
         if (achievements.awards.isNotEmpty) ...[
           const SizedBox(height: 24),
-          const SectionHeader(title: '수상 기록'),
+          SectionHeader(title: context.l10n.badgeSectionAwards),
           Wrap(
             spacing: 6,
             runSpacing: 6,
@@ -142,7 +146,7 @@ class _Collection extends StatelessWidget {
           ),
         ],
         const SizedBox(height: 24),
-        const SectionHeader(title: '배지'),
+        SectionHeader(title: context.l10n.badgeSectionBadges),
         for (final badge in catalog)
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
@@ -188,7 +192,7 @@ class _BadgeCard extends StatelessWidget {
                 if (earned != null) ...[
                   const SizedBox(height: 4),
                   Text(
-                    '${Fmt.dateShort(earned!.earnedAt)} 획득',
+                    context.l10n.badgeEarnedOn(Fmt.dateShort(earned!.earnedAt)),
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: scheme.primary),
                   ),
                 ] else if (progress != null) ...[
@@ -208,7 +212,7 @@ class _BadgeCard extends StatelessWidget {
                   ),
                 ] else ...[
                   const SizedBox(height: 4),
-                  Text('월간 랭킹 마감 때 받아요',
+                  Text(context.l10n.badgeAwardedAtMonthEnd,
                       style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
                 ],
               ],
