@@ -846,5 +846,20 @@
   "demoEmergencyDone": "The workout was stopped with the emergency stop. You keep the points you've earned so far.",
   "demoEmergencyStop": "Emergency stop",
   "demoFinishedDone": "Workout finished. Check your points, badges, and AI report.",
-  "demoFinishNow": "Finish now"
+  "demoFinishNow": "Finish now",
+  "serverPaymentMethodCard": "Card",
+  "serverPaymentMethodCreditCard": "Credit card",
+  "serverPaymentMethodDebitCard": "Debit card",
+  "serverPaymentMethodEasyPay": "Easy pay",
+  "serverPaymentMethodKakaoPay": "Kakao Pay",
+  "serverPaymentMethodNaverPay": "Naver Pay",
+  "serverPaymentMethodTossPay": "Toss Pay",
+  "serverPaymentMethodPayco": "PAYCO",
+  "serverPaymentMethodSamsungPay": "Samsung Pay",
+  "serverPaymentMethodApplePay": "Apple Pay",
+  "serverPaymentMethodTransfer": "Bank transfer",
+  "serverPaymentMethodVirtualAccount": "Virtual account",
+  "serverPaymentMethodMobile": "Mobile phone",
+  "serverPaymentMethodOnsite": "Pay at store",
+  "serverPaymentMethodPass": "Pass"
 }

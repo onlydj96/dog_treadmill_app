@@ -3138,4 +3138,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get demoFinishNow => 'Finish now';
+
+  @override
+  String get serverPaymentMethodCard => 'Card';
+
+  @override
+  String get serverPaymentMethodCreditCard => 'Credit card';
+
+  @override
+  String get serverPaymentMethodDebitCard => 'Debit card';
+
+  @override
+  String get serverPaymentMethodEasyPay => 'Easy pay';
+
+  @override
+  String get serverPaymentMethodKakaoPay => 'Kakao Pay';
+
+  @override
+  String get serverPaymentMethodNaverPay => 'Naver Pay';
+
+  @override
+  String get serverPaymentMethodTossPay => 'Toss Pay';
+
+  @override
+  String get serverPaymentMethodPayco => 'PAYCO';
+
+  @override
+  String get serverPaymentMethodSamsungPay => 'Samsung Pay';
+
+  @override
+  String get serverPaymentMethodApplePay => 'Apple Pay';
+
+  @override
+  String get serverPaymentMethodTransfer => 'Bank transfer';
+
+  @override
+  String get serverPaymentMethodVirtualAccount => 'Virtual account';
+
+  @override
+  String get serverPaymentMethodMobile => 'Mobile phone';
+
+  @override
+  String get serverPaymentMethodOnsite => 'Pay at store';
+
+  @override
+  String get serverPaymentMethodPass => 'Pass';
 }

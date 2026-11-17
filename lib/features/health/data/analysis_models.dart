@@ -362,27 +362,58 @@ class PoseRecord {
 class ExercisePlan {
   const ExercisePlan({
     required this.id,
-    required this.programName,
+    required String programName,
     this.targetDurationSeconds,
     this.targetSpeed,
-    this.restrictions = const [],
-    this.notes,
-  });
+    List<String> restrictions = const [],
+    String? notes,
+    String? programNameEn,
+    List<String>? restrictionsEn,
+    String? notesEn,
+  })  : _programName = programName,
+        _programNameEn = programNameEn,
+        _restrictions = restrictions,
+        _restrictionsEn = restrictionsEn,
+        _notes = notes,
+        _notesEn = notesEn;
 
-  factory ExercisePlan.fromJson(Json json) => ExercisePlan(
-        id: json.str('id'),
-        programName: json.str('program_name'),
-        targetDurationSeconds: json.intOrNull('target_duration_seconds'),
-        targetSpeed: json.dblOrNull('target_speed'),
-        restrictions:
-            json.objList('restrictions').map((e) => e.strOrNull('name') ?? '').where((e) => e.isNotEmpty).toList(),
-        notes: json.strOrNull('notes'),
-      );
+  /// 영어 값은 `program_name_en` · `notes_en` · restrictions 항목의 `name_en`. 없으면 기본(한국어) 값.
+  factory ExercisePlan.fromJson(Json json) {
+    final items = json.objList('restrictions');
+    return ExercisePlan(
+      id: json.str('id'),
+      programName: json.str('program_name'),
+      programNameEn: json.strOrNull('program_name_en'),
+      targetDurationSeconds: json.intOrNull('target_duration_seconds'),
+      targetSpeed: json.dblOrNull('target_speed'),
+      restrictions: items.map((e) => e.strOrNull('name') ?? '').where((e) => e.isNotEmpty).toList(),
+      restrictionsEn: items
+          .where((e) => (e.strOrNull('name') ?? '').isNotEmpty)
+          .map((e) => e.strOrNull('name_en') ?? '')
+          .toList(),
+      notes: json.strOrNull('notes'),
+      notesEn: json.strOrNull('notes_en'),
+    );
+  }
 
   final String id;
-  final String programName;
+  final String _programName;
+  final String? _programNameEn;
   final int? targetDurationSeconds;
   final double? targetSpeed;
-  final List<String> restrictions;
-  final String? notes;
+  final List<String> _restrictions;
+  final List<String>? _restrictionsEn;
+  final String? _notes;
+  final String? _notesEn;
+
+  String get programName => L10n.pick(_programName, _programNameEn);
+
+  /// 항목마다 영어 값(restrictionsEn과 같은 순서, 빈 문자열이면 없음)이 없으면 그 항목만 한국어로 둔다.
+  List<String> get restrictions {
+    final en = _restrictionsEn;
+    if (!L10n.isEnglish || en == null || en.length != _restrictions.length) return _restrictions;
+    return [for (var i = 0; i < en.length; i++) L10n.pick(_restrictions[i], en[i])];
+  }
+
+  String? get notes => L10n.pickOrNull(_notes, _notesEn);
 }

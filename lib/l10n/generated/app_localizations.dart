@@ -5180,6 +5180,96 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'바로 완료'**
   String get demoFinishNow;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'카드'**
+  String get serverPaymentMethodCard;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'신용카드'**
+  String get serverPaymentMethodCreditCard;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'체크카드'**
+  String get serverPaymentMethodDebitCard;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'간편결제'**
+  String get serverPaymentMethodEasyPay;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'카카오페이'**
+  String get serverPaymentMethodKakaoPay;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'네이버페이'**
+  String get serverPaymentMethodNaverPay;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'토스페이'**
+  String get serverPaymentMethodTossPay;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'페이코'**
+  String get serverPaymentMethodPayco;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'삼성페이'**
+  String get serverPaymentMethodSamsungPay;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'애플페이'**
+  String get serverPaymentMethodApplePay;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'계좌이체'**
+  String get serverPaymentMethodTransfer;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'가상계좌'**
+  String get serverPaymentMethodVirtualAccount;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'휴대폰'**
+  String get serverPaymentMethodMobile;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'현장 결제'**
+  String get serverPaymentMethodOnsite;
+
+  /// 결제 수단 표시 이름
+  ///
+  /// In ko, this message translates to:
+  /// **'이용권'**
+  String get serverPaymentMethodPass;
 }
 
 class _AppLocalizationsDelegate
