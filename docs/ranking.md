@@ -51,7 +51,7 @@ DB는 [20261116000100_ranking_and_badges.sql](../supabase/migrations/20261116000
 |---|---|
 | 형식 | 2~12자, 완성형 한글·영문·숫자·밑줄(`_`) (DB 제약 `users_nickname_format`) |
 | 고유 | 대소문자 구분 없이 고유 (`users_nickname_key`) |
-| 기본값 | 가입 시 자동 생성 (예: "씩씩한발바닥0427"). 자동 닉네임은 바로 바꿀 수 있음 |
+| 기본값 | 가입 시 자동 생성 (예: "씩씩한발바닥0427"). 가입할 때 앱 언어가 영어(메타데이터 `locale` = `en`)면 영어 닉네임 (예: "SwiftPaw042", `private.generate_nickname_en`). 자동 닉네임은 바로 바꿀 수 있음 |
 | 변경 주기 | 보호자가 바꾼 뒤 30일 (`private.nickname_change_interval()`) |
 | 금칙어 | 사칭(관리자·운영자·PawFit 등)과 욕설 (`private.is_forbidden_nickname`) |
 | 변경 방법 | `set_nickname(p_nickname)` RPC만. `users.nickname`을 직접 수정할 수 없음 |
@@ -108,6 +108,11 @@ DB는 [20261116000100_ranking_and_badges.sql](../supabase/migrations/20261116000
 | 응원 받음 | 응원이 도착했어요 | {닉네임}님이 {반려견}을 응원했어요. | `dog_id` → 랭킹 |
 | 월간 수상 | {M}월 랭킹 시상대에 올랐어요 | {반려견}가 {M}월 랭킹 {부문 순위들}에 올랐어요. 명예의 전당에서 확인해 보세요. | `period_month`, `dog_id` → 명예의 전당 |
 
+- 모든 알림의 `data`에는 앱이 현재 언어로 문구를 만들 수 있게 `msg`(문구 종류)와 `args`(값)도 들어갑니다 ([docs/i18n.md](i18n.md) "알림").
+  - 배지 획득: `msg` = `badge_earned`, `args` = `dog_name`, `badge_code`, `badge_name`, `badge_name_en`
+  - 응원 받음: `msg` = `cheer_received`, `args` = `dog_name`, `nickname` (응원한 사람이 랭킹에 참여하지 않으면 null)
+  - 월간 수상: `msg` = `monthly_award`, `args` = `dog_name`, `month`(1~12), `awards` = `[{scope, label, label_en, rank}]` (본문의 부문 순서와 같다)
+  - 운동 완료: `msg` = `exercise_completed`, `args` = `dog_name`, `points` (점수를 받지 못했으면 0)
 - 알림 설정의 "랭킹 알림"(`notification_prefs.ranking`, 기본 켬)을 끄면 서버가 위 알림을 만들지 않습니다.
 - 운동 완료 알림(`exercise`)에는 받은 점수를 함께 알려 줍니다 ("…운동이 끝났어요. 40점을 받았어요!"). 점수 트리거가 이름 순서상 완료 알림 트리거보다 먼저 실행되는 것에 기대므로 트리거 이름을 바꿀 때 주의합니다.
 
@@ -137,6 +142,25 @@ DB는 [20261116000100_ranking_and_badges.sql](../supabase/migrations/20261116000
 | `close_ranking_month(p_month)` | 관리자 | 수동 마감 |
 
 `p_month`는 그 달의 아무 날짜(앱은 1일)를 받고, 비우면 한국 시간 기준 이번 달입니다.
+
+### 영어 필드 (다국어)
+
+RPC는 표시용 문구 필드마다 **같은 이름 + `_en`** 필드를 함께 돌려줍니다
+([20261117000100_english_content.sql](../supabase/migrations/20261117000100_english_content.sql), [docs/i18n.md](i18n.md)).
+영어 값이 없으면(예: 영어 이름을 넣지 않은 지점) `_en`에도 한국어 값이 들어갑니다.
+
+| RPC | 영어 필드 |
+|---|---|
+| `get_leaderboard` | `breed_label_en`, `main_branch_name_en`, `title_label_en` |
+| `get_my_ranking` | `ranks[].label_en` |
+| `get_branch_battle` | `branch_name_en` |
+| `get_ranking_dog_profile` | `breed_label_en`, `awards[].scope_label_en` |
+| `get_dog_achievements` | `awards[].scope_label_en` |
+| `get_hall_of_fame` | `scope_label_en`, `breed_label_en` |
+
+- 범위 이름: 전체 `Overall`, 체급 `Small dogs`·`Medium dogs`·`Large dogs`, 지점은 `branches.name_en` (`private.ranking_scope_label_en`)
+- 견종: 카탈로그 견종은 `breeds.name_en`, 믹스견은 `Mixed breed` / `Mixed (Maltese)`. 보호자가 적은 견종이 카탈로그에 없으면 입력한 그대로 (`private.dog_breed_label_en`)
+- 배지 목록(`badges`)은 지금처럼 `code`·`earned_at`만 돌려주며, 앱은 배지 이름·설명을 `badges` 테이블의 `name`·`name_en`·`description`·`description_en`에서 읽습니다.
 
 ## 운영 메모
 
