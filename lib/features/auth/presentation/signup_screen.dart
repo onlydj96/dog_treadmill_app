@@ -7,6 +7,7 @@ import '../../../core/utils/validators.dart';
 import '../../../core/widgets/common.dart';
 import '../../consents/data/consent.dart';
 import '../data/auth_repository.dart';
+import '../../../l10n/l10n.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -43,7 +44,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (!_requiredAgreed) {
-      context.showMessage('필수 약관에 동의해 주세요.');
+      context.showMessage(context.l10n.signupRequiredConsent);
       return;
     }
     setState(() => _submitting = true);
@@ -60,13 +61,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         await showDialog<void>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('인증 메일을 보냈어요'),
-            content: Text('${_emailController.text.trim()}으로 보낸 메일의 링크를 눌러 가입을 완료한 뒤 로그인해 주세요.'),
+            title: Text(context.l10n.signupVerifyTitle),
+            content: Text(context.l10n.signupVerifyBody(_emailController.text.trim())),
             actions: [
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: FilledButton.styleFrom(minimumSize: const Size(80, 44)),
-                child: const Text('확인'),
+                child: Text(context.l10n.commonConfirm),
               ),
             ],
           ),
@@ -86,20 +87,20 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('회원가입')),
+      appBar: AppBar(title: Text(context.l10n.signupTitle)),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
             children: [
-              Text('보호자 정보', style: theme.textTheme.titleMedium),
+              Text(context.l10n.signupOwnerSection, style: theme.textTheme.titleMedium),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
                 autofillHints: const [AutofillHints.name],
-                decoration: const InputDecoration(labelText: '이름'),
+                decoration: InputDecoration(labelText: context.l10n.signupName),
                 validator: Validators.name,
               ),
               const SizedBox(height: 12),
@@ -108,18 +109,18 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.next,
                 autofillHints: const [AutofillHints.telephoneNumber],
-                decoration: const InputDecoration(labelText: '휴대전화 번호', hintText: '010-1234-5678'),
+                decoration: InputDecoration(labelText: context.l10n.signupPhone, hintText: '010-1234-5678'),
                 validator: Validators.phone,
               ),
               const SizedBox(height: 24),
-              Text('로그인 정보', style: theme.textTheme.titleMedium),
+              Text(context.l10n.signupLoginSection, style: theme.textTheme.titleMedium),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 autofillHints: const [AutofillHints.email],
-                decoration: const InputDecoration(labelText: '이메일'),
+                decoration: InputDecoration(labelText: context.l10n.authEmail),
                 validator: Validators.email,
               ),
               const SizedBox(height: 12),
@@ -129,10 +130,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 textInputAction: TextInputAction.next,
                 autofillHints: const [AutofillHints.newPassword],
                 decoration: InputDecoration(
-                  labelText: '비밀번호',
-                  helperText: '영문과 숫자를 포함해 8자 이상',
+                  labelText: context.l10n.authPassword,
+                  helperText: context.l10n.signupPasswordHelper,
                   suffixIcon: IconButton(
-                    tooltip: _obscure ? '비밀번호 보기' : '비밀번호 숨기기',
+                    tooltip: _obscure ? context.l10n.authShowPassword : context.l10n.authHidePassword,
                     icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
                     onPressed: () => setState(() => _obscure = !_obscure),
                   ),
@@ -144,8 +145,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 controller: _confirmController,
                 obscureText: _obscure,
                 textInputAction: TextInputAction.done,
-                decoration: const InputDecoration(labelText: '비밀번호 확인'),
-                validator: (value) => value != _passwordController.text ? '비밀번호가 일치하지 않아요.' : null,
+                decoration: InputDecoration(labelText: context.l10n.signupConfirmPassword),
+                validator: (value) => value != _passwordController.text ? context.l10n.signupPasswordMismatch : null,
               ),
               const SizedBox(height: 28),
               _ConsentSection(
@@ -166,7 +167,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         dimension: 22,
                         child: CircularProgressIndicator(strokeWidth: 2.4),
                       )
-                    : const Text('가입하기'),
+                    : Text(context.l10n.signupSubmit),
               ),
             ],
           ),
@@ -200,8 +201,8 @@ class _ConsentSection extends StatelessWidget {
             value: allAgreed,
             onChanged: (value) => onToggleAll(value ?? false),
             controlAffinity: ListTileControlAffinity.leading,
-            title: const Text('전체 동의', style: TextStyle(fontWeight: FontWeight.w800)),
-            subtitle: const Text('선택 항목을 포함한 모든 항목에 동의합니다.'),
+            title: Text(context.l10n.signupAgreeAll, style: const TextStyle(fontWeight: FontWeight.w800)),
+            subtitle: Text(context.l10n.signupAgreeAllDesc),
           ),
           const Divider(indent: 20, endIndent: 20),
           for (final type in ConsentType.values)
@@ -217,7 +218,7 @@ class _ConsentSection extends StatelessWidget {
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: type.isRequired ? '[필수] ' : '[선택] ',
+                      text: type.isRequired ? context.l10n.signupRequiredTag : context.l10n.signupOptionalTag,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         color: type.isRequired ? scheme.primary : scheme.onSurfaceVariant,

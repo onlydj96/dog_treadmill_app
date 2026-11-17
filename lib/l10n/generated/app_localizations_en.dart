@@ -417,4 +417,493 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverStopReasonByStaff => 'Stopped by staff';
+
+  @override
+  String get authTagline =>
+      'From treadmill bookings to AI gait analysis,\nwe\'ll track your dog\'s healthy steps together.';
+
+  @override
+  String get authEmail => 'Email';
+
+  @override
+  String get authPassword => 'Password';
+
+  @override
+  String get authShowPassword => 'Show password';
+
+  @override
+  String get authHidePassword => 'Hide password';
+
+  @override
+  String get authLogIn => 'Log in';
+
+  @override
+  String get authNoAccount => 'Don\'t have an account yet?';
+
+  @override
+  String get authSignUp => 'Sign up';
+
+  @override
+  String get signupTitle => 'Sign up';
+
+  @override
+  String get signupOwnerSection => 'Your info';
+
+  @override
+  String get signupName => 'Name';
+
+  @override
+  String get signupPhone => 'Mobile number';
+
+  @override
+  String get signupLoginSection => 'Login details';
+
+  @override
+  String get signupPasswordHelper =>
+      'At least 8 characters, with letters and numbers';
+
+  @override
+  String get signupConfirmPassword => 'Confirm password';
+
+  @override
+  String get signupPasswordMismatch => 'Passwords don\'t match.';
+
+  @override
+  String get signupRequiredConsent => 'Please agree to the required terms.';
+
+  @override
+  String get signupVerifyTitle => 'Verification email sent';
+
+  @override
+  String signupVerifyBody(String email) {
+    return 'Tap the link in the email we sent to $email to finish signing up, then log in.';
+  }
+
+  @override
+  String get signupSubmit => 'Create account';
+
+  @override
+  String get signupAgreeAll => 'Agree to all';
+
+  @override
+  String get signupAgreeAllDesc =>
+      'I agree to all items, including optional ones.';
+
+  @override
+  String get signupRequiredTag => '[Required] ';
+
+  @override
+  String get signupOptionalTag => '[Optional] ';
+
+  @override
+  String get consentTermsTitle => 'Terms of service';
+
+  @override
+  String get consentTermsDesc => 'The terms that apply to using PawFit.';
+
+  @override
+  String get consentPrivacyTitle =>
+      'Collection and use of personal information';
+
+  @override
+  String get consentPrivacyDesc =>
+      'We collect your name, contact details, email, and your dog\'s information to identify members, process bookings and payments, and provide support.';
+
+  @override
+  String get consentVideoTitle => 'Workout video recording and AI analysis';
+
+  @override
+  String get consentVideoDesc =>
+      'We record front and side video of your dog during treadmill workouts to create joint and gait analysis reports. If you don\'t agree, AI analysis reports won\'t be provided.';
+
+  @override
+  String get consentAiTrainingTitle => 'Use of data for AI training';
+
+  @override
+  String get consentAiTrainingDesc =>
+      'We de-identify recorded video and joint coordinates and use them to improve our AI models. Not agreeing doesn\'t limit your use of the service.';
+
+  @override
+  String get consentRankingTitle => 'Join rankings (nickname and dog shown)';
+
+  @override
+  String get consentRankingDesc =>
+      'Your nickname, your dog\'s name, breed, and photo, and workout points are shown to other members in the monthly rankings and Hall of Fame. Your real name, email, and phone number are never shown, and you\'re removed from the rankings as soon as you withdraw.';
+
+  @override
+  String get consentMarketingTitle => 'Marketing messages';
+
+  @override
+  String get consentMarketingDesc =>
+      'Get news about events and offers as notifications.';
+
+  @override
+  String get consentScreenTitle => 'Privacy and video consent';
+
+  @override
+  String get consentIntro =>
+      'You can change your choices at any time. Your change history is kept securely.';
+
+  @override
+  String get consentRequiredNote =>
+      'Required items are essential to the service and can\'t be withdrawn. To withdraw them, please delete your account.';
+
+  @override
+  String get consentWithdrawVideoTitle => 'Withdraw video recording consent?';
+
+  @override
+  String get consentWithdrawVideoMessage =>
+      'From your next workout, AI gait analysis reports won\'t be provided. You can still view reports you\'ve already received.';
+
+  @override
+  String get consentWithdrawVideoConfirm => 'Withdraw';
+
+  @override
+  String get consentLeaveRankingTitle => 'Leave the rankings?';
+
+  @override
+  String get consentLeaveRankingMessage =>
+      'Your nickname and dog\'s info will be hidden right away on the leaderboards and Hall of Fame. Your points and badges will keep adding up.';
+
+  @override
+  String get consentLeaveRankingConfirm => 'Leave';
+
+  @override
+  String get consentGranted => 'Agreed';
+
+  @override
+  String get consentNotGranted => 'Not agreed';
+
+  @override
+  String consentStatusLine(String state, String date, String version) {
+    return '$state · $date · v$version';
+  }
+
+  @override
+  String get myPageTitle => 'Account';
+
+  @override
+  String myPageGreeting(String name) {
+    return '$name';
+  }
+
+  @override
+  String get myPageMyDogs => 'My dogs';
+
+  @override
+  String get myPageUsageGroup => 'Activity';
+
+  @override
+  String get myPageMembership => 'Passes and membership';
+
+  @override
+  String get myPagePayments => 'Payments and refunds';
+
+  @override
+  String get myPageBookings => 'My bookings';
+
+  @override
+  String get myPageWorkoutHistory => 'Workout history';
+
+  @override
+  String get myPageRankingGroup => 'Rankings';
+
+  @override
+  String get myPageRankingHall => 'Monthly rankings and Hall of Fame';
+
+  @override
+  String get myPageRankingSettings => 'Ranking and nickname settings';
+
+  @override
+  String get myPageSettingsGroup => 'Settings';
+
+  @override
+  String get myPageProfile => 'Profile and login';
+
+  @override
+  String get myPageSupportGroup => 'Support';
+
+  @override
+  String get myPageLogOut => 'Log out';
+
+  @override
+  String get myPageLogOutMessage => 'Log out of PawFit?';
+
+  @override
+  String get myPageDeleteAccount => 'Delete account';
+
+  @override
+  String get myPageDeleteMessage =>
+      'Deleting your account permanently removes your dogs\' info, bookings, workout and analysis records, and any remaining passes. This can\'t be undone. Payment records are kept for a period required by law.\n\nAre you sure you want to delete your account?';
+
+  @override
+  String get myPageDeleteConfirm => 'Delete account';
+
+  @override
+  String get profileEditTitle => 'Profile and login';
+
+  @override
+  String get profileEditProfileSection => 'Profile';
+
+  @override
+  String get profileEditSave => 'Save profile';
+
+  @override
+  String get profileEditSaved => 'Profile saved.';
+
+  @override
+  String get profileEditLoginSection => 'Login account';
+
+  @override
+  String get profileEditNewPassword => 'New password';
+
+  @override
+  String get profileEditConfirmNewPassword => 'Confirm new password';
+
+  @override
+  String get profileEditChangePassword => 'Change password';
+
+  @override
+  String get profileEditPasswordChanged => 'Password changed.';
+
+  @override
+  String get notificationSettingsTitle => 'Notification settings';
+
+  @override
+  String get notificationSettingsBooking => 'Booking alerts';
+
+  @override
+  String get notificationSettingsBookingDesc =>
+      'Booking confirmed or cancelled, no-show';
+
+  @override
+  String get notificationSettingsExercise => 'Workout alerts';
+
+  @override
+  String get notificationSettingsExerciseDesc =>
+      'Workout started, finished, or stopped';
+
+  @override
+  String get notificationSettingsAnalysis => 'AI analysis alerts';
+
+  @override
+  String get notificationSettingsAnalysisDesc => 'Gait analysis report ready';
+
+  @override
+  String get notificationSettingsRanking => 'Ranking alerts';
+
+  @override
+  String get notificationSettingsRankingDesc =>
+      'Badges, cheers, and monthly results';
+
+  @override
+  String get notificationSettingsMarketing => 'Event and offer alerts';
+
+  @override
+  String get notificationSettingsMarketingDesc =>
+      'You can change this in the marketing consent setting.';
+
+  @override
+  String get notificationTitle => 'Notifications';
+
+  @override
+  String get notificationMarkAllRead => 'Mark all read';
+
+  @override
+  String get notificationEmptyTitle => 'No new notifications';
+
+  @override
+  String get notificationEmptyMessage =>
+      'We\'ll let you know about confirmed bookings, workouts, AI analysis results, and badge and ranking news.';
+
+  @override
+  String get notificationUnreadLabel => 'Unread notification';
+
+  @override
+  String get notificationBookingConfirmedTitle => 'Booking confirmed';
+
+  @override
+  String notificationBookingConfirmedBody(String dog, String when) {
+    return 'Your booking for $dog on $when is confirmed.';
+  }
+
+  @override
+  String get notificationBookingCancelledTitle => 'Booking cancelled';
+
+  @override
+  String notificationBookingCancelledBody(String dog, String when) {
+    return 'Your booking for $dog on $when was cancelled by the gym.';
+  }
+
+  @override
+  String get notificationBookingNoShowTitle => 'Marked as no-show';
+
+  @override
+  String notificationBookingNoShowBody(String dog, String when) {
+    return 'Your booking for $dog on $when was marked as a no-show.';
+  }
+
+  @override
+  String get notificationExerciseStartedTitle => 'Workout started';
+
+  @override
+  String notificationExerciseStartedBody(String dog) {
+    return '$dog has started a treadmill workout. Check the live status.';
+  }
+
+  @override
+  String get notificationExerciseCompletedTitle => 'Workout finished';
+
+  @override
+  String notificationExerciseCompletedBody(String dog) {
+    return '$dog\'s workout is done. Check your workout history.';
+  }
+
+  @override
+  String notificationExerciseCompletedPointsBody(String dog, String points) {
+    return '$dog\'s workout is done. You earned $points! Check your workout history.';
+  }
+
+  @override
+  String get notificationExerciseStoppedTitle => 'Workout stopped';
+
+  @override
+  String notificationExerciseStoppedBody(String dog, String reason) {
+    return '$dog\'s workout was stopped. Reason: $reason';
+  }
+
+  @override
+  String get notificationAnalysisCompletedTitle =>
+      'Your AI gait analysis report is ready';
+
+  @override
+  String notificationAnalysisCompletedBody(String dog) {
+    return 'Check the workout analysis results for $dog.';
+  }
+
+  @override
+  String get notificationAnalysisFailedTitle =>
+      'AI analysis couldn\'t be completed';
+
+  @override
+  String notificationAnalysisFailedBody(String dog) {
+    return 'There was a problem analyzing $dog\'s video. We\'ll check at the gym and run the analysis again.';
+  }
+
+  @override
+  String get notificationBadgeEarnedTitle => 'New badge earned';
+
+  @override
+  String notificationBadgeEarnedBody(String dog, String badge) {
+    return '$dog earned the \"$badge\" badge. Check it in your badge collection.';
+  }
+
+  @override
+  String get notificationCheerReceivedTitle => 'Cheer received';
+
+  @override
+  String notificationCheerReceivedBody(String nickname, String dog) {
+    return '$nickname cheered for $dog.';
+  }
+
+  @override
+  String notificationCheerReceivedAnonymousBody(String dog) {
+    return 'Another owner cheered for $dog.';
+  }
+
+  @override
+  String notificationMonthlyAwardTitle(String month) {
+    return 'Podium finish in $month rankings';
+  }
+
+  @override
+  String notificationMonthlyAwardBody(
+      String dog, String month, String summary) {
+    return '$dog placed in the $month rankings: $summary. Check the Hall of Fame to see it.';
+  }
+
+  @override
+  String notificationMonthlyAwardItem(String label, int rank) {
+    return '#$rank $label';
+  }
+
+  @override
+  String get noticeTitle => 'Notices';
+
+  @override
+  String get noticeEmpty => 'No notices yet';
+
+  @override
+  String get faqTitle => 'FAQ';
+
+  @override
+  String get faqAll => 'All';
+
+  @override
+  String get faqAskInquiry => 'Can\'t find your answer? Send a 1:1 inquiry';
+
+  @override
+  String get inquiryTitle => '1:1 inquiry';
+
+  @override
+  String get inquiryNew => 'New inquiry';
+
+  @override
+  String get inquiryEmptyTitle => 'No inquiries yet';
+
+  @override
+  String get inquiryEmptyMessage =>
+      'Leave your question and we\'ll get back to you.';
+
+  @override
+  String get inquiryAnswerLabel => 'Answer';
+
+  @override
+  String get inquiryTypeLabel => 'Inquiry type';
+
+  @override
+  String get inquiryCategoryBooking => 'Booking';
+
+  @override
+  String get inquiryCategoryPayment => 'Payment and passes';
+
+  @override
+  String get inquiryCategoryExercise => 'Workout';
+
+  @override
+  String get inquiryCategoryAnalysis => 'AI analysis';
+
+  @override
+  String get inquiryCategoryAccount => 'Account';
+
+  @override
+  String get inquiryCategoryEtc => 'Other';
+
+  @override
+  String get inquiryTitleLabel => 'Title';
+
+  @override
+  String get inquiryTitleRequired => 'Please enter a title.';
+
+  @override
+  String get inquiryBodyLabel => 'Message';
+
+  @override
+  String get inquiryBodyRequired => 'Please enter your message.';
+
+  @override
+  String get inquirySubmit => 'Submit inquiry';
+
+  @override
+  String get inquiryCreated =>
+      'We\'ve received your inquiry. Once it\'s answered, you can see the reply in your inquiry history.';
+
+  @override
+  String get inquiryStatusAnswered => 'Answered';
+
+  @override
+  String get inquiryStatusClosed => 'Closed';
+
+  @override
+  String get inquiryStatusPending => 'Awaiting answer';
 }

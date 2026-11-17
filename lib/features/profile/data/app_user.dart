@@ -1,4 +1,5 @@
 import '../../../core/utils/json.dart';
+import '../../../l10n/l10n.dart';
 
 class NotificationPrefs {
   const NotificationPrefs({
@@ -98,7 +99,7 @@ class AppUser {
 
   bool get isAdmin => role == 'admin';
 
-  String get displayName => name.isEmpty ? '보호자' : name;
+  String get displayName => name.isEmpty ? L10n.current.commonOwnerFallbackName : name;
 
   /// 다음에 닉네임을 바꿀 수 있는 시각. 지금 바꿀 수 있으면 null.
   DateTime? nicknameChangeableAt({DateTime? now}) {

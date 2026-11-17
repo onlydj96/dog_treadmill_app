@@ -10,6 +10,7 @@ import '../../../core/widgets/common.dart';
 import '../../auth/data/auth_repository.dart';
 import '../../profile/data/app_user.dart';
 import '../../profile/data/user_repository.dart';
+import '../../../l10n/l10n.dart';
 
 /// 프로필 수정 + 로그인 계정 관리 (문서 3.5 회원 관리)
 class ProfileEditScreen extends ConsumerWidget {
@@ -18,7 +19,7 @@ class ProfileEditScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('프로필 및 로그인 계정')),
+      appBar: AppBar(title: Text(context.l10n.profileEditTitle)),
       body: AsyncValueView<AppUser?>(
         value: ref.watch(currentUserProfileProvider),
         onRetry: () => ref.invalidate(currentUserProfileProvider),
@@ -69,7 +70,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
           );
       ref.invalidate(currentUserProfileProvider);
       if (mounted) {
-        context.showMessage('프로필을 저장했어요.');
+        context.showMessage(context.l10n.profileEditSaved);
         context.pop();
       }
     } catch (error) {
@@ -86,7 +87,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
       await ref.read(authRepositoryProvider).updatePassword(_passwordController.text);
       _passwordController.clear();
       _confirmController.clear();
-      if (mounted) context.showMessage('비밀번호를 변경했어요.');
+      if (mounted) context.showMessage(context.l10n.profileEditPasswordChanged);
     } catch (error) {
       if (mounted) context.showMessage(friendlyError(error));
     } finally {
@@ -102,7 +103,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
       children: [
-        Text('프로필', style: theme.textTheme.titleMedium),
+        Text(context.l10n.profileEditProfileSection, style: theme.textTheme.titleMedium),
         const SizedBox(height: 12),
         Form(
           key: _profileKey,
@@ -111,14 +112,14 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: '이름'),
+                decoration: InputDecoration(labelText: context.l10n.signupName),
                 validator: Validators.name,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(labelText: '휴대전화 번호'),
+                decoration: InputDecoration(labelText: context.l10n.signupPhone),
                 validator: Validators.phone,
               ),
               const SizedBox(height: 16),
@@ -129,17 +130,17 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
                         dimension: 22,
                         child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
                       )
-                    : const Text('프로필 저장'),
+                    : Text(context.l10n.profileEditSave),
               ),
             ],
           ),
         ),
         const SizedBox(height: 36),
-        Text('로그인 계정', style: theme.textTheme.titleMedium),
+        Text(context.l10n.profileEditLoginSection, style: theme.textTheme.titleMedium),
         const SizedBox(height: 12),
         AppCard(
           padding: const EdgeInsets.all(16),
-          child: InfoRow(icon: Icons.mail_outline_rounded, label: '이메일', value: email ?? '-'),
+          child: InfoRow(icon: Icons.mail_outline_rounded, label: context.l10n.authEmail, value: email ?? '-'),
         ),
         const SizedBox(height: 16),
         Form(
@@ -150,22 +151,22 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: '새 비밀번호', helperText: '영문과 숫자를 포함해 8자 이상'),
+                decoration: InputDecoration(labelText: context.l10n.profileEditNewPassword, helperText: context.l10n.signupPasswordHelper),
                 validator: Validators.password,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _confirmController,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: '새 비밀번호 확인'),
-                validator: (value) => value != _passwordController.text ? '비밀번호가 일치하지 않아요.' : null,
+                decoration: InputDecoration(labelText: context.l10n.profileEditConfirmNewPassword),
+                validator: (value) => value != _passwordController.text ? context.l10n.signupPasswordMismatch : null,
               ),
               const SizedBox(height: 16),
               OutlinedButton(
                 onPressed: _savingPassword ? null : _changePassword,
                 child: _savingPassword
                     ? const SizedBox.square(dimension: 22, child: CircularProgressIndicator(strokeWidth: 2.4))
-                    : const Text('비밀번호 변경'),
+                    : Text(context.l10n.profileEditChangePassword),
               ),
             ],
           ),

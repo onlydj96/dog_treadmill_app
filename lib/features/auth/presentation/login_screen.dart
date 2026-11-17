@@ -11,6 +11,7 @@ import '../../../core/widgets/brand_mark.dart';
 import '../../../core/widgets/common.dart';
 import '../../../l10n/app_language.dart';
 import '../data/auth_repository.dart';
+import '../../../l10n/l10n.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -84,7 +85,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '트레드밀 예약부터 AI 보행 분석까지,\n우리 아이의 건강한 걸음을 함께 기록해요.',
+                            context.l10n.authTagline,
                             style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.mintLight),
                           ),
                         ],
@@ -103,9 +104,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             keyboardType: TextInputType.emailAddress,
                             autofillHints: const [AutofillHints.email],
                             textInputAction: TextInputAction.next,
-                            decoration: const InputDecoration(
-                              labelText: '이메일',
-                              prefixIcon: Icon(Icons.mail_outline_rounded),
+                            decoration: InputDecoration(
+                              labelText: context.l10n.authEmail,
+                              prefixIcon: const Icon(Icons.mail_outline_rounded),
                             ),
                             validator: Validators.email,
                           ),
@@ -117,15 +118,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             textInputAction: TextInputAction.done,
                             onFieldSubmitted: (_) => _submit(),
                             decoration: InputDecoration(
-                              labelText: '비밀번호',
+                              labelText: context.l10n.authPassword,
                               prefixIcon: const Icon(Icons.lock_outline_rounded),
                               suffixIcon: IconButton(
-                                tooltip: _obscure ? '비밀번호 보기' : '비밀번호 숨기기',
+                                tooltip: _obscure ? context.l10n.authShowPassword : context.l10n.authHidePassword,
                                 icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
                                 onPressed: () => setState(() => _obscure = !_obscure),
                               ),
                             ),
-                            validator: (value) => (value == null || value.isEmpty) ? '비밀번호를 입력해 주세요.' : null,
+                            validator: Validators.passwordEntered,
                           ),
                           const SizedBox(height: 20),
                           FilledButton(
@@ -135,20 +136,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     dimension: 22,
                                     child: CircularProgressIndicator(strokeWidth: 2.4),
                                   )
-                                : const Text('로그인'),
+                                : Text(context.l10n.authLogIn),
                           ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Text('아직 회원이 아니신가요?', style: TextStyle(color: scheme.onSurfaceVariant)),
+                      Text(context.l10n.authNoAccount, style: TextStyle(color: scheme.onSurfaceVariant)),
                       TextButton(
                         onPressed: () => context.push(AppRoutes.signup),
-                        child: const Text('회원가입'),
+                        child: Text(context.l10n.authSignUp),
                       ),
                     ],
                   ),
