@@ -1,27 +1,47 @@
+import '../../../l10n/l10n.dart';
+
 /// AI Pose 15개 관절 Keypoint (문서 3.4-A).
 /// [isFarSide]는 측면 카메라 반대편(오른쪽) 다리. 도식에서 옅게 그린다.
 enum DogKeypoint {
-  nose('nose', '코'),
-  withers('withers', '기갑(어깨 위)'),
-  tailBase('tail_base', '꼬리 시작점'),
-  leftElbow('left_elbow', '왼쪽 앞다리 팔꿈치'),
-  leftCarpus('left_carpus', '왼쪽 앞발목'),
-  leftFrontPaw('left_front_paw', '왼쪽 앞발'),
-  rightElbow('right_elbow', '오른쪽 앞다리 팔꿈치', isFarSide: true),
-  rightCarpus('right_carpus', '오른쪽 앞발목', isFarSide: true),
-  rightFrontPaw('right_front_paw', '오른쪽 앞발', isFarSide: true),
-  leftStifle('left_stifle', '왼쪽 뒷다리 무릎'),
-  leftHock('left_hock', '왼쪽 뒷발목(비절)'),
-  leftHindPaw('left_hind_paw', '왼쪽 뒷발'),
-  rightStifle('right_stifle', '오른쪽 뒷다리 무릎', isFarSide: true),
-  rightHock('right_hock', '오른쪽 뒷발목(비절)', isFarSide: true),
-  rightHindPaw('right_hind_paw', '오른쪽 뒷발', isFarSide: true);
+  nose('nose'),
+  withers('withers'),
+  tailBase('tail_base'),
+  leftElbow('left_elbow'),
+  leftCarpus('left_carpus'),
+  leftFrontPaw('left_front_paw'),
+  rightElbow('right_elbow', isFarSide: true),
+  rightCarpus('right_carpus', isFarSide: true),
+  rightFrontPaw('right_front_paw', isFarSide: true),
+  leftStifle('left_stifle'),
+  leftHock('left_hock'),
+  leftHindPaw('left_hind_paw'),
+  rightStifle('right_stifle', isFarSide: true),
+  rightHock('right_hock', isFarSide: true),
+  rightHindPaw('right_hind_paw', isFarSide: true);
 
-  const DogKeypoint(this.key, this.label, {this.isFarSide = false});
+  const DogKeypoint(this.key, {this.isFarSide = false});
 
   final String key;
-  final String label;
   final bool isFarSide;
+
+  /// 현재 언어의 관절 이름
+  String get label => switch (this) {
+        DogKeypoint.nose => L10n.current.keypointNose,
+        DogKeypoint.withers => L10n.current.keypointWithers,
+        DogKeypoint.tailBase => L10n.current.keypointTailBase,
+        DogKeypoint.leftElbow => L10n.current.keypointLeftElbow,
+        DogKeypoint.leftCarpus => L10n.current.keypointLeftCarpus,
+        DogKeypoint.leftFrontPaw => L10n.current.keypointLeftFrontPaw,
+        DogKeypoint.rightElbow => L10n.current.keypointRightElbow,
+        DogKeypoint.rightCarpus => L10n.current.keypointRightCarpus,
+        DogKeypoint.rightFrontPaw => L10n.current.keypointRightFrontPaw,
+        DogKeypoint.leftStifle => L10n.current.keypointLeftStifle,
+        DogKeypoint.leftHock => L10n.current.keypointLeftHock,
+        DogKeypoint.leftHindPaw => L10n.current.keypointLeftHindPaw,
+        DogKeypoint.rightStifle => L10n.current.keypointRightStifle,
+        DogKeypoint.rightHock => L10n.current.keypointRightHock,
+        DogKeypoint.rightHindPaw => L10n.current.keypointRightHindPaw,
+      };
 
   static DogKeypoint? fromKey(String key) {
     for (final point in values) {
