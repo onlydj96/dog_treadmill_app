@@ -417,4 +417,418 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverStopReasonByStaff => 'Stopped by staff';
+
+  @override
+  String get dogSexMale => 'Male';
+
+  @override
+  String get dogSexFemale => 'Female';
+
+  @override
+  String get dogSizeSmall => 'Small';
+
+  @override
+  String get dogSizeMedium => 'Medium';
+
+  @override
+  String get dogSizeLarge => 'Large';
+
+  @override
+  String get dogWeightHintSmall => 'Under 10kg';
+
+  @override
+  String get dogWeightHintMedium => '10–25kg';
+
+  @override
+  String get dogWeightHintLarge => '25kg and up';
+
+  @override
+  String dogMixedLabel(String breed) {
+    return 'Mixed ($breed)';
+  }
+
+  @override
+  String get dogMixedBreed => 'Mixed breed';
+
+  @override
+  String dogAgeApprox(String age) {
+    return '~$age';
+  }
+
+  @override
+  String dogSizeDog(String size) {
+    return '$size dog';
+  }
+
+  @override
+  String get dogBrachycephalic => 'Brachycephalic (flat-faced)';
+
+  @override
+  String get dogRegisterTitle => 'Add your dog';
+
+  @override
+  String get dogEditTitle => 'Edit dog info';
+
+  @override
+  String dogRegistered(String name) {
+    return '$name has been added.';
+  }
+
+  @override
+  String get dogUpdated => 'Dog info updated.';
+
+  @override
+  String dogSavedPhotoFailed(String error) {
+    return 'Info saved, but the photo couldn\'t be uploaded. $error';
+  }
+
+  @override
+  String get dogPhotoLoadFailed =>
+      'Couldn\'t load the photo. Check your permissions.';
+
+  @override
+  String get dogRequiredCheck =>
+      'Please check the required fields marked below.';
+
+  @override
+  String get dogPickGallery => 'Choose from library';
+
+  @override
+  String get dogPickCamera => 'Take a photo';
+
+  @override
+  String get dogBirthDatePickerHelp => 'Select birth date';
+
+  @override
+  String get dogAgeRequired => 'Enter your dog\'s age.';
+
+  @override
+  String get dogAgeMax => 'Enter an age of 30 or under.';
+
+  @override
+  String get dogAgeMin => 'Enter at least 1 month.';
+
+  @override
+  String get dogAgeMonthsRange => '0–11 months';
+
+  @override
+  String get dogSectionBasic => 'Basic info';
+
+  @override
+  String get dogNameLabel => 'Name *';
+
+  @override
+  String get dogNameRequired => 'Enter a name.';
+
+  @override
+  String get dogMixedSwitch => 'Mixed breed';
+
+  @override
+  String get dogMixedSwitchHint =>
+      'Two or more breeds, or you\'re not sure of the breed';
+
+  @override
+  String get dogBreedLabelMixed => 'Mixed with (optional)';
+
+  @override
+  String get dogBreedLabel => 'Breed *';
+
+  @override
+  String get dogBreedHintMixed => 'e.g. Maltese, Poodle';
+
+  @override
+  String get dogBreedHint => 'e.g. Maltese';
+
+  @override
+  String get dogBreedRequired =>
+      'Enter a breed. If you\'re not sure, choose Mixed breed.';
+
+  @override
+  String get dogBreedNotListed =>
+      'This breed isn\'t on the list. Pick a size below.';
+
+  @override
+  String get dogSizeLabel => 'Size *';
+
+  @override
+  String get dogSizeRequired => 'Select a size.';
+
+  @override
+  String dogSizeInfoHint(String options) {
+    return 'Based on adult weight · $options';
+  }
+
+  @override
+  String get dogBrachySwitch => 'Brachycephalic (flat-faced)';
+
+  @override
+  String get dogBrachySwitchHint =>
+      'Short, flat faces like pugs, shih tzus and bulldogs';
+
+  @override
+  String get dogAgeLabel => 'Age *';
+
+  @override
+  String get dogBirthDate => 'Birth date';
+
+  @override
+  String get dogAgeEstimate => 'Estimated age';
+
+  @override
+  String dogCurrentAge(String age) {
+    return 'Currently $age';
+  }
+
+  @override
+  String get dogBirthDateRequired => 'Select a birth date.';
+
+  @override
+  String get dogPleaseSelect => 'Select';
+
+  @override
+  String get dogAge => 'Age';
+
+  @override
+  String get dogAgeYearsSuffix => 'yrs';
+
+  @override
+  String get dogAgeMonthsLabel => 'Months (optional)';
+
+  @override
+  String get dogAgeMonthsSuffix => 'mo';
+
+  @override
+  String get dogSex => 'Sex';
+
+  @override
+  String get dogNeutered => 'Neutered';
+
+  @override
+  String get dogNeuteredLabel => 'Neutered *';
+
+  @override
+  String get dogNeuteredYes => 'Yes';
+
+  @override
+  String get dogNeuteredNo => 'No';
+
+  @override
+  String get dogNeuteredRequired => 'Select whether your dog is neutered.';
+
+  @override
+  String get dogWeight => 'Weight';
+
+  @override
+  String get dogWeightLabel => 'Weight *';
+
+  @override
+  String get dogWeightEnter => 'Enter a weight.';
+
+  @override
+  String get dogWeightInvalid => 'Enter a valid weight.';
+
+  @override
+  String get dogSectionHealth => 'Health info';
+
+  @override
+  String get dogHealthIntro =>
+      'Used to set workout intensity and precautions. Please be accurate.';
+
+  @override
+  String get dogConditionsRequired => 'Pick any that apply, or \"None\".';
+
+  @override
+  String get dogConditionsTitleRequired => 'Conditions & precautions *';
+
+  @override
+  String get dogConditionsTitle => 'Conditions & precautions';
+
+  @override
+  String get dogConditionsHelp =>
+      'Select everything your dog has been diagnosed with or is being treated for.';
+
+  @override
+  String get dogConditionNone => 'None';
+
+  @override
+  String get dogDiseasesTitle => 'Condition details';
+
+  @override
+  String get dogDiseasesEmpty => 'No diagnoses recorded.';
+
+  @override
+  String get dogDiseaseNameLabel => 'Diagnosis (e.g. patellar luxation)';
+
+  @override
+  String get dogDiseaseDetailLabel => 'Status or stage (optional)';
+
+  @override
+  String get dogSurgeriesTitle => 'Surgeries & treatments';
+
+  @override
+  String get dogSurgeriesEmpty => 'No history recorded.';
+
+  @override
+  String get dogSurgeryNameLabel => 'Surgery or treatment';
+
+  @override
+  String get dogSurgeryDetailLabel => 'Clinic or notes (optional)';
+
+  @override
+  String get dogMedicationsTitle => 'Current medications';
+
+  @override
+  String get dogMedicationsEmpty => 'No current medications.';
+
+  @override
+  String get dogMedicationNameLabel => 'Medication name';
+
+  @override
+  String get dogMedicationDetailLabel => 'Dose and schedule (optional)';
+
+  @override
+  String get dogRestrictionsTitle => 'Workout restrictions';
+
+  @override
+  String get dogRestrictionsEmpty => 'No workout restrictions.';
+
+  @override
+  String get dogRestrictionNameLabel =>
+      'Restriction (e.g. no incline workouts)';
+
+  @override
+  String get dogRestrictionDetailLabel => 'Details (optional)';
+
+  @override
+  String dogHealthItemAddTitle(String title) {
+    return 'Add: $title';
+  }
+
+  @override
+  String get dogDatePickOptional => 'Select date (optional)';
+
+  @override
+  String get dogVetNotes => 'Vet recommendations';
+
+  @override
+  String get dogVetNotesHint =>
+      'e.g. 3 times a week, slow walks under 20 minutes';
+
+  @override
+  String get dogSubmitSave => 'Save';
+
+  @override
+  String get dogSubmitRegister => 'Add dog';
+
+  @override
+  String dogDeleteTitle(String name) {
+    return 'Delete $name\'s info?';
+  }
+
+  @override
+  String get dogDeleteMessage =>
+      'It\'ll be removed from your list and you won\'t be able to make new bookings. Past workout and analysis records are kept by the gym.';
+
+  @override
+  String dogDeleted(String name) {
+    return '$name\'s info was deleted.';
+  }
+
+  @override
+  String get dogProfileTitle => 'Dog info';
+
+  @override
+  String get dogDeleteMenu => 'Delete dog';
+
+  @override
+  String dogBookWorkout(String name) {
+    return 'Book a workout for $name';
+  }
+
+  @override
+  String get dogProfileEmptySummary => 'Add your dog\'s profile info';
+
+  @override
+  String get dogTotalWorkouts => 'Total workouts';
+
+  @override
+  String get dogUnitTimes => '';
+
+  @override
+  String get dogTotalTime => 'Total time';
+
+  @override
+  String get dogUnitMinutes => 'min';
+
+  @override
+  String get dogTotalDistance => 'Total distance';
+
+  @override
+  String get dogBreed => 'Breed';
+
+  @override
+  String get dogSize => 'Size';
+
+  @override
+  String dogAgeEstimated(String age) {
+    return '$age (estimated)';
+  }
+
+  @override
+  String get dogNoHealthInfo =>
+      'No health info yet. You can add it from the edit screen.';
+
+  @override
+  String dogBadgeSection(int earned, int total) {
+    return 'Badges $earned/$total';
+  }
+
+  @override
+  String get dogBadgeCollection => 'Badge collection';
+
+  @override
+  String get dogFirstBadgeHint =>
+      'Finish your first workout to earn the \"First Steps\" badge.';
+
+  @override
+  String dogNextBadge(String name) {
+    return 'Next badge · $name';
+  }
+
+  @override
+  String get dogPlanSection => 'Custom workout plan';
+
+  @override
+  String get dogPlanProgram => 'Program';
+
+  @override
+  String get dogPlanTargetTime => 'Target time';
+
+  @override
+  String get dogPlanTargetSpeed => 'Target speed';
+
+  @override
+  String get dogPlanNotes => 'Notes';
+
+  @override
+  String get dogListTitle => 'My dogs';
+
+  @override
+  String get dogListRegister => 'Add dog';
+
+  @override
+  String get dogListEmptyTitle => 'No dogs yet';
+
+  @override
+  String get dogListEmptyMessage =>
+      'Add your dog to start booking workouts and AI analysis.';
+
+  @override
+  String get dogShownOnHome => 'Shown on Home';
+
+  @override
+  String get dogSwitcherTitle => 'Choose a dog';
+
+  @override
+  String get dogSwitcherAdd => 'Add a dog';
 }

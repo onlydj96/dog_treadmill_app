@@ -364,4 +364,405 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get serverStopReasonByStaff => '운영자 판단에 의한 중단';
+
+  @override
+  String get dogSexMale => '수컷';
+
+  @override
+  String get dogSexFemale => '암컷';
+
+  @override
+  String get dogSizeSmall => '소형';
+
+  @override
+  String get dogSizeMedium => '중형';
+
+  @override
+  String get dogSizeLarge => '대형';
+
+  @override
+  String get dogWeightHintSmall => '10kg 미만';
+
+  @override
+  String get dogWeightHintMedium => '10~25kg';
+
+  @override
+  String get dogWeightHintLarge => '25kg 이상';
+
+  @override
+  String dogMixedLabel(String breed) {
+    return '믹스견($breed)';
+  }
+
+  @override
+  String get dogMixedBreed => '믹스견';
+
+  @override
+  String dogAgeApprox(String age) {
+    return '약 $age';
+  }
+
+  @override
+  String dogSizeDog(String size) {
+    return '$size견';
+  }
+
+  @override
+  String get dogBrachycephalic => '단두종';
+
+  @override
+  String get dogRegisterTitle => '반려견 등록';
+
+  @override
+  String get dogEditTitle => '반려견 정보 수정';
+
+  @override
+  String dogRegistered(String name) {
+    return '$name 등록되었어요.';
+  }
+
+  @override
+  String get dogUpdated => '반려견 정보를 수정했어요.';
+
+  @override
+  String dogSavedPhotoFailed(String error) {
+    return '정보는 저장했지만 사진을 올리지 못했어요. $error';
+  }
+
+  @override
+  String get dogPhotoLoadFailed => '사진을 불러오지 못했어요. 권한을 확인해 주세요.';
+
+  @override
+  String get dogRequiredCheck => '표시된 필수 항목을 확인해 주세요.';
+
+  @override
+  String get dogPickGallery => '앨범에서 선택';
+
+  @override
+  String get dogPickCamera => '사진 촬영';
+
+  @override
+  String get dogBirthDatePickerHelp => '생년월일 선택';
+
+  @override
+  String get dogAgeRequired => '나이를 입력해 주세요.';
+
+  @override
+  String get dogAgeMax => '30살 이하로 입력해 주세요.';
+
+  @override
+  String get dogAgeMin => '1개월 이상으로 입력해 주세요.';
+
+  @override
+  String get dogAgeMonthsRange => '0~11개월';
+
+  @override
+  String get dogSectionBasic => '기본 정보';
+
+  @override
+  String get dogNameLabel => '이름 *';
+
+  @override
+  String get dogNameRequired => '이름을 입력해 주세요.';
+
+  @override
+  String get dogMixedSwitch => '믹스견이에요';
+
+  @override
+  String get dogMixedSwitchHint => '두 견종 이상이 섞였거나 견종을 잘 모르는 경우';
+
+  @override
+  String get dogBreedLabelMixed => '섞인 견종 (선택)';
+
+  @override
+  String get dogBreedLabel => '견종 *';
+
+  @override
+  String get dogBreedHintMixed => '예: 말티즈, 푸들';
+
+  @override
+  String get dogBreedHint => '예: 말티즈';
+
+  @override
+  String get dogBreedRequired => '견종을 입력해 주세요. 잘 모르면 믹스견을 선택해 주세요.';
+
+  @override
+  String get dogBreedNotListed => '목록에 없는 견종이에요. 아래에서 체구를 골라 주세요.';
+
+  @override
+  String get dogSizeLabel => '체구 *';
+
+  @override
+  String get dogSizeRequired => '체구를 선택해 주세요.';
+
+  @override
+  String dogSizeInfoHint(String options) {
+    return '다 자란 몸무게 기준 · $options';
+  }
+
+  @override
+  String get dogBrachySwitch => '주둥이가 짧은 단두종이에요';
+
+  @override
+  String get dogBrachySwitchHint => '퍼그·시츄·불독처럼 코가 눌린 얼굴형';
+
+  @override
+  String get dogAgeLabel => '나이 *';
+
+  @override
+  String get dogBirthDate => '생년월일';
+
+  @override
+  String get dogAgeEstimate => '추정 나이';
+
+  @override
+  String dogCurrentAge(String age) {
+    return '현재 $age';
+  }
+
+  @override
+  String get dogBirthDateRequired => '생년월일을 선택해 주세요.';
+
+  @override
+  String get dogPleaseSelect => '선택해 주세요';
+
+  @override
+  String get dogAge => '나이';
+
+  @override
+  String get dogAgeYearsSuffix => '살';
+
+  @override
+  String get dogAgeMonthsLabel => '개월 (선택)';
+
+  @override
+  String get dogAgeMonthsSuffix => '개월';
+
+  @override
+  String get dogSex => '성별';
+
+  @override
+  String get dogNeutered => '중성화';
+
+  @override
+  String get dogNeuteredLabel => '중성화 *';
+
+  @override
+  String get dogNeuteredYes => '했어요';
+
+  @override
+  String get dogNeuteredNo => '안 했어요';
+
+  @override
+  String get dogNeuteredRequired => '중성화 여부를 선택해 주세요.';
+
+  @override
+  String get dogWeight => '체중';
+
+  @override
+  String get dogWeightLabel => '체중 *';
+
+  @override
+  String get dogWeightEnter => '체중을 입력해 주세요.';
+
+  @override
+  String get dogWeightInvalid => '올바른 체중을 입력해 주세요.';
+
+  @override
+  String get dogSectionHealth => '건강 정보';
+
+  @override
+  String get dogHealthIntro => '운동 강도와 주의사항을 정하는 데 쓰여요. 정확하게 입력해 주세요.';
+
+  @override
+  String get dogConditionsRequired => '해당하는 항목이나 \'해당 없음\'을 골라 주세요.';
+
+  @override
+  String get dogConditionsTitleRequired => '질병·주의사항 *';
+
+  @override
+  String get dogConditionsTitle => '질병·주의사항';
+
+  @override
+  String get dogConditionsHelp => '진단받았거나 치료 중인 항목을 모두 골라 주세요.';
+
+  @override
+  String get dogConditionNone => '해당 없음';
+
+  @override
+  String get dogDiseasesTitle => '질환 상세';
+
+  @override
+  String get dogDiseasesEmpty => '적어 둔 진단명이 없어요.';
+
+  @override
+  String get dogDiseaseNameLabel => '진단명 (예: 슬개골 탈구)';
+
+  @override
+  String get dogDiseaseDetailLabel => '상태·단계 (선택)';
+
+  @override
+  String get dogSurgeriesTitle => '수술 및 치료 이력';
+
+  @override
+  String get dogSurgeriesEmpty => '등록된 이력이 없어요.';
+
+  @override
+  String get dogSurgeryNameLabel => '수술·치료명';
+
+  @override
+  String get dogSurgeryDetailLabel => '병원·메모 (선택)';
+
+  @override
+  String get dogMedicationsTitle => '복용 중인 약물';
+
+  @override
+  String get dogMedicationsEmpty => '복용 중인 약물이 없어요.';
+
+  @override
+  String get dogMedicationNameLabel => '약 이름';
+
+  @override
+  String get dogMedicationDetailLabel => '용량·복용 주기 (선택)';
+
+  @override
+  String get dogRestrictionsTitle => '운동 제한 사항';
+
+  @override
+  String get dogRestrictionsEmpty => '운동 제한 사항이 없어요.';
+
+  @override
+  String get dogRestrictionNameLabel => '제한 내용 (예: 경사 운동 금지)';
+
+  @override
+  String get dogRestrictionDetailLabel => '상세 설명 (선택)';
+
+  @override
+  String dogHealthItemAddTitle(String title) {
+    return '$title 추가';
+  }
+
+  @override
+  String get dogDatePickOptional => '날짜 선택 (선택)';
+
+  @override
+  String get dogVetNotes => '수의사 권고사항';
+
+  @override
+  String get dogVetNotesHint => '예: 주 3회, 20분 이내 저속 보행 권장';
+
+  @override
+  String get dogSubmitSave => '저장하기';
+
+  @override
+  String get dogSubmitRegister => '등록하기';
+
+  @override
+  String dogDeleteTitle(String name) {
+    return '$name 정보를 삭제할까요?';
+  }
+
+  @override
+  String get dogDeleteMessage =>
+      '목록에서 사라지며 새 예약을 할 수 없어요. 지금까지의 운동·분석 기록은 헬스장에 보관됩니다.';
+
+  @override
+  String dogDeleted(String name) {
+    return '$name 정보를 삭제했어요.';
+  }
+
+  @override
+  String get dogProfileTitle => '반려견 정보';
+
+  @override
+  String get dogDeleteMenu => '반려견 삭제';
+
+  @override
+  String dogBookWorkout(String name) {
+    return '$name 운동 예약하기';
+  }
+
+  @override
+  String get dogProfileEmptySummary => '프로필 정보를 입력해 주세요';
+
+  @override
+  String get dogTotalWorkouts => '누적 운동';
+
+  @override
+  String get dogUnitTimes => '회';
+
+  @override
+  String get dogTotalTime => '누적 시간';
+
+  @override
+  String get dogUnitMinutes => '분';
+
+  @override
+  String get dogTotalDistance => '누적 거리';
+
+  @override
+  String get dogBreed => '견종';
+
+  @override
+  String get dogSize => '체구';
+
+  @override
+  String dogAgeEstimated(String age) {
+    return '$age (추정)';
+  }
+
+  @override
+  String get dogNoHealthInfo => '등록된 건강 정보가 없어요. 수정 화면에서 입력할 수 있어요.';
+
+  @override
+  String dogBadgeSection(int earned, int total) {
+    return '배지 $earned/$total';
+  }
+
+  @override
+  String get dogBadgeCollection => '배지함';
+
+  @override
+  String get dogFirstBadgeHint => '첫 운동을 마치면 「첫 발걸음」 배지를 받아요.';
+
+  @override
+  String dogNextBadge(String name) {
+    return '다음 배지 · $name';
+  }
+
+  @override
+  String get dogPlanSection => '맞춤 운동 계획';
+
+  @override
+  String get dogPlanProgram => '프로그램';
+
+  @override
+  String get dogPlanTargetTime => '목표 시간';
+
+  @override
+  String get dogPlanTargetSpeed => '목표 속도';
+
+  @override
+  String get dogPlanNotes => '메모';
+
+  @override
+  String get dogListTitle => '반려견 관리';
+
+  @override
+  String get dogListRegister => '반려견 등록';
+
+  @override
+  String get dogListEmptyTitle => '등록된 반려견이 없어요';
+
+  @override
+  String get dogListEmptyMessage => '반려견을 등록하고 운동 예약과 AI 분석을 시작해 보세요.';
+
+  @override
+  String get dogShownOnHome => '홈에 표시 중';
+
+  @override
+  String get dogSwitcherTitle => '반려견 선택';
+
+  @override
+  String get dogSwitcherAdd => '반려견 추가';
 }

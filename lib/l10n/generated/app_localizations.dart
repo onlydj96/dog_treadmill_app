@@ -739,6 +739,750 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'운영자 판단에 의한 중단'**
   String get serverStopReasonByStaff;
+
+  /// No description provided for @dogSexMale.
+  ///
+  /// In ko, this message translates to:
+  /// **'수컷'**
+  String get dogSexMale;
+
+  /// No description provided for @dogSexFemale.
+  ///
+  /// In ko, this message translates to:
+  /// **'암컷'**
+  String get dogSexFemale;
+
+  /// No description provided for @dogSizeSmall.
+  ///
+  /// In ko, this message translates to:
+  /// **'소형'**
+  String get dogSizeSmall;
+
+  /// No description provided for @dogSizeMedium.
+  ///
+  /// In ko, this message translates to:
+  /// **'중형'**
+  String get dogSizeMedium;
+
+  /// No description provided for @dogSizeLarge.
+  ///
+  /// In ko, this message translates to:
+  /// **'대형'**
+  String get dogSizeLarge;
+
+  /// No description provided for @dogWeightHintSmall.
+  ///
+  /// In ko, this message translates to:
+  /// **'10kg 미만'**
+  String get dogWeightHintSmall;
+
+  /// No description provided for @dogWeightHintMedium.
+  ///
+  /// In ko, this message translates to:
+  /// **'10~25kg'**
+  String get dogWeightHintMedium;
+
+  /// No description provided for @dogWeightHintLarge.
+  ///
+  /// In ko, this message translates to:
+  /// **'25kg 이상'**
+  String get dogWeightHintLarge;
+
+  /// No description provided for @dogMixedLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'믹스견({breed})'**
+  String dogMixedLabel(String breed);
+
+  /// No description provided for @dogMixedBreed.
+  ///
+  /// In ko, this message translates to:
+  /// **'믹스견'**
+  String get dogMixedBreed;
+
+  /// No description provided for @dogAgeApprox.
+  ///
+  /// In ko, this message translates to:
+  /// **'약 {age}'**
+  String dogAgeApprox(String age);
+
+  /// No description provided for @dogSizeDog.
+  ///
+  /// In ko, this message translates to:
+  /// **'{size}견'**
+  String dogSizeDog(String size);
+
+  /// No description provided for @dogBrachycephalic.
+  ///
+  /// In ko, this message translates to:
+  /// **'단두종'**
+  String get dogBrachycephalic;
+
+  /// No description provided for @dogRegisterTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 등록'**
+  String get dogRegisterTitle;
+
+  /// No description provided for @dogEditTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 정보 수정'**
+  String get dogEditTitle;
+
+  /// No description provided for @dogRegistered.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name} 등록되었어요.'**
+  String dogRegistered(String name);
+
+  /// No description provided for @dogUpdated.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 정보를 수정했어요.'**
+  String get dogUpdated;
+
+  /// No description provided for @dogSavedPhotoFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'정보는 저장했지만 사진을 올리지 못했어요. {error}'**
+  String dogSavedPhotoFailed(String error);
+
+  /// No description provided for @dogPhotoLoadFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진을 불러오지 못했어요. 권한을 확인해 주세요.'**
+  String get dogPhotoLoadFailed;
+
+  /// No description provided for @dogRequiredCheck.
+  ///
+  /// In ko, this message translates to:
+  /// **'표시된 필수 항목을 확인해 주세요.'**
+  String get dogRequiredCheck;
+
+  /// No description provided for @dogPickGallery.
+  ///
+  /// In ko, this message translates to:
+  /// **'앨범에서 선택'**
+  String get dogPickGallery;
+
+  /// No description provided for @dogPickCamera.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진 촬영'**
+  String get dogPickCamera;
+
+  /// No description provided for @dogBirthDatePickerHelp.
+  ///
+  /// In ko, this message translates to:
+  /// **'생년월일 선택'**
+  String get dogBirthDatePickerHelp;
+
+  /// No description provided for @dogAgeRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'나이를 입력해 주세요.'**
+  String get dogAgeRequired;
+
+  /// No description provided for @dogAgeMax.
+  ///
+  /// In ko, this message translates to:
+  /// **'30살 이하로 입력해 주세요.'**
+  String get dogAgeMax;
+
+  /// No description provided for @dogAgeMin.
+  ///
+  /// In ko, this message translates to:
+  /// **'1개월 이상으로 입력해 주세요.'**
+  String get dogAgeMin;
+
+  /// No description provided for @dogAgeMonthsRange.
+  ///
+  /// In ko, this message translates to:
+  /// **'0~11개월'**
+  String get dogAgeMonthsRange;
+
+  /// No description provided for @dogSectionBasic.
+  ///
+  /// In ko, this message translates to:
+  /// **'기본 정보'**
+  String get dogSectionBasic;
+
+  /// No description provided for @dogNameLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름 *'**
+  String get dogNameLabel;
+
+  /// No description provided for @dogNameRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름을 입력해 주세요.'**
+  String get dogNameRequired;
+
+  /// No description provided for @dogMixedSwitch.
+  ///
+  /// In ko, this message translates to:
+  /// **'믹스견이에요'**
+  String get dogMixedSwitch;
+
+  /// No description provided for @dogMixedSwitchHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'두 견종 이상이 섞였거나 견종을 잘 모르는 경우'**
+  String get dogMixedSwitchHint;
+
+  /// No description provided for @dogBreedLabelMixed.
+  ///
+  /// In ko, this message translates to:
+  /// **'섞인 견종 (선택)'**
+  String get dogBreedLabelMixed;
+
+  /// No description provided for @dogBreedLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'견종 *'**
+  String get dogBreedLabel;
+
+  /// No description provided for @dogBreedHintMixed.
+  ///
+  /// In ko, this message translates to:
+  /// **'예: 말티즈, 푸들'**
+  String get dogBreedHintMixed;
+
+  /// No description provided for @dogBreedHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'예: 말티즈'**
+  String get dogBreedHint;
+
+  /// No description provided for @dogBreedRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'견종을 입력해 주세요. 잘 모르면 믹스견을 선택해 주세요.'**
+  String get dogBreedRequired;
+
+  /// No description provided for @dogBreedNotListed.
+  ///
+  /// In ko, this message translates to:
+  /// **'목록에 없는 견종이에요. 아래에서 체구를 골라 주세요.'**
+  String get dogBreedNotListed;
+
+  /// No description provided for @dogSizeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'체구 *'**
+  String get dogSizeLabel;
+
+  /// No description provided for @dogSizeRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'체구를 선택해 주세요.'**
+  String get dogSizeRequired;
+
+  /// No description provided for @dogSizeInfoHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'다 자란 몸무게 기준 · {options}'**
+  String dogSizeInfoHint(String options);
+
+  /// No description provided for @dogBrachySwitch.
+  ///
+  /// In ko, this message translates to:
+  /// **'주둥이가 짧은 단두종이에요'**
+  String get dogBrachySwitch;
+
+  /// No description provided for @dogBrachySwitchHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'퍼그·시츄·불독처럼 코가 눌린 얼굴형'**
+  String get dogBrachySwitchHint;
+
+  /// No description provided for @dogAgeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'나이 *'**
+  String get dogAgeLabel;
+
+  /// No description provided for @dogBirthDate.
+  ///
+  /// In ko, this message translates to:
+  /// **'생년월일'**
+  String get dogBirthDate;
+
+  /// No description provided for @dogAgeEstimate.
+  ///
+  /// In ko, this message translates to:
+  /// **'추정 나이'**
+  String get dogAgeEstimate;
+
+  /// No description provided for @dogCurrentAge.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 {age}'**
+  String dogCurrentAge(String age);
+
+  /// No description provided for @dogBirthDateRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'생년월일을 선택해 주세요.'**
+  String get dogBirthDateRequired;
+
+  /// No description provided for @dogPleaseSelect.
+  ///
+  /// In ko, this message translates to:
+  /// **'선택해 주세요'**
+  String get dogPleaseSelect;
+
+  /// No description provided for @dogAge.
+  ///
+  /// In ko, this message translates to:
+  /// **'나이'**
+  String get dogAge;
+
+  /// No description provided for @dogAgeYearsSuffix.
+  ///
+  /// In ko, this message translates to:
+  /// **'살'**
+  String get dogAgeYearsSuffix;
+
+  /// No description provided for @dogAgeMonthsLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'개월 (선택)'**
+  String get dogAgeMonthsLabel;
+
+  /// No description provided for @dogAgeMonthsSuffix.
+  ///
+  /// In ko, this message translates to:
+  /// **'개월'**
+  String get dogAgeMonthsSuffix;
+
+  /// No description provided for @dogSex.
+  ///
+  /// In ko, this message translates to:
+  /// **'성별'**
+  String get dogSex;
+
+  /// No description provided for @dogNeutered.
+  ///
+  /// In ko, this message translates to:
+  /// **'중성화'**
+  String get dogNeutered;
+
+  /// No description provided for @dogNeuteredLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'중성화 *'**
+  String get dogNeuteredLabel;
+
+  /// No description provided for @dogNeuteredYes.
+  ///
+  /// In ko, this message translates to:
+  /// **'했어요'**
+  String get dogNeuteredYes;
+
+  /// No description provided for @dogNeuteredNo.
+  ///
+  /// In ko, this message translates to:
+  /// **'안 했어요'**
+  String get dogNeuteredNo;
+
+  /// No description provided for @dogNeuteredRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'중성화 여부를 선택해 주세요.'**
+  String get dogNeuteredRequired;
+
+  /// No description provided for @dogWeight.
+  ///
+  /// In ko, this message translates to:
+  /// **'체중'**
+  String get dogWeight;
+
+  /// No description provided for @dogWeightLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'체중 *'**
+  String get dogWeightLabel;
+
+  /// No description provided for @dogWeightEnter.
+  ///
+  /// In ko, this message translates to:
+  /// **'체중을 입력해 주세요.'**
+  String get dogWeightEnter;
+
+  /// No description provided for @dogWeightInvalid.
+  ///
+  /// In ko, this message translates to:
+  /// **'올바른 체중을 입력해 주세요.'**
+  String get dogWeightInvalid;
+
+  /// No description provided for @dogSectionHealth.
+  ///
+  /// In ko, this message translates to:
+  /// **'건강 정보'**
+  String get dogSectionHealth;
+
+  /// No description provided for @dogHealthIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 강도와 주의사항을 정하는 데 쓰여요. 정확하게 입력해 주세요.'**
+  String get dogHealthIntro;
+
+  /// No description provided for @dogConditionsRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'해당하는 항목이나 \'해당 없음\'을 골라 주세요.'**
+  String get dogConditionsRequired;
+
+  /// No description provided for @dogConditionsTitleRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'질병·주의사항 *'**
+  String get dogConditionsTitleRequired;
+
+  /// No description provided for @dogConditionsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'질병·주의사항'**
+  String get dogConditionsTitle;
+
+  /// No description provided for @dogConditionsHelp.
+  ///
+  /// In ko, this message translates to:
+  /// **'진단받았거나 치료 중인 항목을 모두 골라 주세요.'**
+  String get dogConditionsHelp;
+
+  /// No description provided for @dogConditionNone.
+  ///
+  /// In ko, this message translates to:
+  /// **'해당 없음'**
+  String get dogConditionNone;
+
+  /// No description provided for @dogDiseasesTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'질환 상세'**
+  String get dogDiseasesTitle;
+
+  /// No description provided for @dogDiseasesEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'적어 둔 진단명이 없어요.'**
+  String get dogDiseasesEmpty;
+
+  /// No description provided for @dogDiseaseNameLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'진단명 (예: 슬개골 탈구)'**
+  String get dogDiseaseNameLabel;
+
+  /// No description provided for @dogDiseaseDetailLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'상태·단계 (선택)'**
+  String get dogDiseaseDetailLabel;
+
+  /// No description provided for @dogSurgeriesTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'수술 및 치료 이력'**
+  String get dogSurgeriesTitle;
+
+  /// No description provided for @dogSurgeriesEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록된 이력이 없어요.'**
+  String get dogSurgeriesEmpty;
+
+  /// No description provided for @dogSurgeryNameLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'수술·치료명'**
+  String get dogSurgeryNameLabel;
+
+  /// No description provided for @dogSurgeryDetailLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'병원·메모 (선택)'**
+  String get dogSurgeryDetailLabel;
+
+  /// No description provided for @dogMedicationsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'복용 중인 약물'**
+  String get dogMedicationsTitle;
+
+  /// No description provided for @dogMedicationsEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'복용 중인 약물이 없어요.'**
+  String get dogMedicationsEmpty;
+
+  /// No description provided for @dogMedicationNameLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'약 이름'**
+  String get dogMedicationNameLabel;
+
+  /// No description provided for @dogMedicationDetailLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'용량·복용 주기 (선택)'**
+  String get dogMedicationDetailLabel;
+
+  /// No description provided for @dogRestrictionsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 제한 사항'**
+  String get dogRestrictionsTitle;
+
+  /// No description provided for @dogRestrictionsEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동 제한 사항이 없어요.'**
+  String get dogRestrictionsEmpty;
+
+  /// No description provided for @dogRestrictionNameLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'제한 내용 (예: 경사 운동 금지)'**
+  String get dogRestrictionNameLabel;
+
+  /// No description provided for @dogRestrictionDetailLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'상세 설명 (선택)'**
+  String get dogRestrictionDetailLabel;
+
+  /// No description provided for @dogHealthItemAddTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{title} 추가'**
+  String dogHealthItemAddTitle(String title);
+
+  /// No description provided for @dogDatePickOptional.
+  ///
+  /// In ko, this message translates to:
+  /// **'날짜 선택 (선택)'**
+  String get dogDatePickOptional;
+
+  /// No description provided for @dogVetNotes.
+  ///
+  /// In ko, this message translates to:
+  /// **'수의사 권고사항'**
+  String get dogVetNotes;
+
+  /// No description provided for @dogVetNotesHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'예: 주 3회, 20분 이내 저속 보행 권장'**
+  String get dogVetNotesHint;
+
+  /// No description provided for @dogSubmitSave.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장하기'**
+  String get dogSubmitSave;
+
+  /// No description provided for @dogSubmitRegister.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록하기'**
+  String get dogSubmitRegister;
+
+  /// No description provided for @dogDeleteTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name} 정보를 삭제할까요?'**
+  String dogDeleteTitle(String name);
+
+  /// No description provided for @dogDeleteMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'목록에서 사라지며 새 예약을 할 수 없어요. 지금까지의 운동·분석 기록은 헬스장에 보관됩니다.'**
+  String get dogDeleteMessage;
+
+  /// No description provided for @dogDeleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name} 정보를 삭제했어요.'**
+  String dogDeleted(String name);
+
+  /// No description provided for @dogProfileTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 정보'**
+  String get dogProfileTitle;
+
+  /// No description provided for @dogDeleteMenu.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 삭제'**
+  String get dogDeleteMenu;
+
+  /// No description provided for @dogBookWorkout.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name} 운동 예약하기'**
+  String dogBookWorkout(String name);
+
+  /// No description provided for @dogProfileEmptySummary.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 정보를 입력해 주세요'**
+  String get dogProfileEmptySummary;
+
+  /// No description provided for @dogTotalWorkouts.
+  ///
+  /// In ko, this message translates to:
+  /// **'누적 운동'**
+  String get dogTotalWorkouts;
+
+  /// No description provided for @dogUnitTimes.
+  ///
+  /// In ko, this message translates to:
+  /// **'회'**
+  String get dogUnitTimes;
+
+  /// No description provided for @dogTotalTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'누적 시간'**
+  String get dogTotalTime;
+
+  /// No description provided for @dogUnitMinutes.
+  ///
+  /// In ko, this message translates to:
+  /// **'분'**
+  String get dogUnitMinutes;
+
+  /// No description provided for @dogTotalDistance.
+  ///
+  /// In ko, this message translates to:
+  /// **'누적 거리'**
+  String get dogTotalDistance;
+
+  /// No description provided for @dogBreed.
+  ///
+  /// In ko, this message translates to:
+  /// **'견종'**
+  String get dogBreed;
+
+  /// No description provided for @dogSize.
+  ///
+  /// In ko, this message translates to:
+  /// **'체구'**
+  String get dogSize;
+
+  /// No description provided for @dogAgeEstimated.
+  ///
+  /// In ko, this message translates to:
+  /// **'{age} (추정)'**
+  String dogAgeEstimated(String age);
+
+  /// No description provided for @dogNoHealthInfo.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록된 건강 정보가 없어요. 수정 화면에서 입력할 수 있어요.'**
+  String get dogNoHealthInfo;
+
+  /// No description provided for @dogBadgeSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'배지 {earned}/{total}'**
+  String dogBadgeSection(int earned, int total);
+
+  /// No description provided for @dogBadgeCollection.
+  ///
+  /// In ko, this message translates to:
+  /// **'배지함'**
+  String get dogBadgeCollection;
+
+  /// No description provided for @dogFirstBadgeHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'첫 운동을 마치면 「첫 발걸음」 배지를 받아요.'**
+  String get dogFirstBadgeHint;
+
+  /// No description provided for @dogNextBadge.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음 배지 · {name}'**
+  String dogNextBadge(String name);
+
+  /// No description provided for @dogPlanSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'맞춤 운동 계획'**
+  String get dogPlanSection;
+
+  /// No description provided for @dogPlanProgram.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로그램'**
+  String get dogPlanProgram;
+
+  /// No description provided for @dogPlanTargetTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'목표 시간'**
+  String get dogPlanTargetTime;
+
+  /// No description provided for @dogPlanTargetSpeed.
+  ///
+  /// In ko, this message translates to:
+  /// **'목표 속도'**
+  String get dogPlanTargetSpeed;
+
+  /// No description provided for @dogPlanNotes.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모'**
+  String get dogPlanNotes;
+
+  /// No description provided for @dogListTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 관리'**
+  String get dogListTitle;
+
+  /// No description provided for @dogListRegister.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 등록'**
+  String get dogListRegister;
+
+  /// No description provided for @dogListEmptyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록된 반려견이 없어요'**
+  String get dogListEmptyTitle;
+
+  /// No description provided for @dogListEmptyMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견을 등록하고 운동 예약과 AI 분석을 시작해 보세요.'**
+  String get dogListEmptyMessage;
+
+  /// No description provided for @dogShownOnHome.
+  ///
+  /// In ko, this message translates to:
+  /// **'홈에 표시 중'**
+  String get dogShownOnHome;
+
+  /// No description provided for @dogSwitcherTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 선택'**
+  String get dogSwitcherTitle;
+
+  /// No description provided for @dogSwitcherAdd.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려견 추가'**
+  String get dogSwitcherAdd;
 }
 
 class _AppLocalizationsDelegate
