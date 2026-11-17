@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 홈 화면 앱 이름. 데모 빌드(lib/main_demo.dart)는 app_name_demo를 쓴다 (android/app/build.gradle) -->
+    <string name="app_name" translatable="false">PawFit</string>
+    <string name="app_name_demo">PawFit Demo</string>
+</resources>

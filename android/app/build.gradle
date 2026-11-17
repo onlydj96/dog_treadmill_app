@@ -32,8 +32,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        // 홈 화면 앱 이름 (AndroidManifest의 @string/app_name)
-        resValue "string", "app_name", isDemoBuild ? "PawFit 데모" : "PawFit"
+        // 홈 화면 앱 이름 (res/values*/strings.xml, 기기 언어를 따른다: 데모는 "PawFit 데모" / "PawFit Demo")
+        manifestPlaceholders += [appLabel: isDemoBuild ? "@string/app_name_demo" : "@string/app_name"]
     }
 
     buildTypes {
