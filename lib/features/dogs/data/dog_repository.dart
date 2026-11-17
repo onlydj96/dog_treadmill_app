@@ -11,10 +11,13 @@ class DogRepository {
 
   static const profileBucket = 'dog-profiles';
 
+  /// 카탈로그 견종의 영어 이름을 함께 읽는다 (dogs.breed_id → breeds.id)
+  static const _dogColumns = '*, breed_catalog:breeds(name_en)';
+
   Future<List<Dog>> fetchDogs(String ownerId) async {
     final rows = await _client
         .from('dogs')
-        .select()
+        .select(_dogColumns)
         .eq('owner_id', ownerId)
         .isFilter('deleted_at', null)
         .order('created_at', ascending: true);
@@ -22,17 +25,17 @@ class DogRepository {
   }
 
   Future<Dog> fetchDog(String dogId) async {
-    final row = await _client.from('dogs').select().eq('id', dogId).single();
+    final row = await _client.from('dogs').select(_dogColumns).eq('id', dogId).single();
     return Dog.fromJson(row);
   }
 
   Future<Dog> createDog(String ownerId, DogDraft draft) async {
-    final row = await _client.from('dogs').insert({...draft.toJson(), 'owner_id': ownerId}).select().single();
+    final row = await _client.from('dogs').insert({...draft.toJson(), 'owner_id': ownerId}).select(_dogColumns).single();
     return Dog.fromJson(row);
   }
 
   Future<Dog> updateDog(String dogId, DogDraft draft) async {
-    final row = await _client.from('dogs').update(draft.toJson()).eq('id', dogId).select().single();
+    final row = await _client.from('dogs').update(draft.toJson()).eq('id', dogId).select(_dogColumns).single();
     return Dog.fromJson(row);
   }
 

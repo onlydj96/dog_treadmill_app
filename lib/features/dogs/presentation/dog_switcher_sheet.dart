@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../l10n/l10n.dart';
 import '../providers.dart';
 import 'widgets/dog_avatar.dart';
 
@@ -32,7 +33,7 @@ class _DogSwitcherSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('반려견 선택', style: theme.textTheme.titleLarge),
+            Text(context.l10n.dogSwitcherTitle, style: theme.textTheme.titleLarge),
             const SizedBox(height: 12),
             for (final dog in dogs)
               Padding(
@@ -76,7 +77,7 @@ class _DogSwitcherSheet extends ConsumerWidget {
                 context.push(AppRoutes.dogNew);
               },
               icon: const Icon(Icons.add_rounded),
-              label: const Text('반려견 추가'),
+              label: Text(context.l10n.dogSwitcherAdd),
             ),
           ],
         ),

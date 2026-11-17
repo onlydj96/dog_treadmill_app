@@ -14,6 +14,7 @@ import '../../exercise/providers.dart';
 import '../../health/providers.dart';
 import '../../ranking/data/ranking_models.dart';
 import '../../ranking/presentation/widgets/ranking_widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../ranking/providers.dart';
 import '../data/dog.dart';
 import '../providers.dart';
@@ -28,9 +29,9 @@ class DogProfileScreen extends ConsumerWidget {
   Future<void> _delete(BuildContext context, WidgetRef ref, Dog dog) async {
     final confirmed = await confirmDialog(
       context,
-      title: '${dog.name} 정보를 삭제할까요?',
-      message: '목록에서 사라지며 새 예약을 할 수 없어요. 지금까지의 운동·분석 기록은 헬스장에 보관됩니다.',
-      confirmLabel: '삭제',
+      title: context.l10n.dogDeleteTitle(dog.name),
+      message: context.l10n.dogDeleteMessage,
+      confirmLabel: context.l10n.commonDelete,
       destructive: true,
     );
     if (!confirmed) return;
@@ -38,7 +39,7 @@ class DogProfileScreen extends ConsumerWidget {
       await ref.read(dogRepositoryProvider).deleteDog(dog.id);
       ref.invalidate(dogsProvider);
       if (context.mounted) {
-        context.showMessage('${dog.name} 정보를 삭제했어요.');
+        context.showMessage(context.l10n.dogDeleted(dog.name));
         context.pop();
       }
     } catch (error) {
@@ -53,11 +54,11 @@ class DogProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('반려견 정보'),
+        title: Text(context.l10n.dogProfileTitle),
         actions: [
           if (dog != null) ...[
             IconButton(
-              tooltip: '수정',
+              tooltip: context.l10n.commonEdit,
               icon: const Icon(Icons.edit_outlined),
               onPressed: () => context.push(AppRoutes.dogEdit(dog.id)),
             ),
@@ -65,7 +66,7 @@ class DogProfileScreen extends ConsumerWidget {
               onSelected: (value) {
                 if (value == 'delete') _delete(context, ref, dog);
               },
-              itemBuilder: (context) => const [PopupMenuItem(value: 'delete', child: Text('반려견 삭제'))],
+              itemBuilder: (context) => [PopupMenuItem(value: 'delete', child: Text(context.l10n.dogDeleteMenu))],
             ),
           ],
         ],
@@ -90,7 +91,7 @@ class DogProfileScreen extends ConsumerWidget {
                 context.push(AppRoutes.bookingNew);
               },
               icon: const Icon(Icons.event_available_rounded),
-              label: Text('${dog.name} 운동 예약하기'),
+              label: Text(context.l10n.dogBookWorkout(dog.name)),
             ),
           ],
         ),
@@ -126,7 +127,7 @@ class _ProfileHeader extends ConsumerWidget {
                       Text(dog.name, style: theme.textTheme.headlineSmall?.copyWith(color: Colors.white)),
                       const SizedBox(height: 4),
                       Text(
-                        dog.summary.isEmpty ? '프로필 정보를 입력해 주세요' : dog.summary,
+                        dog.summary.isEmpty ? context.l10n.dogProfileEmptySummary : dog.summary,
                         style: const TextStyle(color: AppColors.mintLight, fontWeight: FontWeight.w600),
                       ),
                     ],
@@ -137,10 +138,14 @@ class _ProfileHeader extends ConsumerWidget {
             const SizedBox(height: 18),
             Row(
               children: [
-                Expanded(child: HeroNumber(label: '누적 운동', value: '${totals.count}', unit: '회')),
-                Expanded(child: HeroNumber(label: '누적 시간', value: '${(totals.seconds / 60).round()}', unit: '분')),
+                Expanded(child: HeroNumber(label: context.l10n.dogTotalWorkouts, value: '${totals.count}', unit: context.l10n.dogUnitTimes)),
+                Expanded(child: HeroNumber(
+                    label: context.l10n.dogTotalTime,
+                    value: '${(totals.seconds / 60).round()}',
+                    unit: context.l10n.dogUnitMinutes,
+                  )),
                 Expanded(
-                  child: HeroNumber(label: '누적 거리', value: (totals.meters / 1000).toStringAsFixed(1), unit: 'km'),
+                  child: HeroNumber(label: context.l10n.dogTotalDistance, value: (totals.meters / 1000).toStringAsFixed(1), unit: 'km'),
                 ),
               ],
             ),
@@ -161,37 +166,37 @@ class _BasicInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SectionHeader(title: '기본 정보'),
+        SectionHeader(title: context.l10n.dogSectionBasic),
         AppCard(
           child: Column(
             children: [
-              InfoRow(label: '견종', value: dog.breedLabel ?? '-'),
+              InfoRow(label: context.l10n.dogBreed, value: dog.breedLabel ?? '-'),
               InfoRow(
-                label: '체구',
+                label: context.l10n.dogSize,
                 value: dog.size == null
                     ? '-'
                     : [
-                        '${dog.size!.label}견',
-                        if (dog.isBrachycephalic == true) '단두종',
+                        context.l10n.dogSizeDog(dog.size!.label),
+                        if (dog.isBrachycephalic == true) context.l10n.dogBrachycephalic,
                       ].join(' · '),
               ),
               if (dog.birthDateEstimated)
-                InfoRow(label: '나이', value: '${dog.ageLabel} (추정)')
+                InfoRow(label: context.l10n.dogAge, value: context.l10n.dogAgeEstimated(dog.ageLabel ?? '-'))
               else
                 InfoRow(
-                  label: '생년월일',
+                  label: context.l10n.dogBirthDate,
                   value: dog.birthDate == null ? '-' : '${Fmt.dateShort(dog.birthDate!)} (${dog.ageLabel})',
                 ),
-              InfoRow(label: '성별', value: dog.sex?.label ?? '-'),
+              InfoRow(label: context.l10n.dogSex, value: dog.sex?.label ?? '-'),
               InfoRow(
-                label: '중성화',
+                label: context.l10n.dogNeutered,
                 value: switch (dog.neutered) {
-                  true => '했어요',
-                  false => '안 했어요',
+                  true => context.l10n.dogNeuteredYes,
+                  false => context.l10n.dogNeuteredNo,
                   null => '-',
                 },
               ),
-              InfoRow(label: '체중', value: Fmt.weight(dog.weightKg)),
+              InfoRow(label: context.l10n.dogWeight, value: Fmt.weight(dog.weightKg)),
             ],
           ),
         ),
@@ -217,15 +222,15 @@ class _HealthInfo extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SectionHeader(title: '건강 정보'),
+        SectionHeader(title: context.l10n.dogSectionHealth),
         AsyncValueView<DogHealthProfile?>(
           value: profile,
           onRetry: () => ref.invalidate(dogHealthProfileProvider(dogId)),
           data: (profile) {
             if (profile == null || profile.isEmpty) {
-              return const InlineEmptyCard(
+              return InlineEmptyCard(
                 icon: Icons.medical_services_outlined,
-                message: '등록된 건강 정보가 없어요. 수정 화면에서 입력할 수 있어요.',
+                message: context.l10n.dogNoHealthInfo,
               );
             }
             Widget group(String title, List<HealthItem> items, IconData icon, {bool highlight = false}) {
@@ -269,23 +274,23 @@ class _HealthInfo extends ConsumerWidget {
                 children: [
                   if (profile.conditionCodes case final codes?)
                     group(
-                      '질병·주의사항',
+                      context.l10n.dogConditionsTitle,
                       codes.isEmpty
-                          ? const [HealthItem(name: '해당 없음')]
+                          ? [HealthItem(name: context.l10n.dogConditionNone)]
                           : [for (final code in codes) HealthItem(name: conditionNames[code] ?? code)],
                       Icons.health_and_safety_outlined,
                       highlight: codes.isNotEmpty,
                     ),
-                  group('운동 제한 사항', profile.exerciseRestrictions, Icons.block_rounded, highlight: true),
-                  group('질환 상세', profile.diseases, Icons.healing_rounded),
-                  group('수술 및 치료 이력', profile.surgeries, Icons.medical_services_outlined),
-                  group('복용 중인 약물', profile.medications, Icons.medication_outlined),
+                  group(context.l10n.dogRestrictionsTitle, profile.exerciseRestrictions, Icons.block_rounded, highlight: true),
+                  group(context.l10n.dogDiseasesTitle, profile.diseases, Icons.healing_rounded),
+                  group(context.l10n.dogSurgeriesTitle, profile.surgeries, Icons.medical_services_outlined),
+                  group(context.l10n.dogMedicationsTitle, profile.medications, Icons.medication_outlined),
                   if (profile.veterinaryNotes != null && profile.veterinaryNotes!.isNotEmpty) ...[
                     Row(
                       children: [
                         Icon(Icons.local_hospital_outlined, size: 18, color: scheme.onSurfaceVariant),
                         const SizedBox(width: 6),
-                        const Text('수의사 권고사항', style: TextStyle(fontWeight: FontWeight.w700)),
+                        Text(context.l10n.dogVetNotes, style: const TextStyle(fontWeight: FontWeight.w700)),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -336,8 +341,8 @@ class _AchievementSection extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SectionHeader(
-            title: '배지 ${earned.length}/${catalog.length}',
-            actionLabel: '배지함',
+            title: context.l10n.dogBadgeSection(earned.length, catalog.length),
+            actionLabel: context.l10n.dogBadgeCollection,
             onAction: () => context.push(AppRoutes.dogBadges(dogId)),
           ),
           AppCard(
@@ -357,7 +362,7 @@ class _AchievementSection extends ConsumerWidget {
                   const SizedBox(height: 14),
                 ],
                 if (earned.isEmpty)
-                  Text('첫 운동을 마치면 「첫 발걸음」 배지를 받아요.', style: TextStyle(color: scheme.onSurfaceVariant))
+                  Text(context.l10n.dogFirstBadgeHint, style: TextStyle(color: scheme.onSurfaceVariant))
                 else
                   SizedBox(
                     height: 86,
@@ -388,7 +393,7 @@ class _AchievementSection extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          '다음 배지 · ${next.name}',
+                          context.l10n.dogNextBadge(next.name),
                           style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5),
                         ),
                       ),
@@ -428,15 +433,15 @@ class _PlanInfo extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SectionHeader(title: '맞춤 운동 계획'),
+          SectionHeader(title: context.l10n.dogPlanSection),
           AppCard(
             child: Column(
               children: [
-                InfoRow(label: '프로그램', value: plan.programName),
+                InfoRow(label: context.l10n.dogPlanProgram, value: plan.programName),
                 if (plan.targetDurationSeconds != null)
-                  InfoRow(label: '목표 시간', value: Fmt.durationMinutes(plan.targetDurationSeconds!)),
-                if (plan.targetSpeed != null) InfoRow(label: '목표 속도', value: Fmt.speed(plan.targetSpeed)),
-                if (plan.notes != null) InfoRow(label: '메모', value: plan.notes!),
+                  InfoRow(label: context.l10n.dogPlanTargetTime, value: Fmt.durationMinutes(plan.targetDurationSeconds!)),
+                if (plan.targetSpeed != null) InfoRow(label: context.l10n.dogPlanTargetSpeed, value: Fmt.speed(plan.targetSpeed)),
+                if (plan.notes != null) InfoRow(label: context.l10n.dogPlanNotes, value: plan.notes!),
               ],
             ),
           ),
