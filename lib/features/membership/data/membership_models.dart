@@ -1,15 +1,17 @@
 import '../../../core/utils/json.dart';
+import '../../../l10n/l10n.dart';
 
 class Membership {
   const Membership({
     required this.id,
-    required this.planName,
+    required String planName,
     required this.totalSessions,
     required this.remainingSessions,
     required this.startsAt,
     required this.expiresAt,
     required this.status,
-  });
+    this.planNameEn,
+  }) : _planName = planName;
 
   factory Membership.fromJson(Json json) => Membership(
         id: json.str('id'),
@@ -19,15 +21,24 @@ class Membership {
         startsAt: json.dateTime('starts_at'),
         expiresAt: json.dateTime('expires_at'),
         status: json.str('status'),
+        planNameEn: json.objOrNull('plan')?.strOrNull('name_en'),
       );
 
   final String id;
-  final String planName;
+
+  /// 구매 시점에 복사해 둔 상품명 (DB: memberships.plan_name)
+  final String _planName;
+
+  /// 상품의 영어 이름 (membership_plans.name_en). 상품이 지워졌거나 영어 이름이 없으면 null.
+  final String? planNameEn;
   final int totalSessions;
   final int remainingSessions;
   final DateTime startsAt;
   final DateTime expiresAt;
   final String status;
+
+  /// 현재 언어의 상품명
+  String get planName => L10n.pick(_planName, planNameEn);
 
   int get usedSessions => totalSessions - remainingSessions;
 
@@ -41,23 +52,27 @@ class Membership {
       status == 'active' && remainingSessions > 0 && !startsAt.isAfter(start) && !expiresAt.isBefore(end);
 
   String get statusLabel {
-    if (status == 'refunded') return '환불';
-    if (status == 'cancelled') return '취소';
-    if (status == 'expired' || expiresAt.isBefore(DateTime.now())) return '만료';
-    if (remainingSessions <= 0) return '소진';
-    return '사용 가능';
+    final l10n = L10n.current;
+    if (status == 'refunded') return l10n.membershipStatusRefunded;
+    if (status == 'cancelled') return l10n.membershipStatusCancelled;
+    if (status == 'expired' || expiresAt.isBefore(DateTime.now())) return l10n.membershipStatusExpired;
+    if (remainingSessions <= 0) return l10n.membershipStatusUsedUp;
+    return l10n.membershipStatusAvailable;
   }
 }
 
 class MembershipPlan {
   const MembershipPlan({
     required this.id,
-    required this.name,
+    required String name,
     required this.totalSessions,
     required this.validityDays,
     required this.price,
-    this.description,
-  });
+    String? description,
+    this.nameEn,
+    this.descriptionEn,
+  })  : _name = name,
+        _description = description;
 
   factory MembershipPlan.fromJson(Json json) => MembershipPlan(
         id: json.str('id'),
@@ -66,11 +81,23 @@ class MembershipPlan {
         totalSessions: json.intOr('total_sessions'),
         validityDays: json.intOr('validity_days'),
         price: json.intOr('price'),
+        nameEn: json.strOrNull('name_en'),
+        descriptionEn: json.strOrNull('description_en'),
       );
 
   final String id;
-  final String name;
-  final String? description;
+  final String _name;
+  final String? _description;
+
+  /// 영어 값 (DB: membership_plans.name_en / description_en). 없으면 한국어 값을 쓴다.
+  final String? nameEn;
+  final String? descriptionEn;
+
+  /// 현재 언어의 상품명
+  String get name => L10n.pick(_name, nameEn);
+
+  /// 현재 언어의 설명
+  String? get description => L10n.pickOrNull(_description, descriptionEn);
   final int totalSessions;
   final int validityDays;
   final int price;
@@ -79,17 +106,25 @@ class MembershipPlan {
 }
 
 enum PaymentStatus {
-  pending('pending', '결제 대기'),
-  paid('paid', '결제 완료'),
-  cancelled('cancelled', '결제 취소'),
-  refunded('refunded', '환불 완료'),
-  partialRefunded('partial_refunded', '부분 환불'),
-  failed('failed', '결제 실패');
+  pending('pending'),
+  paid('paid'),
+  cancelled('cancelled'),
+  refunded('refunded'),
+  partialRefunded('partial_refunded'),
+  failed('failed');
 
-  const PaymentStatus(this.dbValue, this.label);
+  const PaymentStatus(this.dbValue);
 
   final String dbValue;
-  final String label;
+
+  String get label => switch (this) {
+        PaymentStatus.pending => L10n.current.paymentStatusPending,
+        PaymentStatus.paid => L10n.current.paymentStatusPaid,
+        PaymentStatus.cancelled => L10n.current.paymentStatusCancelled,
+        PaymentStatus.refunded => L10n.current.paymentStatusRefunded,
+        PaymentStatus.partialRefunded => L10n.current.paymentStatusPartialRefunded,
+        PaymentStatus.failed => L10n.current.paymentStatusFailed,
+      };
 
   static PaymentStatus fromDb(String value) =>
       values.firstWhere((e) => e.dbValue == value, orElse: () => PaymentStatus.pending);

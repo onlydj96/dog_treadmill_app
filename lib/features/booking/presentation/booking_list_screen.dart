@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../../membership/providers.dart';
 import '../data/booking_models.dart';
 import '../providers.dart';
@@ -31,11 +32,11 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('예약'),
+        title: Text(context.l10n.bookingListTitle),
         actions: [
           TextButton(
             onPressed: () => context.push(AppRoutes.payments),
-            child: const Text('결제·환불 내역'),
+            child: Text(context.l10n.bookingPaymentHistory),
           ),
           const SizedBox(width: 8),
         ],
@@ -54,9 +55,9 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
             const SizedBox(height: 24),
             SegmentedButton<_BookingTab>(
               showSelectedIcon: false,
-              segments: const [
-                ButtonSegment(value: _BookingTab.upcoming, label: Text('예정된 예약')),
-                ButtonSegment(value: _BookingTab.past, label: Text('지난 예약')),
+              segments: [
+                ButtonSegment(value: _BookingTab.upcoming, label: Text(context.l10n.bookingTabUpcoming)),
+                ButtonSegment(value: _BookingTab.past, label: Text(context.l10n.bookingTabPast)),
               ],
               selected: {_tab},
               onSelectionChanged: (value) => setState(() => _tab = value.first),
@@ -75,8 +76,10 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                     child: EmptyState(
                       compact: true,
                       icon: Icons.event_note_rounded,
-                      title: _tab == _BookingTab.upcoming ? '예정된 예약이 없어요' : '지난 예약이 없어요',
-                      message: _tab == _BookingTab.upcoming ? '원하는 시간에 트레드밀을 예약해 보세요.' : null,
+                      title: _tab == _BookingTab.upcoming
+                          ? context.l10n.bookingEmptyUpcoming
+                          : context.l10n.bookingEmptyPast,
+                      message: _tab == _BookingTab.upcoming ? context.l10n.bookingEmptyUpcomingHint : null,
                     ),
                   );
                 }
@@ -123,19 +126,19 @@ class _NewBookingCard extends ConsumerWidget {
               children: [
                 const Icon(Icons.confirmation_number_rounded, color: AppColors.mintDeep),
                 const SizedBox(width: 8),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    '사용 가능한 이용권',
-                    style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.mintInk),
+                    context.l10n.bookingUsablePasses,
+                    style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.mintInk),
                   ),
                 ),
                 Text.rich(
                   TextSpan(
                     children: [
                       TextSpan(text: '$remaining', style: AppText.numeric(22, color: AppColors.mintInk)),
-                      const TextSpan(
-                        text: ' 회',
-                        style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.mintInk),
+                      TextSpan(
+                        text: context.l10n.bookingSessionsUnit(remaining),
+                        style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.mintInk),
                       ),
                     ],
                   ),
@@ -148,7 +151,7 @@ class _NewBookingCard extends ConsumerWidget {
           FilledButton.icon(
             onPressed: () => context.push(AppRoutes.bookingNew),
             icon: const Icon(Icons.add_rounded),
-            label: const Text('새 운동 예약'),
+            label: Text(context.l10n.bookingNewWorkout),
           ),
         ],
       ),

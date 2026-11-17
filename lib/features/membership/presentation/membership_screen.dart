@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../data/membership_models.dart';
 import '../providers.dart';
 
@@ -19,9 +20,9 @@ class MembershipScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('이용권'),
+        title: Text(context.l10n.membershipTitle),
         actions: [
-          TextButton(onPressed: () => context.push(AppRoutes.payments), child: const Text('결제 내역')),
+          TextButton(onPressed: () => context.push(AppRoutes.payments), child: Text(context.l10n.membershipPaymentHistory)),
           const SizedBox(width: 8),
         ],
       ),
@@ -35,15 +36,15 @@ class MembershipScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
           children: [
-            const SectionHeader(title: '보유 이용권'),
+            SectionHeader(title: context.l10n.membershipOwnedTitle),
             AsyncValueView<List<Membership>>(
               value: ref.watch(membershipsProvider),
               onRetry: () => ref.invalidate(membershipsProvider),
               data: (memberships) {
                 if (memberships.isEmpty) {
-                  return const InlineEmptyCard(
+                  return InlineEmptyCard(
                     icon: Icons.confirmation_number_outlined,
-                    message: '보유한 이용권이 없어요. 아래 상품을 구매하면 앱에서 바로 예약에 사용할 수 있어요.',
+                    message: context.l10n.membershipOwnedEmpty,
                   );
                 }
                 final sorted = [...memberships]..sort((a, b) {
@@ -62,7 +63,7 @@ class MembershipScreen extends ConsumerWidget {
               },
             ),
             const SizedBox(height: 24),
-            const SectionHeader(title: '이용권 상품'),
+            SectionHeader(title: context.l10n.membershipPlansTitle),
             AsyncValueView<List<MembershipPlan>>(
               value: ref.watch(membershipPlansProvider),
               onRetry: () => ref.invalidate(membershipPlansProvider),
@@ -90,8 +91,7 @@ class MembershipScreen extends ConsumerWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    '상품을 누르면 결제 방법을 볼 수 있어요. 앱 결제는 준비 중이라 지금은 매장에서 구매할 수 있고, '
-                    '구매하면 바로 보유 이용권에 반영돼요.',
+                    context.l10n.membershipPurchaseNote,
                     style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.45),
                   ),
                 ),
@@ -138,7 +138,7 @@ class _MembershipCard extends StatelessWidget {
                 ),
               ),
               StatusBadge(
-                label: usable && daysLeft <= 14 ? 'D-$daysLeft' : membership.statusLabel,
+                label: usable && daysLeft <= 14 ? context.l10n.membershipDaysLeft(daysLeft) : membership.statusLabel,
                 tone: usable
                     ? const StatusTone(foreground: AppColors.mintInk, background: AppColors.mintMist)
                     : scheme.neutralTone,
@@ -157,7 +157,7 @@ class _MembershipCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 4, bottom: 4),
                 child: Text(
-                  '/ ${membership.totalSessions}회 남음',
+                  context.l10n.membershipSessionsLeft(membership.totalSessions),
                   style:
                       TextStyle(color: usable ? AppColors.mintLight : scheme.onSurfaceVariant, fontWeight: FontWeight.w600),
                 ),
@@ -207,7 +207,7 @@ class _PlanCard extends StatelessWidget {
             height: 52,
             alignment: Alignment.center,
             decoration: BoxDecoration(color: AppColors.mintMist, borderRadius: BorderRadius.circular(16)),
-            child: Text('${plan.totalSessions}회', style: AppText.numeric(15, color: AppColors.mintInk)),
+            child: Text(context.l10n.membershipPlanSessionsBadge(plan.totalSessions), style: AppText.numeric(15, color: AppColors.mintInk)),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -217,7 +217,10 @@ class _PlanCard extends StatelessWidget {
                 Text(plan.name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15.5)),
                 if (plan.description != null)
                   Text(plan.description!, style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant)),
-                Text('유효기간 ${plan.validityDays}일', style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant)),
+                Text(
+                  context.l10n.membershipValidDays(plan.validityDays),
+                  style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant),
+                ),
               ],
             ),
           ),
@@ -227,7 +230,7 @@ class _PlanCard extends StatelessWidget {
               Text(Fmt.won(plan.price), style: AppText.numeric(16, color: scheme.onSurface)),
               if (plan.totalSessions > 1)
                 Text(
-                  '회당 ${Fmt.won(plan.pricePerSession)}',
+                  context.l10n.membershipPricePerSession(Fmt.won(plan.pricePerSession)),
                   style: TextStyle(fontSize: 11.5, color: scheme.onSurfaceVariant),
                 ),
             ],
@@ -260,25 +263,25 @@ class _PurchaseSheet extends StatelessWidget {
             Text(plan.name, style: theme.textTheme.titleLarge),
             const SizedBox(height: 4),
             Text(
-              '${Fmt.won(plan.price)} · ${plan.totalSessions}회 · 유효기간 ${plan.validityDays}일',
+              context.l10n.membershipPurchaseSummary(Fmt.won(plan.price), plan.totalSessions, plan.validityDays),
               style: TextStyle(color: scheme.onSurfaceVariant),
             ),
             const SizedBox(height: 16),
             _PurchaseMethod(
               icon: Icons.smartphone_rounded,
-              title: '앱 결제',
-              body: '카드·간편결제로 결제하면 바로 보유 이용권에 추가돼요.',
-              badge: StatusBadge(label: '준비 중', tone: scheme.neutralTone, dense: true),
+              title: context.l10n.membershipAppPaymentTitle,
+              body: context.l10n.membershipAppPaymentBody,
+              badge: StatusBadge(label: context.l10n.membershipComingSoon, tone: scheme.neutralTone, dense: true),
             ),
             const SizedBox(height: 8),
-            const _PurchaseMethod(
+            _PurchaseMethod(
               icon: Icons.storefront_rounded,
-              title: '매장 결제',
-              body: '지금은 매장에서 구매할 수 있어요. 구매하면 바로 앱의 보유 이용권에 반영돼요.',
+              title: context.l10n.membershipStorePaymentTitle,
+              body: context.l10n.membershipStorePaymentBody,
             ),
             const SizedBox(height: 20),
             // PG 연동 후 결제 요청으로 바꾼다.
-            const FilledButton(onPressed: null, child: Text('앱 결제 준비 중')),
+            FilledButton(onPressed: null, child: Text(context.l10n.membershipAppPaymentUnavailable)),
           ],
         ),
       ),

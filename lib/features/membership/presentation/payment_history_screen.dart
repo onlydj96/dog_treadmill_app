@@ -6,6 +6,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/common.dart';
+import '../../../l10n/l10n.dart';
 import '../data/membership_models.dart';
 import '../providers.dart';
 
@@ -16,7 +17,7 @@ class PaymentHistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('결제·환불 내역')),
+      appBar: AppBar(title: Text(context.l10n.paymentHistoryTitle)),
       body: AsyncValueView<List<Payment>>(
         value: ref.watch(paymentsProvider),
         onRetry: () => ref.invalidate(paymentsProvider),
@@ -26,7 +27,7 @@ class PaymentHistoryScreen extends ConsumerWidget {
             await ref.read(paymentsProvider.future);
           },
           child: payments.isEmpty
-              ? const EmptyState(icon: Icons.receipt_long_rounded, title: '결제 내역이 없어요')
+              ? EmptyState(icon: Icons.receipt_long_rounded, title: context.l10n.paymentEmpty)
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
                   itemCount: payments.length,
@@ -70,7 +71,7 @@ class _PaymentTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(payment.orderName ?? '이용권 결제', style: const TextStyle(fontWeight: FontWeight.w700)),
+                Text(payment.orderName ?? context.l10n.paymentDefaultOrderName, style: const TextStyle(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 2),
                 Text(
                   [Fmt.dateShort(date), if (payment.method != null) payment.method!].join(' · '),
@@ -78,8 +79,12 @@ class _PaymentTile extends StatelessWidget {
                 ),
                 if (payment.refundedAmount > 0)
                   Text(
-                    '환불 ${Fmt.won(payment.refundedAmount)}'
-                    '${payment.refundedAt != null ? ' (${Fmt.dateShort(payment.refundedAt!)})' : ''}',
+                    payment.refundedAt == null
+                        ? context.l10n.paymentRefunded(Fmt.won(payment.refundedAmount))
+                        : context.l10n.paymentRefundedOn(
+                            Fmt.won(payment.refundedAmount),
+                            Fmt.dateShort(payment.refundedAt!),
+                          ),
                     style: TextStyle(fontSize: 12.5, color: scheme.calmTone.foreground, fontWeight: FontWeight.w600),
                   ),
               ],

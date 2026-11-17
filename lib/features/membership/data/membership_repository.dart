@@ -8,7 +8,11 @@ class MembershipRepository {
   final SupabaseClient _client;
 
   Future<List<Membership>> fetchMemberships(String userId) async {
-    final rows = await _client.from('memberships').select().eq('user_id', userId).order('expires_at', ascending: false);
+    final rows = await _client
+        .from('memberships')
+        .select('*, plan:membership_plans(name_en)')
+        .eq('user_id', userId)
+        .order('expires_at', ascending: false);
     return rows.map(Membership.fromJson).toList();
   }
 

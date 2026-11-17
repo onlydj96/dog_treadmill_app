@@ -12,7 +12,7 @@ class BookingRepository {
       'branch:branches(*), '
       'treadmill:treadmills(id, device_name, status), '
       'program:exercise_programs(*), '
-      'dog:dogs(id, name, breed, profile_image_path), '
+      'dog:dogs(id, name, breed, breed_id, is_mixed, profile_image_path, breed_catalog:breeds(name_en)), '
       'session:exercise_sessions(id)';
 
   Future<List<Branch>> fetchBranches() async {
