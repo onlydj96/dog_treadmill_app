@@ -402,34 +402,75 @@ class _JointSection extends StatelessWidget {
   final JointMetrics joints;
   final AnomalyMetrics? anomaly;
 
+  /// 소견이 있는 관절을 소견 순서대로 모은다. 한 관절에 소견이 여럿이면 가장 높은 수준을 쓴다.
+  Map<String, AnomalyLevel> get _markers {
+    final markers = <String, AnomalyLevel>{};
+    for (final finding in anomaly?.findings ?? const <AnomalyFinding>[]) {
+      final key = finding.jointKey;
+      if (key == null || finding.severity == AnomalyLevel.normal || DogKeypoint.fromKey(key) == null) continue;
+      final current = markers[key];
+      if (current == null || finding.severity.index > current.index) markers[key] = finding.severity;
+    }
+    return markers;
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final highlights = <String, AnomalyLevel>{
-      for (final finding in anomaly?.findings ?? const <AnomalyFinding>[])
-        if (finding.jointKey != null) finding.jointKey!: finding.severity,
-    };
+    final markers = _markers;
+    final markerNumbers = {for (final (index, key) in markers.keys.indexed) key: index + 1};
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SectionHeader(title: '관절 움직임 분석 · ${joints.keypointCount ?? DogKeypoint.values.length}개 관절'),
         AppCard(
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SkeletonDiagram(highlights: highlights),
-              const SizedBox(height: 10),
+              SkeletonDiagram(markers: markers),
+              const SizedBox(height: 12),
               const Wrap(
-                spacing: 12,
+                spacing: 16,
                 runSpacing: 4,
                 alignment: WrapAlignment.center,
                 children: [
-                  _Legend(color: AppColors.teal, label: '추적 관절'),
-                  _Legend(color: AppColors.honeyDeep, label: '관찰 필요'),
-                  _Legend(color: AppColors.coral, label: '주의 필요'),
+                  _Legend(label: '왼쪽 다리 (카메라 쪽)'),
+                  _Legend(label: '오른쪽 다리', faded: true),
                 ],
               ),
+              if (markers.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: scheme.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    children: [
+                      for (final MapEntry(:key, :value) in markers.entries)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Row(
+                            children: [
+                              JointMarkerBadge(number: markerNumbers[key]!, level: value),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  DogKeypoint.fromKey(key)!.label,
+                                  style: const TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              AnomalyLevelBadge(level: value, dense: true),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
               if (joints.joints.isNotEmpty) ...[
                 const Divider(height: 28),
                 Row(
@@ -453,17 +494,15 @@ class _JointSection extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Row(
                       children: [
+                        if (markerNumbers[joint.key] case final number?) ...[
+                          JointMarkerBadge(number: number, level: markers[joint.key]!, size: 18),
+                          const SizedBox(width: 8),
+                        ],
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                joint.label,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: highlights.containsKey(joint.key) ? scheme.cautionTone.foreground : null,
-                                ),
-                              ),
+                              Text(joint.label, style: const TextStyle(fontWeight: FontWeight.w600)),
                               if (joint.minAngleDeg != null && joint.maxAngleDeg != null)
                                 Text(
                                   '각도 ${joint.minAngleDeg!.toStringAsFixed(0)}°~${joint.maxAngleDeg!.toStringAsFixed(0)}°',
@@ -505,20 +544,38 @@ class _JointSection extends StatelessWidget {
   }
 }
 
+/// 도식의 관절 점 모양 그대로 보여 주는 범례. [faded]는 카메라 반대편 다리.
 class _Legend extends StatelessWidget {
-  const _Legend({required this.color, required this.label});
+  const _Legend({required this.label, this.faded = false});
 
-  final Color color;
   final String label;
+  final bool faded;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final dot = faded
+        ? Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(color: AppColors.teal.withValues(alpha: 0.6), shape: BoxShape.circle),
+          )
+        : Container(
+            width: 11,
+            height: 11,
+            decoration: BoxDecoration(
+              color: AppColors.teal,
+              shape: BoxShape.circle,
+              border: Border.all(color: scheme.brightness == Brightness.dark ? scheme.surfaceContainerLow : Colors.white, width: 2),
+              boxShadow: [BoxShadow(color: scheme.outlineVariant, spreadRadius: 0.5)],
+            ),
+          );
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-        const SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+        SizedBox(width: 12, child: Center(child: dot)),
+        const SizedBox(width: 5),
+        Text(label, style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
       ],
     );
   }
