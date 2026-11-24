@@ -90,13 +90,10 @@ class _ReportHeader extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              AnalysisStatusBadge(status: report.status, dense: true),
-              const Spacer(),
-              if (report.modelVersion != null)
-                Text(context.l10n.analysisModelVersion(report.modelVersion!), style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
-            ],
+          // model_version은 AI 서버 내부 기록용이라 보호자 화면에는 보여 주지 않는다 (docs/app-interface.md)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: AnalysisStatusBadge(status: report.status, dense: true),
           ),
           const SizedBox(height: 12),
           Text(

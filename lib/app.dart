@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/config/env.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/brand_mark.dart';
@@ -101,7 +102,9 @@ class ConfigMissingApp extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const SelectableText(
-                      'flutter run --dart-define-from-file=.env',
+                      '# ${Env.fileAsset}\n'
+                      'SUPABASE_URL=https://<project-ref>.supabase.co\n'
+                      'SUPABASE_PUBLISHABLE_KEY=sb_publishable_...',
                       style: TextStyle(fontFamily: 'monospace'),
                     ),
                   ),

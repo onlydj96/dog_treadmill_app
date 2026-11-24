@@ -1,5 +1,5 @@
+// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -101,7 +101,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get configMissingBody =>
-      'Add SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY to the .env file in the project root, then run the app as shown below.';
+      'Add SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY to config/supabase.env, then run the app again. You can start from a copy of config/supabase.env.example.';
 
   @override
   String get fmtPatternDate => 'EEE, MMM d';
@@ -341,6 +341,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorCheckInClosed =>
       'Your booking time has passed, so you can\'t check in.';
+
+  @override
+  String get errorQrInvalid =>
+      'This isn\'t a PawFit treadmill QR code. Scan the QR code on the treadmill.';
+
+  @override
+  String get errorQrOtherBranch =>
+      'This treadmill is at a different location. Scan a treadmill QR code at the location you booked.';
+
+  @override
+  String get errorTreadmillUnavailable =>
+      'This treadmill is under maintenance. Scan another treadmill\'s QR code.';
+
+  @override
+  String get errorTreadmillBusy =>
+      'This treadmill is booked by someone else at this time. Scan your assigned treadmill or another free one.';
 
   @override
   String get errorNicknameInvalid =>
@@ -1197,26 +1213,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bookingNewWorkout => 'Book a workout';
 
   @override
-  String get bookingCheckInTitle => 'Check in now?';
+  String get bookingCheckInAction => 'QR check-in';
 
   @override
-  String get bookingCheckInMessage => 'Check in when you arrive at the store.';
-
-  @override
-  String bookingCheckInMessageWithMachine(String machine) {
-    return 'Check in when you arrive at the store.\nAssigned treadmill: $machine';
-  }
-
-  @override
-  String get bookingCheckInAction => 'Check in';
-
-  @override
-  String get bookingCheckedIn => 'You\'re checked in.';
+  String get bookingCheckedIn =>
+      'You\'re checked in. Press Start on the treadmill to begin your workout.';
 
   @override
   String bookingCheckedInWithMachine(String machine) {
-    return 'You\'re checked in. Start your workout on treadmill $machine.';
+    return 'You\'re checked in on treadmill $machine. Press Start on the treadmill to begin your workout.';
   }
+
+  @override
+  String get bookingQrScanTitle => 'Scan treadmill QR';
+
+  @override
+  String get bookingQrScanHint =>
+      'Fit the QR code on the treadmill you\'ll use inside the frame.';
+
+  @override
+  String bookingQrScanAssigned(String machine) {
+    return 'Your assigned treadmill is $machine. If another treadmill is free, you can scan that one instead.';
+  }
+
+  @override
+  String get bookingQrCameraDenied =>
+      'Camera access is needed to scan the QR code. Allow camera access in Settings.';
+
+  @override
+  String get bookingQrCameraError =>
+      'Couldn\'t open the camera. Please try again in a moment.';
 
   @override
   String get bookingDefaultProgramName => 'Treadmill workout';
@@ -1284,9 +1310,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'You didn\'t show up, so this booking was marked as a no-show.';
 
   @override
-  String get bookingStepReceived => 'Received';
-
-  @override
   String get bookingStepConfirmed => 'Confirmed';
 
   @override
@@ -1350,7 +1373,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String bookingGuideCheckedIn(String atMachine, String payOnSite) {
-    return 'You\'re checked in. Start your workout $atMachine, and stay with your dog the whole time. Once it starts, you can follow it live in the Workout tab.$payOnSite';
+    return 'You\'re checked in. Press Start $atMachine to begin your workout, and stay with your dog the whole time. Once it starts, you can follow it live in the Workout tab.$payOnSite';
   }
 
   @override
@@ -1358,23 +1381,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'This booking\'s time has passed, so you can\'t check in.';
 
   @override
-  String bookingGuideCheckInOpen(String atMachine, String payOnSite) {
-    return 'When you arrive at the store, check in and start your workout $atMachine.$payOnSite';
+  String bookingGuideCheckInOpen(String payOnSite) {
+    return 'When you arrive, scan the QR code on the treadmill you\'ll use to check in. It doesn\'t have to be your assigned treadmill as long as it\'s free. After checking in, press Start on the treadmill to begin.$payOnSite';
   }
 
   @override
   String bookingGuideModifiable(String time) {
-    return 'You can change or cancel until 1 hour before your booking starts.\nOn the day, you can check in from the app starting at $time.';
+    return 'You can change or cancel until 1 hour before your booking starts.\nOn the day, you can check in from $time by scanning the treadmill QR code at the store.';
   }
 
   @override
   String bookingGuideModifiableWithPass(String time) {
-    return 'You can change or cancel until 1 hour before your booking starts. Cancelling restores your pass session.\nOn the day, you can check in from the app starting at $time.';
+    return 'You can change or cancel until 1 hour before your booking starts. Cancelling restores your pass session.\nOn the day, you can check in from $time by scanning the treadmill QR code at the store.';
   }
 
   @override
   String bookingGuideLocked(String time) {
-    return 'You can check in from the app starting at $time.\nWithin 1 hour of the start time, bookings can\'t be changed or cancelled in the app.';
+    return 'You can check in from $time by scanning the treadmill QR code at the store.\nWithin 1 hour of the start time, bookings can\'t be changed or cancelled in the app.';
   }
 
   @override
@@ -1486,7 +1509,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookingPayOnSiteBody =>
-      'Your booking is held as pending, and you pay at the store on the day.';
+      'Your booking is confirmed right away, and you pay at the store on the day.';
 
   @override
   String get bookingNoteHint =>
@@ -1494,7 +1517,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookingSelfServiceHint =>
-      'This is a self-service store. On the day, check in from the app starting 15 minutes before your booking, then start your workout on your assigned treadmill.\nYou can change or cancel in the app until 1 hour before the start. If you booked with a pass, cancelling restores your session.';
+      'This is a self-service store. On the day, starting 15 minutes before your booking, scan the treadmill\'s QR code with the app to check in, then press Start on the treadmill.\nYou can change or cancel in the app until 1 hour before the start. If you booked with a pass, cancelling restores your session.';
 
   @override
   String get bookingSummaryIncomplete =>
@@ -3065,6 +3088,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get demoNoPending => 'No pending analysis';
 
   @override
+  String get demoQrPickerTitle => 'Scan QR (demo)';
+
+  @override
+  String get demoQrPickerBody =>
+      'In the demo, pick a treadmill to scan instead of using the camera. If it\'s free, you\'ll be checked in on it even if it isn\'t your assigned one.';
+
+  @override
+  String get demoQrAssigned => 'Assigned';
+
+  @override
+  String get demoQrBusy => 'Booked at this time';
+
+  @override
   String get demoSectionOwners => 'Other owners';
 
   @override
@@ -3233,11 +3269,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisReportTitle => 'AI analysis report';
 
   @override
-  String analysisModelVersion(String version) {
-    return 'Model $version';
-  }
-
-  @override
   String get analysisStatDuration => 'Workout time';
 
   @override
@@ -3282,7 +3313,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisScaleDifferent => 'Very different';
 
   @override
-  String get analysisNoAnomaly => 'No unusual joint patterns found.';
+  String get analysisNoAnomaly => 'No movement different from usual was found.';
 
   @override
   String analysisVsBaseline(String value) {

@@ -2,13 +2,13 @@ import '../../core/utils/json.dart';
 import 'mock_db.dart';
 
 /// 예약 RPC (supabase/migrations: get_available_slots, create_booking, cancel_booking,
-/// reschedule_booking, self_check_in_booking)를 같은 규칙·같은 오류 코드로 옮긴 것.
+/// reschedule_booking, check_in_with_treadmill_qr)를 같은 규칙·같은 오류 코드로 옮긴 것.
 class BookingApi {
   BookingApi(this.db, {this.onCheckedIn});
 
   final MockDb db;
 
-  /// 셀프 체크인 직후 호출 (트레드밀 시뮬레이터가 운동을 시작한다)
+  /// QR 체크인 직후 호출 (트레드밀 시뮬레이터가 운동을 시작한다)
   void Function(Json booking)? onCheckedIn;
 
   /// private.booking_change_deadline
@@ -110,7 +110,7 @@ class BookingApi {
     };
   }
 
-  /// public.create_booking: 빈 트레드밀을 배정하고, 이용권을 쓰면 1회 차감하고 바로 확정한다.
+  /// public.create_booking: 빈 트레드밀을 배정하고 바로 확정한다. 이용권을 쓰면 1회 차감한다.
   Json createBooking({
     required String dogId,
     required String branchId,
@@ -149,7 +149,7 @@ class BookingApi {
       'membership_id': membershipId,
       'start_at': iso(startAt),
       'end_at': iso(endAt),
-      'status': membershipId != null ? 'confirmed' : 'pending',
+      'status': 'confirmed',
       'note': (trimmedNote == null || trimmedNote.isEmpty) ? null : trimmedNote,
       'cancel_reason': null,
       'cancelled_at': null,
@@ -217,8 +217,9 @@ class BookingApi {
     });
   }
 
-  /// public.self_check_in_booking: 무인 매장 셀프 체크인 (시작 15분 전 ~ 종료 전)
-  void selfCheckIn(String bookingId) {
+  /// public.check_in_with_treadmill_qr: 매장에서 트레드밀 QR을 스캔해 체크인한다 (시작 15분 전 ~ 종료 전).
+  /// 스캔한 기기가 배정된 기기와 다르면, 그 시간에 비어 있을 때 예약을 그 기기로 옮긴다.
+  void checkInWithQr(String bookingId, String qrToken) {
     final booking = _ownBooking(bookingId);
     if (booking['status'] != 'pending' && booking['status'] != 'confirmed') {
       rpcError('INVALID_BOOKING_STATUS', '22023');
@@ -229,8 +230,25 @@ class BookingApi {
     }
     if (!now.isBefore(booking.dateTime('end_at'))) rpcError('CHECK_IN_CLOSED', '22023');
 
-    db.update('bookings', booking, {'status': 'checked_in'});
+    final code = db.find('treadmill_qr_codes', (q) => q['token'] == qrToken.trim()) ?? rpcError('QR_INVALID', 'P0002');
+    final treadmill = db.byId('treadmills', code.str('treadmill_id')) ?? rpcError('QR_INVALID', 'P0002');
+    if (treadmill['branch_id'] != booking['branch_id']) rpcError('QR_OTHER_BRANCH', '22023');
+    if (treadmill['status'] != 'available' && treadmill['status'] != 'in_use') {
+      rpcError('TREADMILL_UNAVAILABLE', '22023');
+    }
+    if (treadmillBusy(treadmill.str('id'), booking.dateTime('start_at'), booking.dateTime('end_at'),
+        excludeBookingId: bookingId)) {
+      rpcError('TREADMILL_BUSY', '23P01');
+    }
+
+    db.update('bookings', booking, {'treadmill_id': treadmill['id'], 'status': 'checked_in'});
     onCheckedIn?.call(booking);
+  }
+
+  /// QR 내용 (private.treadmill_qr_payload). 데모의 "QR 스캔" 시트가 쓴다.
+  String treadmillQrPayload(String treadmillId) {
+    final code = db.find('treadmill_qr_codes', (q) => q['treadmill_id'] == treadmillId) ?? rowNotFound();
+    return 'pawfit://treadmill?code=${code['token']}';
   }
 
   // ---------------------------------------------------------------------

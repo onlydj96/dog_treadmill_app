@@ -8,9 +8,14 @@ import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/common.dart';
 import '../../../../l10n/l10n.dart';
 import '../../data/booking_models.dart';
+import '../../data/treadmill_qr.dart';
 import '../../providers.dart';
+import '../treadmill_qr_scanner.dart';
 
-/// 무인 매장 셀프 체크인 버튼. 체크인할 수 있을 때만 놓는다([Booking.canCheckIn]).
+/// 무인 매장 QR 체크인 버튼. 체크인할 수 있을 때만 놓는다([Booking.canCheckIn]).
+///
+/// 누르면 트레드밀 QR을 스캔하고 그 기기로 체크인한다. 배정된 기기와 달라도 그 시간에 비어 있으면
+/// 서버가 예약을 스캔한 기기로 옮긴다. 운동은 보호자가 트레드밀의 시작 버튼으로 시작한다.
 class CheckInButton extends ConsumerStatefulWidget {
   const CheckInButton({super.key, required this.booking});
 
@@ -25,19 +30,19 @@ class _CheckInButtonState extends ConsumerState<CheckInButton> {
 
   Future<void> _checkIn() async {
     final booking = widget.booking;
-    final machine = booking.treadmill?.deviceName;
     final l10n = context.l10n;
-    final confirmed = await confirmDialog(
-      context,
-      title: l10n.bookingCheckInTitle,
-      message: machine == null ? l10n.bookingCheckInMessage : l10n.bookingCheckInMessageWithMachine(machine),
-      confirmLabel: l10n.bookingCheckInAction,
-    );
-    if (!confirmed || !mounted) return;
+    final raw = await ref.read(treadmillQrScannerProvider)(context, booking);
+    if (raw == null || !mounted) return;
+    final token = TreadmillQr.tokenOf(raw);
+    if (token == null) {
+      context.showMessage(l10n.errorQrInvalid);
+      return;
+    }
     setState(() => _busy = true);
     try {
-      await ref.read(bookingRepositoryProvider).checkIn(booking.id);
+      final checkedIn = await ref.read(bookingRepositoryProvider).checkInWithQr(booking.id, token);
       refreshBookingData(ref, bookingId: booking.id);
+      final machine = checkedIn.treadmill?.deviceName;
       if (mounted) {
         context.showMessage(machine == null ? l10n.bookingCheckedIn : l10n.bookingCheckedInWithMachine(machine));
       }
@@ -54,7 +59,7 @@ class _CheckInButtonState extends ConsumerState<CheckInButton> {
       onPressed: _busy ? null : _checkIn,
       icon: _busy
           ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2.2))
-          : const Icon(Icons.how_to_reg_rounded),
+          : const Icon(Icons.qr_code_scanner_rounded),
       label: Text(context.l10n.bookingCheckInAction),
     );
   }

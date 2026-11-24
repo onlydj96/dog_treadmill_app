@@ -42,14 +42,27 @@ void main() {
     expect(find.text('이서연님, 안녕하세요'), findsOneWidget);
     expect(find.text('DEMO'), findsOneWidget);
 
-    // 홈: 곧 시작하는 예약을 셀프 체크인 → 트레드밀 기기가 운동을 시작한다
-    final checkIn = find.text('체크인');
+    // 홈: 곧 시작하는 예약을 QR 체크인 → 보호자가 트레드밀 시작 버튼을 누르면(시뮬레이터) 운동이 시작된다
+    final checkIn = find.text('QR 체크인');
     await tester.ensureVisible(checkIn); // 하단 탭 바에 가리지 않게 위로 올린다
     await _settle(tester);
     await tester.tap(checkIn);
     await _settle(tester);
-    await tester.tap(find.text('체크인').last); // 확인 다이얼로그
+    // 데모는 카메라 대신 스캔할 트레드밀을 고른다: 배정된 기기 말고 비어 있는 다른 기기를 스캔해 본다
+    final soon = server.booking.nextBooking(DemoAccount.tofuId)!;
+    final assigned = (soon['treadmill'] as Map)['device_name'] as String;
+    final free = server.booking
+        .machines(soon['branch_id'] as String)
+        .firstWhere((t) =>
+            t['id'] != soon['treadmill_id'] &&
+            !server.booking.treadmillBusy(t['id'] as String, DateTime.parse(soon['start_at'] as String),
+                DateTime.parse(soon['end_at'] as String)));
+    expect(find.text('QR 스캔 (데모)'), findsOneWidget);
+    expect(find.text(assigned), findsWidgets);
+    await tester.tap(find.text(free['device_name'] as String).last);
     await _settle(tester);
+    expect(server.db.byId('bookings', soon['id'] as String)!['treadmill_id'], free['id'],
+        reason: '스캔한 빈 기기로 예약이 옮겨진다');
 
     final session = server.db.find(
       'exercise_sessions',

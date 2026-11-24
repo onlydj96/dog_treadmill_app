@@ -3,7 +3,7 @@ import '../../../l10n/l10n.dart';
 import '../../exercise/data/exercise_session.dart';
 import 'dog_keypoints.dart';
 
-// 지표 JSON 구조는 docs/analysis-metrics.md 참고 (AI 서버와의 계약)
+// 지표 JSON 구조는 docs/app-interface.md 참고 (AI 서버와의 계약)
 
 enum AnalysisStatus {
   queued('queued'),

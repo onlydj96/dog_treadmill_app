@@ -89,7 +89,8 @@ class _Header extends StatelessWidget {
   }
 }
 
-/// 예약 → 확정 → 체크인 → 이용 완료 진행 단계
+/// 예약 확정 → 체크인 → 이용 완료 진행 단계.
+/// 예약은 만들 때 바로 확정되므로 승인 단계는 없다. 'pending'(앱 결제 진행 중, 예정)도 첫 단계로 보여 준다.
 class _StatusSteps extends StatelessWidget {
   const _StatusSteps({required this.status});
 
@@ -117,12 +118,12 @@ class _StatusSteps extends StatelessWidget {
 
     final l10n = context.l10n;
     final steps = [
-      (BookingStatus.pending, l10n.bookingStepReceived),
       (BookingStatus.confirmed, l10n.bookingStepConfirmed),
       (BookingStatus.checkedIn, l10n.bookingStepCheckedIn),
       (BookingStatus.completed, l10n.bookingStepCompleted),
     ];
-    final currentIndex = steps.indexWhere((s) => s.$1 == status);
+    final current = status == BookingStatus.pending ? BookingStatus.confirmed : status;
+    final currentIndex = steps.indexWhere((s) => s.$1 == current);
 
     return AppCard(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -294,7 +295,7 @@ class _ActionsState extends ConsumerState<_Actions> {
     if (ended) {
       guide = l10n.bookingGuideEnded;
     } else if (canCheckIn) {
-      guide = l10n.bookingGuideCheckInOpen(atMachine, payOnSite);
+      guide = l10n.bookingGuideCheckInOpen(payOnSite);
     } else if (canModify) {
       final opensAt = Fmt.time(booking.checkInOpensAt);
       guide = booking.usesMembership

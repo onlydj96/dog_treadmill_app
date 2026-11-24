@@ -281,7 +281,7 @@ abstract class AppLocalizations {
   /// No description provided for @configMissingBody.
   ///
   /// In ko, this message translates to:
-  /// **'프로젝트 루트의 .env에 SUPABASE_URL과 SUPABASE_PUBLISHABLE_KEY를 넣고 아래와 같이 실행해 주세요.'**
+  /// **'config/supabase.env 파일에 SUPABASE_URL과 SUPABASE_PUBLISHABLE_KEY를 넣고 앱을 다시 실행해 주세요. config/supabase.env.example을 복사해 쓰면 돼요.'**
   String get configMissingBody;
 
   /// intl DateFormat 패턴. 예) 11월 16일 (월)
@@ -613,6 +613,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'예약 시간이 지나 체크인할 수 없어요.'**
   String get errorCheckInClosed;
+
+  /// No description provided for @errorQrInvalid.
+  ///
+  /// In ko, this message translates to:
+  /// **'PawFit 트레드밀 QR이 아니에요. 트레드밀에 붙은 QR을 스캔해 주세요.'**
+  String get errorQrInvalid;
+
+  /// No description provided for @errorQrOtherBranch.
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 지점의 트레드밀이에요. 예약한 지점의 트레드밀 QR을 스캔해 주세요.'**
+  String get errorQrOtherBranch;
+
+  /// No description provided for @errorTreadmillUnavailable.
+  ///
+  /// In ko, this message translates to:
+  /// **'점검 중인 트레드밀이에요. 다른 트레드밀의 QR을 스캔해 주세요.'**
+  String get errorTreadmillUnavailable;
+
+  /// No description provided for @errorTreadmillBusy.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 시간에 다른 예약이 있는 트레드밀이에요. 배정된 트레드밀이나 비어 있는 다른 트레드밀의 QR을 스캔해 주세요.'**
+  String get errorTreadmillBusy;
 
   /// No description provided for @errorNicknameInvalid.
   ///
@@ -2090,41 +2114,53 @@ abstract class AppLocalizations {
   /// **'새 운동 예약'**
   String get bookingNewWorkout;
 
-  /// No description provided for @bookingCheckInTitle.
-  ///
-  /// In ko, this message translates to:
-  /// **'체크인할까요?'**
-  String get bookingCheckInTitle;
-
-  /// No description provided for @bookingCheckInMessage.
-  ///
-  /// In ko, this message translates to:
-  /// **'매장에 도착했을 때 체크인해 주세요.'**
-  String get bookingCheckInMessage;
-
-  /// No description provided for @bookingCheckInMessageWithMachine.
-  ///
-  /// In ko, this message translates to:
-  /// **'매장에 도착했을 때 체크인해 주세요.\n배정된 트레드밀: {machine}'**
-  String bookingCheckInMessageWithMachine(String machine);
-
   /// No description provided for @bookingCheckInAction.
   ///
   /// In ko, this message translates to:
-  /// **'체크인'**
+  /// **'QR 체크인'**
   String get bookingCheckInAction;
 
   /// No description provided for @bookingCheckedIn.
   ///
   /// In ko, this message translates to:
-  /// **'체크인했어요.'**
+  /// **'체크인했어요. 트레드밀의 시작 버튼을 눌러 운동을 시작해 주세요.'**
   String get bookingCheckedIn;
 
   /// No description provided for @bookingCheckedInWithMachine.
   ///
   /// In ko, this message translates to:
-  /// **'체크인했어요. 트레드밀 {machine}에서 운동을 시작해 주세요.'**
+  /// **'트레드밀 {machine}에 체크인했어요. 기기의 시작 버튼을 눌러 운동을 시작해 주세요.'**
   String bookingCheckedInWithMachine(String machine);
+
+  /// No description provided for @bookingQrScanTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'트레드밀 QR 스캔'**
+  String get bookingQrScanTitle;
+
+  /// No description provided for @bookingQrScanHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'운동할 트레드밀에 붙은 QR을 네모 안에 맞춰 주세요.'**
+  String get bookingQrScanHint;
+
+  /// No description provided for @bookingQrScanAssigned.
+  ///
+  /// In ko, this message translates to:
+  /// **'배정된 트레드밀은 {machine}이에요. 다른 트레드밀이 비어 있으면 그 기기의 QR을 스캔해도 돼요.'**
+  String bookingQrScanAssigned(String machine);
+
+  /// No description provided for @bookingQrCameraDenied.
+  ///
+  /// In ko, this message translates to:
+  /// **'QR을 스캔하려면 카메라 권한이 필요해요. 설정에서 카메라 접근을 허용해 주세요.'**
+  String get bookingQrCameraDenied;
+
+  /// No description provided for @bookingQrCameraError.
+  ///
+  /// In ko, this message translates to:
+  /// **'카메라를 열 수 없어요. 잠시 후 다시 시도해 주세요.'**
+  String get bookingQrCameraError;
 
   /// No description provided for @bookingDefaultProgramName.
   ///
@@ -2222,16 +2258,10 @@ abstract class AppLocalizations {
   /// **'방문하지 않아 미방문 처리된 예약이에요.'**
   String get bookingNoteNoShow;
 
-  /// No description provided for @bookingStepReceived.
-  ///
-  /// In ko, this message translates to:
-  /// **'접수'**
-  String get bookingStepReceived;
-
   /// No description provided for @bookingStepConfirmed.
   ///
   /// In ko, this message translates to:
-  /// **'확정'**
+  /// **'예약 확정'**
   String get bookingStepConfirmed;
 
   /// No description provided for @bookingStepCheckedIn.
@@ -2345,7 +2375,7 @@ abstract class AppLocalizations {
   /// No description provided for @bookingGuideCheckedIn.
   ///
   /// In ko, this message translates to:
-  /// **'체크인했어요. {atMachine} 운동을 시작하고, 운동하는 동안 반려견 곁을 지켜 주세요. 운동이 시작되면 운동 탭에서 실시간으로 볼 수 있어요.{payOnSite}'**
+  /// **'체크인했어요. {atMachine} 시작 버튼을 눌러 운동을 시작하고, 운동하는 동안 반려견 곁을 지켜 주세요. 운동이 시작되면 운동 탭에서 실시간으로 볼 수 있어요.{payOnSite}'**
   String bookingGuideCheckedIn(String atMachine, String payOnSite);
 
   /// No description provided for @bookingGuideEnded.
@@ -2357,25 +2387,25 @@ abstract class AppLocalizations {
   /// No description provided for @bookingGuideCheckInOpen.
   ///
   /// In ko, this message translates to:
-  /// **'매장에 도착하면 체크인하고 {atMachine} 운동을 시작해 주세요.{payOnSite}'**
-  String bookingGuideCheckInOpen(String atMachine, String payOnSite);
+  /// **'매장에 도착하면 운동할 트레드밀의 QR을 스캔해 체크인해 주세요. 배정된 트레드밀이 아니어도 비어 있으면 괜찮아요. 체크인한 뒤 기기의 시작 버튼으로 운동을 시작해요.{payOnSite}'**
+  String bookingGuideCheckInOpen(String payOnSite);
 
   /// No description provided for @bookingGuideModifiable.
   ///
   /// In ko, this message translates to:
-  /// **'예약 시작 1시간 전까지 변경·취소할 수 있어요.\n이용 당일 {time}부터 앱에서 체크인할 수 있어요.'**
+  /// **'예약 시작 1시간 전까지 변경·취소할 수 있어요.\n이용 당일 {time}부터 매장에서 트레드밀 QR을 스캔해 체크인할 수 있어요.'**
   String bookingGuideModifiable(String time);
 
   /// No description provided for @bookingGuideModifiableWithPass.
   ///
   /// In ko, this message translates to:
-  /// **'예약 시작 1시간 전까지 변경·취소할 수 있어요. 취소하면 이용권 횟수가 복구돼요.\n이용 당일 {time}부터 앱에서 체크인할 수 있어요.'**
+  /// **'예약 시작 1시간 전까지 변경·취소할 수 있어요. 취소하면 이용권 횟수가 복구돼요.\n이용 당일 {time}부터 매장에서 트레드밀 QR을 스캔해 체크인할 수 있어요.'**
   String bookingGuideModifiableWithPass(String time);
 
   /// No description provided for @bookingGuideLocked.
   ///
   /// In ko, this message translates to:
-  /// **'{time}부터 앱에서 체크인할 수 있어요.\n예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요.'**
+  /// **'{time}부터 매장에서 트레드밀 QR을 스캔해 체크인할 수 있어요.\n예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요.'**
   String bookingGuideLocked(String time);
 
   /// No description provided for @bookingCancelAction.
@@ -2561,7 +2591,7 @@ abstract class AppLocalizations {
   /// No description provided for @bookingPayOnSiteBody.
   ///
   /// In ko, this message translates to:
-  /// **'예약 대기로 접수되고, 이용 당일 매장에서 결제해요.'**
+  /// **'예약은 바로 확정되고, 이용 당일 매장에서 결제해요.'**
   String get bookingPayOnSiteBody;
 
   /// No description provided for @bookingNoteHint.
@@ -2573,7 +2603,7 @@ abstract class AppLocalizations {
   /// No description provided for @bookingSelfServiceHint.
   ///
   /// In ko, this message translates to:
-  /// **'무인 매장이에요. 이용 당일 예약 시작 15분 전부터 앱에서 체크인하고, 배정된 트레드밀에서 운동을 시작해 주세요.\n예약 시작 1시간 전까지 앱에서 변경·취소할 수 있어요. 이용권으로 예약한 경우 취소하면 횟수가 복구돼요.'**
+  /// **'무인 매장이에요. 이용 당일 예약 시작 15분 전부터 매장에서 트레드밀의 QR을 앱으로 스캔해 체크인하고, 기기의 시작 버튼으로 운동을 시작해 주세요.\n예약 시작 1시간 전까지 앱에서 변경·취소할 수 있어요. 이용권으로 예약한 경우 취소하면 횟수가 복구돼요.'**
   String get bookingSelfServiceHint;
 
   /// No description provided for @bookingSummaryIncomplete.
@@ -5055,6 +5085,30 @@ abstract class AppLocalizations {
   /// **'대기 중인 분석 없음'**
   String get demoNoPending;
 
+  /// No description provided for @demoQrPickerTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'QR 스캔 (데모)'**
+  String get demoQrPickerTitle;
+
+  /// No description provided for @demoQrPickerBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모에서는 카메라 대신 스캔할 트레드밀을 골라요. 배정된 트레드밀이 아니어도 비어 있으면 그 기기로 체크인돼요.'**
+  String get demoQrPickerBody;
+
+  /// No description provided for @demoQrAssigned.
+  ///
+  /// In ko, this message translates to:
+  /// **'배정됨'**
+  String get demoQrAssigned;
+
+  /// No description provided for @demoQrBusy.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 시간 예약 있음'**
+  String get demoQrBusy;
+
   /// No description provided for @demoSectionOwners.
   ///
   /// In ko, this message translates to:
@@ -5367,12 +5421,6 @@ abstract class AppLocalizations {
   /// **'AI 분석 리포트'**
   String get analysisReportTitle;
 
-  /// No description provided for @analysisModelVersion.
-  ///
-  /// In ko, this message translates to:
-  /// **'모델 {version}'**
-  String analysisModelVersion(String version);
-
   /// No description provided for @analysisStatDuration.
   ///
   /// In ko, this message translates to:
@@ -5454,7 +5502,7 @@ abstract class AppLocalizations {
   /// No description provided for @analysisNoAnomaly.
   ///
   /// In ko, this message translates to:
-  /// **'평소와 다른 관절 패턴이 발견되지 않았어요.'**
+  /// **'평소와 다른 움직임이 발견되지 않았어요.'**
   String get analysisNoAnomaly;
 
   /// No description provided for @analysisVsBaseline.

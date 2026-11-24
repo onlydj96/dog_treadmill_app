@@ -285,9 +285,10 @@ class DemoBookingRepository extends _DemoRepository implements BookingRepository
   }
 
   @override
-  Future<void> checkIn(String bookingId) async {
+  Future<Booking> checkInWithQr(String bookingId, String qrToken) async {
     await wait();
-    server.booking.selfCheckIn(bookingId);
+    server.booking.checkInWithQr(bookingId, qrToken);
+    return Booking.fromJson(localizeRow(server.booking.booking(bookingId)));
   }
 
   @override

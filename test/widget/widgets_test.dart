@@ -2,7 +2,9 @@ import 'package:dog_treadmill_app/core/widgets/common.dart';
 import 'package:dog_treadmill_app/features/auth/data/auth_repository.dart';
 import 'package:dog_treadmill_app/features/auth/presentation/login_screen.dart';
 import 'package:dog_treadmill_app/features/booking/data/booking_models.dart';
+import 'package:dog_treadmill_app/features/booking/data/booking_repository.dart';
 import 'package:dog_treadmill_app/features/booking/presentation/booking_detail_screen.dart';
+import 'package:dog_treadmill_app/features/booking/presentation/treadmill_qr_scanner.dart';
 import 'package:dog_treadmill_app/features/booking/presentation/widgets/booking_widgets.dart';
 import 'package:dog_treadmill_app/features/booking/providers.dart';
 import 'package:dog_treadmill_app/features/consents/data/consent.dart';
@@ -48,6 +50,23 @@ class _RecordingAuthRepository implements AuthRepository {
 
   @override
   Future<void> deleteAccount() async {}
+}
+
+/// QR 체크인 요청만 기록하는 테스트용 예약 저장소
+class _QrCheckInRepository implements BookingRepository {
+  _QrCheckInRepository(this.result);
+
+  final Booking result;
+  final List<(String, String)> checkIns = [];
+
+  @override
+  Future<Booking> checkInWithQr(String bookingId, String qrToken) async {
+    checkIns.add((bookingId, qrToken));
+    return result;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 Widget _app(Widget child, {List<Override> overrides = const []}) {
@@ -334,7 +353,7 @@ void main() {
     });
   });
 
-  group('예약 상세: 무인 매장 셀프 체크인', () {
+  group('예약 상세: 무인 매장 QR 체크인', () {
     Booking booking(Duration startsIn, {BookingStatus status = BookingStatus.confirmed}) {
       final start = DateTime.now().add(startsIn);
       return Booking(
@@ -364,18 +383,73 @@ void main() {
       await tester.pump();
     }
 
-    testWidgets('체크인 시간이 되면 체크인 버튼과 배정 트레드밀을 안내한다', (tester) async {
+    testWidgets('진행 단계는 예약 확정 → 체크인 → 이용 완료 (승인 단계 없음)', (tester) async {
+      await pumpDetail(tester, booking(const Duration(hours: 3)));
+      expect(find.text('예약 확정'), findsWidgets);
+      expect(find.text('접수'), findsNothing);
+    });
+
+    testWidgets('체크인 시간이 되면 QR 체크인 버튼과 트레드밀 QR 스캔 방법을 안내한다', (tester) async {
       await pumpDetail(tester, booking(const Duration(minutes: 10)));
       expect(find.byType(CheckInButton), findsOneWidget);
-      expect(find.textContaining('트레드밀 T-03에서 운동을 시작해 주세요'), findsOneWidget);
+      expect(find.text('QR 체크인'), findsOneWidget);
+      expect(find.textContaining('운동할 트레드밀의 QR을 스캔해 체크인해 주세요'), findsOneWidget);
+      expect(find.text('T-03'), findsOneWidget, reason: '배정된 트레드밀은 예약 정보에 보인다');
       expect(find.text('예약 취소'), findsNothing, reason: '시작 1시간 전부터는 변경·취소 불가');
+    });
+
+    testWidgets('QR을 스캔하면 그 토큰으로 체크인하고, 옮겨진 트레드밀을 알려 준다', (tester) async {
+      final value = booking(const Duration(minutes: 10));
+      final repo = _QrCheckInRepository(Booking(
+        id: 'b1',
+        dogId: 'd1',
+        branchId: 'br1',
+        treadmillId: 't5',
+        startAt: value.startAt,
+        endAt: value.endAt,
+        status: BookingStatus.checkedIn,
+        createdAt: DateTime(2026, 11, 1),
+        treadmill: const Treadmill(id: 't5', deviceName: 'T-05'),
+      ));
+      var scans = 0;
+      tester.view
+        ..physicalSize = const Size(1080, 2600)
+        ..devicePixelRatio = 2;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(_app(
+        const BookingDetailScreen(bookingId: 'b1'),
+        overrides: [
+          bookingDetailProvider.overrideWith((ref, id) async => value),
+          bookingRepositoryProvider.overrideWithValue(repo),
+          treadmillQrScannerProvider.overrideWithValue((context, booking) async {
+            scans++;
+            return scans == 1 ? 'https://example.com/not-pawfit' : 'pawfit://treadmill?code=abc123';
+          }),
+        ],
+      ));
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.text('QR 체크인'));
+      await tester.pump();
+      expect(find.textContaining('PawFit 트레드밀 QR이 아니에요'), findsOneWidget);
+      expect(repo.checkIns, isEmpty, reason: 'PawFit QR이 아니면 서버에 보내지 않는다');
+
+      await tester.tap(find.text('QR 체크인'));
+      await tester.pump();
+      await tester.pump();
+      // 앞의 안내가 내려간 뒤에 새 안내가 올라온다
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(seconds: 1));
+      expect(repo.checkIns, [('b1', 'abc123')]);
+      expect(find.textContaining('트레드밀 T-05에 체크인했어요'), findsOneWidget);
     });
 
     testWidgets('체크인 시간 전에는 변경·취소 버튼과 체크인 가능 시각을 안내한다', (tester) async {
       await pumpDetail(tester, booking(const Duration(hours: 3)));
       expect(find.byType(CheckInButton), findsNothing);
       expect(find.text('예약 취소'), findsOneWidget);
-      expect(find.textContaining('부터 앱에서 체크인할 수 있어요'), findsOneWidget);
+      expect(find.textContaining('부터 매장에서 트레드밀 QR을 스캔해 체크인할 수 있어요'), findsOneWidget);
     });
 
     testWidgets('변경 마감 뒤 체크인 전에는 지점 전화 대신 1:1 문의를 안내한다', (tester) async {
@@ -384,10 +458,10 @@ void main() {
       expect(find.text('1:1 문의하기'), findsOneWidget);
     });
 
-    testWidgets('체크인한 뒤에는 트레드밀에서 직접 운동을 시작하라고 안내한다', (tester) async {
+    testWidgets('체크인한 뒤에는 트레드밀의 시작 버튼으로 운동을 시작하라고 안내한다', (tester) async {
       await pumpDetail(tester, booking(const Duration(minutes: -5), status: BookingStatus.checkedIn));
       expect(find.byType(CheckInButton), findsNothing);
-      expect(find.textContaining('체크인했어요. 트레드밀 T-03에서 운동을 시작하고'), findsOneWidget);
+      expect(find.textContaining('체크인했어요. 트레드밀 T-03에서 시작 버튼을 눌러 운동을 시작하고'), findsOneWidget);
     });
   });
 }

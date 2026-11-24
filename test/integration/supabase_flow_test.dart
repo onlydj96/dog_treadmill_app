@@ -320,14 +320,16 @@ void main() {
       expect(cancelled.cancelReason, '일정이 변경되었어요');
       expect((await MembershipRepository(ownerClient).fetchMemberships(ownerId)).single.remainingSessions, 10);
 
-      // 현장 결제 예약 (이용권 미적용 → 예약 대기)
+      // 현장 결제 예약 (이용권 미적용이어도 바로 확정)
       bookingId = await bookingRepo.createBooking(
         dogId: dog.id,
         branchId: original.branchId,
         programId: original.programId!,
         startAt: original.startAt,
       );
-      expect((await bookingRepo.fetchBooking(bookingId)).status, BookingStatus.pending);
+      final onSite = await bookingRepo.fetchBooking(bookingId);
+      expect(onSite.status, BookingStatus.confirmed);
+      expect(onSite.usesMembership, isFalse);
     });
 
     test('다른 보호자는 예약을 조회·취소할 수 없다', () async {

@@ -48,3 +48,20 @@ android {
 flutter {
     source = "../.."
 }
+
+// Android 15+ 16KB 페이지 기기 대응 (안 하면 "Android 앱 호환성" 경고가 뜬다).
+// mobile_scanner 5.x가 가져오는 ML Kit 17.2.0(libbarhopper_v3.so)과 CameraX 1.3.x(libimage_processing_util_jni.so)는
+// 네이티브 라이브러리가 4KB 정렬이라, 앱 빌드에서만 16KB 정렬 버전으로 올린다.
+// mobile_scanner 6.0.7+는 ML Kit을 올렸지만 iOS 최소 버전이 15.5라서, 7.x는 Kotlin 2.x가 필요해서 쓰지 않는다.
+dependencies {
+    constraints {
+        implementation("com.google.mlkit:barcode-scanning:17.3.0") {
+            because "16KB 페이지 정렬된 libbarhopper_v3.so"
+        }
+        ["camera-core", "camera-camera2", "camera-lifecycle"].each { module ->
+            implementation("androidx.camera:${module}:1.4.2") {
+                because "16KB 페이지 정렬된 libimage_processing_util_jni.so"
+            }
+        }
+    }
+}

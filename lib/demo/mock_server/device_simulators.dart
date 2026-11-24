@@ -40,7 +40,7 @@ class TreadmillSimulator {
   /// false면 타이머 없이 [tick]을 직접 불러 진행한다 (테스트용)
   bool autoTick = true;
 
-  /// 셀프 체크인 후 보호자가 기기에서 시작 버튼을 누르기까지 걸리는 시간. null이면 자동으로 시작하지 않는다.
+  /// QR 체크인 후 보호자가 기기에서 시작 버튼을 누르기까지 걸리는 시간. null이면 자동으로 시작하지 않는다.
   Duration? autoStartAfterCheckIn = const Duration(seconds: 3);
 
   final Map<String, _LiveRun> _runs = {};
@@ -49,7 +49,7 @@ class TreadmillSimulator {
 
   bool get hasLiveSession => _runs.isNotEmpty;
 
-  /// 셀프 체크인 직후 (BookingApi.onCheckedIn)
+  /// QR 체크인 직후 (BookingApi.onCheckedIn)
   void onCheckedIn(Json checkedIn) {
     final delay = autoStartAfterCheckIn;
     if (delay == null) return;
@@ -354,7 +354,7 @@ class TreadmillSimulator {
   }
 }
 
-/// AI 서버 흉내: queued → processing → completed 로 바꾸고 결과를 저장한다 (docs/analysis-metrics.md 처리 흐름).
+/// AI 서버 흉내: queued → processing → completed 로 바꾸고 결과를 저장한다 (docs/app-interface.md 처리 흐름).
 class AiAnalysisSimulator {
   AiAnalysisSimulator(this.db);
 

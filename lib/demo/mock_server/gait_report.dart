@@ -2,7 +2,7 @@ import 'dart:math';
 
 import '../../core/utils/json.dart';
 
-/// AI 서버(FastAPI)가 analysis_reports에 저장하는 결과와 같은 형식의 샘플 (docs/analysis-metrics.md).
+/// AI 서버(FastAPI)가 analysis_reports에 저장하는 결과와 같은 형식의 샘플 (docs/app-interface.md).
 ///
 /// [issueLevel]은 0(특이사항 없음)~1(뚜렷한 변화). 관절질환이 있는 반려견은 왼쪽 뒷다리 무릎 가동 범위가
 /// 기준선보다 줄어드는 모습으로 표현한다. 문구는 진단이 아니라 관찰된 변화만 서술한다.

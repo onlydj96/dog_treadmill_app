@@ -52,7 +52,7 @@ PawFit 로고([assets/logo](assets/logo))에서 뽑은 색을 씁니다.
 ```
 lib/
   main.dart      실제 앱 진입점 (Supabase)
-  main_demo.dart 데모 앱 진입점 (목업 서버. Supabase·.env 없이 실행)
+  main_demo.dart 데모 앱 진입점 (목업 서버. Supabase·config/supabase.env 없이 실행)
   core/        설정(env), 테마, 라우터, Supabase Provider, 공통 위젯·유틸
   l10n/        다국어 문구(ARB: 한국어·English) · 언어 설정 · 생성 코드(generated/)
   features/
@@ -76,7 +76,8 @@ supabase/
   functions/   delete-account (회원 탈퇴)
   tests/       pgTAP 테스트
   seed.sql     로컬 개발용 샘플 데이터 (이용권 상품·FAQ·공지, 랭킹 샘플 계정·운동 기록)
-docs/          개발계획서 · 기능명세서 · AI 서버 결과 저장 규격 · 랭킹·배지 규격 · 다국어 규칙(i18n.md)
+docs/          개발계획서 · 기능명세서 · 앱 연동 인터페이스(기기·AI 서버) · 랭킹·배지 규격 · 다국어 규칙(i18n.md)
+device/        트레드밀 기기(Jetson Orin Nano) 테스트 클라이언트와 연동 방법
 test/          단위·위젯 테스트, 로컬 Supabase 통합 테스트
 ```
 
@@ -96,17 +97,20 @@ npx supabase functions deploy delete-account  # 회원 탈퇴 함수
 
 ### 2. 앱 실행
 
-프로젝트 루트의 `.env`(커밋 금지, [.env.example](.env.example) 참고)에 값을 넣고 실행합니다.
+`config/supabase.env`(커밋 금지, [config/supabase.env.example](config/supabase.env.example)을 복사)에 값을 넣고 그냥 실행합니다.
+앱이 시작할 때 이 파일을 읽으므로 `--dart-define` 플래그가 필요 없습니다.
 
 ```bash
-# .env
+# config/supabase.env
 SUPABASE_URL=https://<project-ref>.supabase.co
 SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 
-flutter run --dart-define-from-file=.env
+flutter run
 ```
 
-`.env` 없이 실행하면 설정 안내 화면이 뜹니다. 기존 anon 키를 쓰는 경우 `SUPABASE_ANON_KEY`도 인식합니다.
+파일이 없으면 설정 안내 화면이 뜹니다. 기존 anon 키를 쓰는 경우 `SUPABASE_ANON_KEY`도 인식합니다.
+배포·CI 빌드에서는 `--dart-define-from-file=<파일>`로 넣은 값이 파일보다 먼저 쓰입니다.
+저장소가 공개라서 키 파일만 git 밖에 둡니다 (publishable 키는 앱에 들어가는 공개용 키이고, 데이터는 RLS가 지킵니다).
 
 ### 로컬 Supabase로 개발 (Docker 필요)
 
@@ -124,11 +128,11 @@ npx supabase status -o env
 ## 데모 앱 (목업 서버)
 
 실제 서버 없이 앱이 어떻게 돌아가는지 보여 주는 데모 앱입니다. 화면 코드는 실제 앱과 같고, 서버에 닿는 부분
-(저장소·로그인·Realtime)만 앱 안의 목업 서버로 바꿉니다. 인터넷·Supabase·`.env` 없이 실행되고 실제 데이터를 건드리지 않습니다.
+(저장소·로그인·Realtime)만 앱 안의 목업 서버로 바꿉니다. 인터넷·Supabase·`config/supabase.env` 없이 실행되고 실제 데이터를 건드리지 않습니다.
 
 ```bash
 flutter run -t lib/main_demo.dart          # 데모 앱
-flutter run --dart-define-from-file=.env   # 실제 앱 (기존과 같음)
+flutter run                                # 실제 앱 (config/supabase.env 필요)
 ```
 
 VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
@@ -141,11 +145,11 @@ VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
 | 데이터 | 실제 회원 데이터 | 샘플 데이터. 앱을 다시 켜면 처음 상태 |
 
 - **분리**: 실제 앱 코드는 `lib/demo/`를 import하지 않습니다(`test/demo/separation_test.dart`가 검사). 그래서 실제 앱 빌드에는 목업 서버·샘플 데이터가 들어가지 않습니다. Android는 진입점이 `main_demo.dart`면 패키지 이름을 바꿔(`android/app/build.gradle`) 한 기기에 두 앱을 함께 설치할 수 있습니다. iOS는 번들 ID를 나누지 않아 데모를 설치하면 실제 앱을 덮어씁니다.
-- **목업 서버**: 테이블은 실제와 같은 이름·컬럼의 JSON 행이라 모델의 `fromJson`을 그대로 씁니다. 예약·셀프 체크인·이용권 차감·점수·배지·순위·응원·닉네임 규칙과 오류 코드(`SLOT_FULL` 등)는 DB 함수를 옮긴 것이라 안내 문구도 실제와 같습니다.
-- **아직 연동 전인 장치 흉내**: 트레드밀 기기(체크인 3초 뒤 운동 시작, 매초 속도·거리 갱신, 기본 10배속)와 AI 서버(운동이 끝나고 8초 뒤 보행 분석 리포트)를 시뮬레이션합니다.
+- **목업 서버**: 테이블은 실제와 같은 이름·컬럼의 JSON 행이라 모델의 `fromJson`을 그대로 씁니다. 예약·QR 체크인·이용권 차감·점수·배지·순위·응원·닉네임 규칙과 오류 코드(`SLOT_FULL` 등)는 DB 함수를 옮긴 것이라 안내 문구도 실제와 같습니다.
+- **아직 연동 전인 장치 흉내**: 트레드밀 기기(QR 체크인 3초 뒤 보호자가 시작 버튼을 누른 것으로 보고 운동 시작, 매초 속도·거리 갱신, 기본 10배속)와 AI 서버(운동이 끝나고 8초 뒤 보행 분석 리포트)를 시뮬레이션합니다.
 - **데모 계정**: `demo@pawfit.local` / `pawfit1234` (보호자 이서연, 반려견 두부·망고). 로그인 화면의 「DEMO · 데모 계정으로 시작」을 누르면 바로 로그인됩니다. 회원가입도 목업 서버에 새 계정을 만듭니다.
 - **데모 컨트롤**: 화면에 떠 있는 DEMO 버튼(끌어서 옮길 수 있음)으로 운동 시작·일시정지·비상정지·바로 완료, 시뮬레이션 속도, AI 분석 바로 끝내기, 다른 보호자 응원 받기, 처음 상태로 되돌리기를 합니다.
-- **시연 순서 예**: 홈에서 곧 시작하는 예약 체크인 → 운동 탭 실시간 기록 → 끝나면 점수 알림과 배지 → 몇 초 뒤 AI 리포트 → 랭킹 점수 변화. 두부는 29번 운동한 상태라 데모에서 한 번 더 하면 「단골 러너」(30회) 배지를 받습니다.
+- **시연 순서 예**: 홈에서 곧 시작하는 예약을 QR 체크인(데모는 카메라 대신 스캔할 트레드밀을 고름) → 운동 탭 실시간 기록 → 끝나면 점수 알림과 배지 → 몇 초 뒤 AI 리포트 → 랭킹 점수 변화. 두부는 29번 운동한 상태라 데모에서 한 번 더 하면 「단골 러너」(30회) 배지를 받습니다.
 - **데모에 없는 것**: 운동 영상 재생(샘플 영상 없음), 결제(실제 앱도 준비 중), 푸시 알림. 올린 사진은 앱 메모리에만 있습니다.
 - **웹으로 공유**: `flutter build web -t lib/main_demo.dart`로 만든 `build/web`을 정적 호스팅에 올리면 링크로 시연할 수 있습니다.
 - **규칙을 바꿀 때**: DB 함수(예약·점수·랭킹 등)를 바꾸면 `lib/demo/mock_server/`의 같은 규칙도 고치고 `flutter test test/demo`로 확인합니다.
@@ -157,7 +161,7 @@ VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
 | `flutter analyze` | 정적 분석 (strict-casts, strict-raw-types) |
 | `flutter test` | 단위·위젯 테스트 169개(영어 화면 포함) (통합 테스트는 키가 없으면 건너뜀) |
 | `flutter test test/demo` | 그중 데모 앱 34개: 목업 서버 규칙(예약·체크인·점수·배지·순위·응원·닉네임·인증), 데모 시연 흐름, 실제 앱↔데모 코드 분리 |
-| `npx supabase test db` | pgTAP 206개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), 셀프 체크인, 이용권 차감·복구, 운동 세션, 알림 설정, 랭킹(점수 규칙·하루 1회·주간 보너스·한국 시간 월 경계·공개 범위·닉네임·응원·배지·무효 처리·월간 마감, 영어 콘텐츠·영어 라벨·알림 msg/args·영어 닉네임) |
+| `npx supabase test db` | pgTAP 218개: RLS 격리, 중복 예약 차단, 24시간 지점(자정 넘김 예약), QR 체크인(기기 이동·QR 토큰 비공개), 이용권 차감·복구, 운동 세션, 알림 설정, 랭킹(점수 규칙·하루 1회·주간 보너스·한국 시간 월 경계·공개 범위·닉네임·응원·배지·무효 처리·월간 마감, 영어 콘텐츠·영어 라벨·알림 msg/args·영어 닉네임) |
 | `flutter test test/integration --dart-define-from-file=<로컬 키 파일>` | 로컬 Supabase 대상 21개: 저장소 계층 전체, Realtime, Storage(랭킹 공개 사진 포함), Edge Function, 랭킹 흐름 |
 
 통합 테스트 키 파일에는 `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`가 필요하며,
@@ -172,18 +176,19 @@ VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
 | 5장 DB · 6장 Storage · 8장 권한 | 완료 (RLS, 서버 측 예약·관리자 검증, 영상/AI 학습 동의 분리) |
 | 3.3 실시간 운동 현황 | 완료 (Realtime 구독, 영상은 전송하지 않음) |
 | 3.4 AI 리포트 UI · 3.4-D 피로 징후 | UI 완료 / 피로 징후는 문서대로 추후 개발 |
-| 결제(PG) 연동 | **형식만** — 예약 결제 단계와 이용권 구매 시트에 "앱 결제(준비 중)" 자리만 있음. PG사 결정 필요. 현재는 매장 구매 이용권 차감 또는 현장 결제(예약 대기) |
+| 결제(PG) 연동 | **형식만** — 예약 결제 단계와 이용권 구매 시트에 "앱 결제(준비 중)" 자리만 있음. PG사 결정 필요. 현재는 매장 구매 이용권 차감 또는 현장 결제(예약은 바로 확정) |
 | FCM 푸시 | **미구현** — Firebase 프로젝트 필요. 알림은 DB 트리거 → 앱 내 알림함(Realtime)으로 동작 |
 | 운영자 대시보드 (Flutter Web) | **미구현** — 필요한 DB 함수는 준비됨 (아래) |
-| AI 서버 (FastAPI) | **미구현** — 결과 저장 규격: [docs/analysis-metrics.md](docs/analysis-metrics.md) |
+| AI 서버 (FastAPI) | **미구현** — 결과 저장 규격: [docs/app-interface.md](docs/app-interface.md) 4장 |
 
 ### 무인 운영 흐름 (DOCUMENT.md 3.3 대비)
 
 매장에 직원이 없어 문서의 "현장 운영자" 역할을 보호자와 트레드밀 기기가 나눠 맡습니다.
 
-1. 보호자가 앱에서 셀프 체크인합니다: `self_check_in_booking(booking_id)`. 본인 예약이면서 예약 대기·확정 상태일 때, 시작 15분 전부터 종료 전까지 가능합니다. 매장 도착 여부는 확인하지 않습니다.
-2. 보호자가 배정된 트레드밀 기기에서 운동을 시작하고, 이상하면 기기의 비상정지 버튼을 누릅니다. 앱은 조회 중심입니다.
-3. 트레드밀 기기는 지점 관리자 계정(`managed_branch_id`)으로 아래 함수를 호출해 세션을 기록합니다.
+0. 예약은 결제 방식(이용권·현장 결제)과 상관없이 바로 **예약 확정**됩니다. 승인하는 사람이 없습니다.
+1. 보호자가 매장에서 운동할 트레드밀의 QR을 앱으로 스캔해 체크인합니다: `check_in_with_treadmill_qr(booking_id, qr_token)`. 본인 예약, 시작 15분 전부터 종료 전까지 가능합니다. 배정된 기기가 아니어도 그 시간에 비어 있으면 예약을 스캔한 기기로 옮깁니다. QR 토큰은 API에 노출되지 않는 `private.treadmill_qr_codes`에만 있어 매장에 가야 체크인할 수 있습니다.
+2. 보호자가 그 트레드밀의 시작 버튼으로 운동을 시작하고, 이상하면 기기의 비상정지 버튼을 누릅니다. 앱은 조회 중심입니다.
+3. 트레드밀 기기는 지점 관리자 계정(`managed_branch_id`)으로 아래 함수를 호출해 세션을 기록합니다. Jetson Orin Nano 테스트 방법과 테스트 스크립트는 [device/README.md](device/README.md)에 있습니다.
 
 ### 운영자 대시보드·트레드밀 기기용 DB 함수
 
@@ -191,8 +196,10 @@ VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
 
 | 함수 | 용도 |
 |---|---|
-| `check_in_booking(booking_id)` | 체크인 (대시보드·매장 기기용. 보호자는 `self_check_in_booking`) |
-| `start_exercise_session(booking_id)` | 운동 시작 (보호자 앱에 실시간 반영, 시작 알림) |
+| `get_treadmill_qr(treadmill_id)` | 기기 화면에 띄우거나 스티커로 출력할 QR 내용 `pawfit://treadmill?code=<토큰>` |
+| `get_treadmill_active_booking(treadmill_id)` | 이 기기에서 QR 체크인한 예약 (반려견 이름·프로그램·진행 중 세션) |
+| `check_in_booking(booking_id)` | 체크인 (대시보드용. 보호자는 `check_in_with_treadmill_qr`) |
+| `start_exercise_session(booking_id)` | 운동 시작 — 기기의 시작 버튼 (보호자 앱에 실시간 반영, 시작 알림) |
 | `update_exercise_session_metrics(session_id, speed, distance, duration, status)` | 실시간 지표 갱신, 일시정지/재개 |
 | `finish_exercise_session(session_id, completed, stop_reason)` | 종료/중단, 평균 속도 계산, 동의 시 AI 분석 대기열 등록 |
 | `mark_booking_no_show(booking_id)` | 미방문 처리 |
@@ -217,8 +224,8 @@ VS Code 실행 구성에는 「PawFit 데모 (목업 서버)」가 있습니다.
 | 24시간 지점 | 00:00~24:00으로 넣으면 `is_24_hours`가 켜져 하루 전체 슬롯과 자정을 넘기는 예약을 받음 (현재 해당 지점 없음) | `branches.is_24_hours` |
 | 운동 프로그램 속도 | 비워 둠(체격별 적정 속도 차이가 커서 숫자 하나로 안내하지 않음) | `exercise_programs.target_speed_kmh` |
 | 보호자 변경·취소 마감 | 예약 시작 1시간 전 | `private.booking_change_deadline()`, `Booking.changeDeadline` |
-| 이용권 없이 예약 | 예약 대기(현장 결제) 상태로 접수, 이용 당일 매장에서 결제. 앱 결제는 준비 중 | `create_booking` |
-| 셀프 체크인 | 예약 시작 15분 전 ~ 종료 전, 현장 결제 예약도 가능. 매장 도착 확인 없음 | `private.check_in_opens_before()`, `Booking.checkInOpensBefore` |
+| 이용권 없이 예약 | 현장 결제로 예약하면 바로 예약 확정, 이용 당일 매장에서 결제. 앱 결제는 준비 중 | `create_booking` |
+| QR 체크인 | 예약 시작 15분 전 ~ 종료 전. 매장 트레드밀 QR을 스캔해야 하고, 비어 있는 다른 기기를 스캔하면 그 기기로 옮김 | `private.check_in_opens_before()`, `check_in_with_treadmill_qr` |
 | 취소 시 이용권 | 사용한 1회 복구 | `cancel_booking` |
 | AI 분석 | 영상 촬영 동의자만 대기열 등록 | `finish_exercise_session` |
 | 회원 탈퇴 시 결제 기록 | `user_id`만 비우고 보관 | `payments.user_id on delete set null` |

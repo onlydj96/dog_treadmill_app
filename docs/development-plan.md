@@ -5,7 +5,7 @@
 | 문서 버전 | 1.0 |
 | 작성일 | 2026-11-11 |
 | 기준 코드 | `main` 브랜치 `f06b908` (2026-11-10) |
-| 관련 문서 | [기획서](../DOCUMENT.md) · [기능명세서](functional-spec.md) · [AI 분석 결과 저장 규격](analysis-metrics.md) · [랭킹·배지 규격](ranking.md) · [README](../README.md) |
+| 관련 문서 | [기획서](../DOCUMENT.md) · [기능명세서](functional-spec.md) · [앱 연동 인터페이스(기기·AI 서버)](app-interface.md) · [랭킹·배지 규격](ranking.md) · [README](../README.md) |
 
 ---
 
@@ -34,7 +34,7 @@ PawFit은 반려견 트레드밀 헬스장의 보호자용 모바일 앱이다. 
 
 | 업무 | 담당 | 방식 |
 |---|---|---|
-| 체크인 | 보호자 | 앱의 셀프 체크인 버튼 (예약 시작 15분 전부터 종료 전까지) |
+| 체크인 | 보호자 | 매장 트레드밀의 QR을 앱으로 스캔 (예약 시작 15분 전부터 종료 전까지, 빈 기기면 그 기기로 옮김) |
 | 운동 시작·정지·비상정지 | 보호자 | 트레드밀 기기에서 직접 조작 |
 | 운동 기록 | 트레드밀 기기 | 지점 관리자 계정으로 DB 함수 호출 |
 | 문의 응대 | 본사 | 앱 1:1 문의 |
@@ -83,7 +83,7 @@ PawFit은 반려견 트레드밀 헬스장의 보호자용 모바일 앱이다. 
 |---|---|
 | 트레드밀 기기 연동 | 기기가 운동 시작·지표·종료를 DB 함수로 보내야 운동 현황과 기록이 쌓인다. 연동 전에는 운동 탭·운동 기록·AI 리포트가 모두 비어 있다. |
 | 운영자 대시보드 | 이용권 발급, 예약 관리, 문의 답변, 공지·FAQ 관리 등. 필요한 DB 함수와 권한은 준비됨 |
-| AI 서버 | FastAPI 기반 영상 분석. 결과 저장 규격은 [analysis-metrics.md](analysis-metrics.md) |
+| AI 서버 | FastAPI 기반 영상 분석. 결과 저장 규격은 [app-interface.md](app-interface.md) 4장 |
 | FCM 푸시 | Firebase 프로젝트 필요. 지금은 앱 안 알림함으로만 알림 |
 | 미방문 자동 처리 | 체크인하지 않은 예약이 시간이 지나도 "예약 확정"으로 남음 |
 | 영업시간 예외 | 요일별·명절·휴무일 시간을 지원하지 않음 |
@@ -151,7 +151,7 @@ flowchart LR
 
 - 로컬: Docker 기반 로컬 Supabase (`npx supabase start`). 마이그레이션과 `seed.sql` 샘플 데이터가 자동 적용된다.
 - 원격: Supabase 프로젝트 1개가 운영 겸용이다. 개발용 프로젝트 분리가 필요하다 (Phase 1).
-- 앱 설정: 프로젝트 루트 `.env`의 `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`를 `--dart-define-from-file`로 주입한다.
+- 앱 설정: `config/supabase.env`(커밋 금지)의 `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`를 앱 시작 때 읽는다. `--dart-define`으로 넣은 값이 있으면 그 값을 먼저 쓴다.
 
 ---
 
@@ -273,7 +273,7 @@ Phase 4                                         ██████████�
 | 영상 업로드 | `exercise-videos/{dog_id}/{session_id}/front.mp4`, `side.mp4` + `pose_records` 기록 |
 | AI 서버 | `analysis_status = 'queued'` 작업을 가져가 `processing` → 분석 → `completed` / `failed` |
 | 분석 | YOLO Pose 15개 관절 검출 → 관절 각도·가동 범위·보행 주기·대칭성 계산 → 이상 지표 |
-| 결과 저장 | `joint_metrics`, `gait_metrics`, `anomaly_metrics`, `summary`, `care_notes` ([저장 규격](analysis-metrics.md)) |
+| 결과 저장 | `joint_metrics`, `gait_metrics`, `anomaly_metrics`, `summary`, `care_notes` ([저장 규격](app-interface.md#4-aiapi-서버-분석-결과)) |
 | 산출물 | 스켈레톤 영상, PDF 리포트 업로드 |
 | 리포트 검토 | 운영자 대시보드에서 검토 후 공개할지 결정 (검토 절차 필요 여부 결정) |
 | 영상 보관 정책 | 원본 영상 보관 기간과 자동 삭제 구현 |
@@ -343,7 +343,7 @@ Phase 4                                         ██████████�
 | Edge Function | `npx supabase functions deploy <name>` | 현재 `delete-account` |
 | 운영 데이터 | 대시보드 또는 SQL | `seed.sql`은 로컬 전용 |
 | 앱 | Google Play, App Store | 현재 버전 `1.0.0+1` |
-| 비밀값 | `.env`는 커밋 금지. `service_role` 키는 AI 서버·Edge Function에만 둔다 | 앱에는 publishable 키만 |
+| 비밀값 | `config/supabase.env`는 커밋 금지. `service_role` 키는 AI 서버·Edge Function에만 둔다 | 앱에는 publishable 키만 |
 
 **배포 체크리스트**
 

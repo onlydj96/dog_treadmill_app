@@ -5,16 +5,14 @@
       "name": "dog_treadmill_app (debug)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
-      "toolArgs": ["--dart-define-from-file=.env"]
+      "program": "lib/main.dart"
     },
     {
       "name": "dog_treadmill_app (profile)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "flutterMode": "profile",
-      "toolArgs": ["--dart-define-from-file=.env"]
+      "flutterMode": "profile"
     },
     {
       "name": "PawFit 데모 (목업 서버)",

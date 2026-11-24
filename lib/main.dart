@@ -13,6 +13,7 @@ Future<void> main() async {
   await initializeDateFormatting('ko_KR');
   await initializeDateFormatting('en_US');
 
+  await Env.load();
   if (!Env.isConfigured) {
     runApp(const ConfigMissingApp());
     return;

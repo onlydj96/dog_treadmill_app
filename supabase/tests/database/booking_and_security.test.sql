@@ -3,7 +3,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(54);
+select plan(66);
 
 -- ---------------------------------------------------------------------
 -- 준비: 보호자 A, 다른 보호자 B, 관리자 C
@@ -127,7 +127,7 @@ select is(
   (select status from public.create_booking(
     'd0000000-0000-4000-8000-000000000001', (select regular from t_ctx), (select program_30 from t_ctx),
     ((select tomorrow from t_ctx) + time '10:00') at time zone 'Asia/Seoul')),
-  'pending', '이용권 없이 예약하면 예약 대기(pending)');
+  'confirmed', '이용권 없이(현장 결제) 예약해도 바로 예약 확정(confirmed)');
 
 select throws_ok($$
   select public.create_booking(
@@ -262,44 +262,140 @@ select is(
   '보호자는 예약 시간을 변경할 수 있다');
 
 -- ---------------------------------------------------------------------
--- 무인 매장: 보호자 셀프 체크인 (시작 15분 전 ~ 종료 전)
--- 체크인 시간대를 맞추려고 오늘 시각으로 예약을 직접 넣는다.
+-- 무인 매장: 트레드밀 QR 체크인 (시작 15분 전 ~ 종료 전, 스캔한 빈 기기로 옮김)
+-- 체크인 시간대를 맞추려고 오늘 시각으로 예약을 직접 넣는다. 모두 24시간 지점 T-01에 배정한다.
 -- ---------------------------------------------------------------------
 reset role;
 insert into public.bookings (id, user_id, dog_id, branch_id, treadmill_id, start_at, end_at, status)
 select v.id::uuid, 'aaaaaaaa-0000-4000-8000-000000000001', v.dog_id::uuid,
        'f0000000-0000-4000-8000-000000000002',
        (select t.id from public.treadmills t
-        where t.branch_id = 'f0000000-0000-4000-8000-000000000002' and t.device_name = 'T-01'),
+        where t.branch_id = 'f0000000-0000-4000-8000-000000000002' and t.device_name = v.device),
        now() + v.starts_in, now() + v.starts_in + interval '30 minutes', v.status
 from (values
-  ('c0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000003', interval '10 minutes', 'pending'),
-  ('c0000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000004', interval '2 hours', 'confirmed'),
-  ('c0000000-0000-4000-8000-000000000003', 'd0000000-0000-4000-8000-000000000005', interval '-1 hour', 'confirmed')
-) as v(id, dog_id, starts_in, status);
+  ('c0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000003', 'T-01', interval '10 minutes', 'confirmed'),
+  ('c0000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000004', 'T-01', interval '2 hours', 'confirmed'),
+  ('c0000000-0000-4000-8000-000000000003', 'd0000000-0000-4000-8000-000000000005', 'T-01', interval '-1 hour', 'confirmed'),
+  -- 첫 예약과 같은 시간에 T-02를 쓰는 다른 예약 (TREADMILL_BUSY 확인용)
+  ('c0000000-0000-4000-8000-000000000004', 'd0000000-0000-4000-8000-000000000002', 'T-02', interval '10 minutes', 'confirmed')
+) as v(id, dog_id, device, starts_in, status);
+
+-- QR 토큰은 private 스키마라 보호자 역할로는 읽을 수 없다. 테스트용으로 미리 꺼내 둔다.
+create temporary table t_qr as
+select b.name as branch_name, t.device_name, t.id as treadmill_id, q.token
+from public.treadmills t
+join public.branches b on b.id = t.branch_id
+join private.treadmill_qr_codes q on q.treadmill_id = t.id
+where t.branch_id in ('f0000000-0000-4000-8000-000000000001', 'f0000000-0000-4000-8000-000000000002');
+grant select on t_qr to authenticated;
+
+select is(
+  (select count(*)::int from t_qr), 6, '트레드밀을 등록하면 QR 토큰이 자동으로 생긴다');
+
 set local role authenticated;
+set local request.jwt.claims to '{"sub": "aaaaaaaa-0000-4000-8000-000000000001", "role": "authenticated"}';
+
+select throws_ok($$
+  select * from private.treadmill_qr_codes
+$$, '42501', null, '보호자는 QR 토큰 목록을 읽을 수 없다 (매장에 가지 않고 체크인하는 것을 막는다)');
+
+select hasnt_function('public', 'self_check_in_booking', array['uuid'], 'QR 없이 하는 버튼 체크인은 없다');
 
 set local request.jwt.claims to '{"sub": "bbbbbbbb-0000-4000-8000-000000000002", "role": "authenticated"}';
 select throws_ok($$
-  select public.self_check_in_booking('c0000000-0000-4000-8000-000000000001')
+  select public.check_in_with_treadmill_qr('c0000000-0000-4000-8000-000000000001',
+    (select token from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-01'))
 $$, 'P0002', 'BOOKING_NOT_FOUND', '다른 보호자의 예약은 체크인할 수 없다');
 
 set local request.jwt.claims to '{"sub": "aaaaaaaa-0000-4000-8000-000000000001", "role": "authenticated"}';
 select throws_ok($$
-  select public.self_check_in_booking('c0000000-0000-4000-8000-000000000002')
+  select public.check_in_with_treadmill_qr('c0000000-0000-4000-8000-000000000002',
+    (select token from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-01'))
 $$, '22023', 'CHECK_IN_TOO_EARLY', '시작 15분 전보다 이르면 체크인할 수 없다');
 
-select is(
-  (select status from public.self_check_in_booking('c0000000-0000-4000-8000-000000000001')),
-  'checked_in', '현장 결제(예약 대기) 예약도 시작 15분 전부터 보호자가 직접 체크인할 수 있다');
+select throws_ok($$
+  select public.check_in_with_treadmill_qr('c0000000-0000-4000-8000-000000000001', 'not-a-token')
+$$, 'P0002', 'QR_INVALID', '등록되지 않은 QR로는 체크인할 수 없다');
 
 select throws_ok($$
-  select public.self_check_in_booking('c0000000-0000-4000-8000-000000000001')
+  select public.check_in_with_treadmill_qr('c0000000-0000-4000-8000-000000000001',
+    (select token from t_qr where branch_name = '테스트 일반 지점' and device_name = 'T-01'))
+$$, '22023', 'QR_OTHER_BRANCH', '다른 지점의 트레드밀 QR로는 체크인할 수 없다');
+
+select throws_ok($$
+  select public.check_in_with_treadmill_qr('c0000000-0000-4000-8000-000000000001',
+    (select token from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02'))
+$$, '23P01', 'TREADMILL_BUSY', '같은 시간에 다른 예약이 있는 트레드밀로는 옮길 수 없다');
+
+reset role;
+update public.treadmills set status = 'maintenance'
+where id = (select treadmill_id from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02');
+set local role authenticated;
+
+select throws_ok($$
+  select public.check_in_with_treadmill_qr('c0000000-0000-4000-8000-000000000001',
+    (select token from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02'))
+$$, '22023', 'TREADMILL_UNAVAILABLE', '점검 중인 트레드밀로는 체크인할 수 없다');
+
+-- T-02를 비우면(점검 해제 + 겹치던 예약 취소) 배정된 T-01이 아니어도 T-02로 옮겨 체크인한다
+reset role;
+update public.treadmills set status = 'available'
+where id = (select treadmill_id from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02');
+update public.bookings set status = 'cancelled', cancelled_at = now()
+where id = 'c0000000-0000-4000-8000-000000000004';
+set local role authenticated;
+
+select is(
+  (select array[status, treadmill_id::text] from public.check_in_with_treadmill_qr(
+    'c0000000-0000-4000-8000-000000000001',
+    (select token from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02'))),
+  array['checked_in', (select treadmill_id::text from t_qr
+                       where branch_name = '테스트 24시간 지점' and device_name = 'T-02')],
+  '현장 결제 예약도 QR로 체크인하고, 스캔한 빈 트레드밀(T-02)로 옮겨진다');
+
+select throws_ok($$
+  select public.check_in_with_treadmill_qr('c0000000-0000-4000-8000-000000000001',
+    (select token from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02'))
 $$, '22023', 'INVALID_BOOKING_STATUS', '이미 체크인한 예약은 다시 체크인할 수 없다');
 
 select throws_ok($$
-  select public.self_check_in_booking('c0000000-0000-4000-8000-000000000003')
+  select public.check_in_with_treadmill_qr('c0000000-0000-4000-8000-000000000003',
+    (select token from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-01'))
 $$, '22023', 'CHECK_IN_CLOSED', '예약 시간이 끝나면 체크인할 수 없다');
+
+-- ---------------------------------------------------------------------
+-- 트레드밀 기기 (지점 관리자 계정): QR 내용, 이 기기에서 체크인한 예약
+-- ---------------------------------------------------------------------
+select throws_ok($$
+  select public.get_treadmill_qr(
+    (select treadmill_id from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02'))
+$$, 'P0002', 'TREADMILL_NOT_FOUND', '보호자는 트레드밀 QR 내용을 받을 수 없다');
+
+select throws_ok($$
+  select * from public.get_treadmill_active_booking(
+    (select treadmill_id from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02'))
+$$, 'P0002', 'TREADMILL_NOT_FOUND', '보호자는 기기용 예약 조회를 할 수 없다');
+
+set local request.jwt.claims to '{"sub": "cccccccc-0000-4000-8000-000000000003", "role": "authenticated"}';
+
+select is(
+  public.get_treadmill_qr(
+    (select treadmill_id from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02')),
+  'pawfit://treadmill?code=' || (select token from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02'),
+  '관리자(기기)는 QR 내용 pawfit://treadmill?code=<토큰>을 받는다');
+
+select is(
+  (select array[booking_id::text, dog_name] from public.get_treadmill_active_booking(
+    (select treadmill_id from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-02'))),
+  array['c0000000-0000-4000-8000-000000000001', '두부'],
+  '기기는 자기에게 QR 체크인한 예약을 찾는다');
+
+select is(
+  (select count(*)::int from public.get_treadmill_active_booking(
+    (select treadmill_id from t_qr where branch_name = '테스트 24시간 지점' and device_name = 'T-01'))),
+  0, '체크인한 예약이 옮겨 간 원래 기기(T-01)에는 보여 줄 예약이 없다');
+
+set local request.jwt.claims to '{"sub": "aaaaaaaa-0000-4000-8000-000000000001", "role": "authenticated"}';
 
 -- ---------------------------------------------------------------------
 -- 운동 세션 (관리자·트레드밀 기기) / 실시간 지표 / 종료 / AI 분석 대기열 / 알림

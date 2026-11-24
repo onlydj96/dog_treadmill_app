@@ -73,7 +73,7 @@ void main() {
     expect(membership.intOr('remaining_sessions'), remaining);
   });
 
-  test('예약: 지난 시간·정각/30분이 아닌 시간·영업시간 밖은 거절하고, 이용권이 없으면 예약 대기', () {
+  test('예약: 지난 시간·정각/30분이 아닌 시간·영업시간 밖은 거절하고, 이용권이 없어도(현장 결제) 바로 확정', () {
     final server = _server();
     Json book(DateTime startAt) => server.booking.createBooking(
           dogId: DemoAccount.mangoId,
@@ -84,7 +84,9 @@ void main() {
     expect(() => book(DateTime.now().subtract(const Duration(hours: 1))), _rpcError('SLOT_IN_PAST'));
     expect(() => book(_at(4, 11, 10)), _rpcError('SLOT_NOT_AVAILABLE'));
     expect(() => book(_at(4, 20, 30)), _rpcError('SLOT_NOT_AVAILABLE'), reason: '용산은 20:30에 닫는다');
-    expect(book(_at(4, 11))['status'], 'pending');
+    final onSite = book(_at(4, 11));
+    expect(onSite['status'], 'confirmed');
+    expect(onSite['membership_id'], isNull, reason: '결제 방식은 membership_id로 구분한다');
   });
 
   test('예약 가능 시간: 지난 슬롯은 빼고, 예약이 생기면 남은 대수가 줄어든다', () {
@@ -112,12 +114,13 @@ void main() {
     expect(today.every((s) => DateTime.parse(s.str('slot_start')).isAfter(DateTime.now())), isTrue);
   });
 
-  test('셀프 체크인: 시작 15분 전부터 종료 전까지만', () {
+  test('QR 체크인: 시작 15분 전부터 종료 전까지만', () {
     final server = _server();
+    final yongsan1 = MockCatalog.treadmillQrToken(MockCatalog.treadmillId(MockCatalog.yongsan, 1));
     final later = server.booking
         .bookingsOf(DemoAccount.userId)
         .firstWhere((b) => b['status'] == 'confirmed' && b.dateTime('start_at').isAfter(_at(1, 0)));
-    expect(() => server.booking.selfCheckIn(later.str('id')), _rpcError('CHECK_IN_TOO_EARLY'));
+    expect(() => server.booking.checkInWithQr(later.str('id'), yongsan1), _rpcError('CHECK_IN_TOO_EARLY'));
 
     final missed = server.db.insert('bookings', {
       'user_id': DemoAccount.userId,
@@ -128,19 +131,67 @@ void main() {
       'end_at': iso(DateTime.now().subtract(const Duration(minutes: 15))),
       'status': 'confirmed',
     });
-    expect(() => server.booking.selfCheckIn(missed.str('id')), _rpcError('CHECK_IN_CLOSED'));
+    expect(() => server.booking.checkInWithQr(missed.str('id'), yongsan1), _rpcError('CHECK_IN_CLOSED'));
 
     final soon = server.booking.nextBooking(DemoAccount.tofuId)!;
-    server.booking.selfCheckIn(soon.str('id'));
+    final assigned = MockCatalog.treadmillQrToken(soon.str('treadmill_id'));
+    server.booking.checkInWithQr(soon.str('id'), assigned);
     expect(server.db.byId('bookings', soon.str('id'))!['status'], 'checked_in');
-    expect(() => server.booking.selfCheckIn(soon.str('id')), _rpcError('INVALID_BOOKING_STATUS'));
+    expect(() => server.booking.checkInWithQr(soon.str('id'), assigned), _rpcError('INVALID_BOOKING_STATUS'));
+  });
+
+  test('QR 체크인: 모르는 QR·다른 지점·점검 중·다른 예약이 있는 기기는 거절하고, 빈 기기를 스캔하면 그 기기로 옮긴다', () {
+    final server = _server();
+    final soon = server.booking.nextBooking(DemoAccount.tofuId)!;
+    final bookingId = soon.str('id');
+    final start = soon.dateTime('start_at');
+    final end = soon.dateTime('end_at');
+    String token(int number) => MockCatalog.treadmillQrToken(MockCatalog.treadmillId(MockCatalog.yongsan, number));
+    final others = [
+      for (var n = 1; n <= MockCatalog.treadmillCounts[MockCatalog.yongsan]!; n++)
+        if (MockCatalog.treadmillId(MockCatalog.yongsan, n) != soon['treadmill_id']) n,
+    ];
+
+    expect(() => server.booking.checkInWithQr(bookingId, 'not-a-token'), _rpcError('QR_INVALID'));
+    expect(
+      () => server.booking.checkInWithQr(
+          bookingId, MockCatalog.treadmillQrToken(MockCatalog.treadmillId(MockCatalog.goyang, 1))),
+      _rpcError('QR_OTHER_BRANCH'),
+    );
+
+    final maintenance = server.db.byId('treadmills', MockCatalog.treadmillId(MockCatalog.yongsan, others[0]))!;
+    server.db.update('treadmills', maintenance, {'status': 'maintenance'});
+    expect(() => server.booking.checkInWithQr(bookingId, token(others[0])), _rpcError('TREADMILL_UNAVAILABLE'));
+
+    final busyId = MockCatalog.treadmillId(MockCatalog.yongsan, others[1]);
+    if (!server.booking.treadmillBusy(busyId, start, end)) {
+      server.db.insert('bookings', {
+        'user_id': _chocoOwner,
+        'dog_id': _choco,
+        'branch_id': MockCatalog.yongsan,
+        'treadmill_id': busyId,
+        'start_at': iso(start),
+        'end_at': iso(end),
+        'status': 'confirmed',
+      });
+    }
+    expect(() => server.booking.checkInWithQr(bookingId, token(others[1])), _rpcError('TREADMILL_BUSY'));
+    expect(server.db.byId('bookings', bookingId)!['status'], 'confirmed', reason: '거절되면 아무것도 바뀌지 않는다');
+
+    final freeNumber = others.skip(2).firstWhere(
+          (n) => !server.booking.treadmillBusy(MockCatalog.treadmillId(MockCatalog.yongsan, n), start, end),
+        );
+    server.booking.checkInWithQr(bookingId, token(freeNumber));
+    final moved = server.db.byId('bookings', bookingId)!;
+    expect(moved['status'], 'checked_in');
+    expect(moved['treadmill_id'], MockCatalog.treadmillId(MockCatalog.yongsan, freeNumber));
   });
 
   test('트레드밀 흐름: 체크인 → 실시간 지표 → 완료하면 점수·30회 배지·알림 → AI 리포트', () {
     final server = _server();
     server.treadmill.autoStartAfterCheckIn = Duration.zero;
     final soon = server.booking.nextBooking(DemoAccount.tofuId)!;
-    server.booking.selfCheckIn(soon.str('id'));
+    server.booking.checkInWithQr(soon.str('id'), MockCatalog.treadmillQrToken(soon.str('treadmill_id')));
 
     final session = server.db.find('exercise_sessions', (s) => s['booking_id'] == soon['id'])!;
     expect(session['status'], 'running');

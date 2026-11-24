@@ -169,16 +169,17 @@ void main() {
       expect(find.textContaining("Yongsan I'Park Mall\n55 Hangang-daero"), findsOneWidget);
     });
 
-    testWidgets('예약 상세: 체크인 시간에는 배정 트레드밀을 영어로 안내한다', (tester) async {
+    testWidgets('예약 상세: 체크인 시간에는 트레드밀 QR 체크인을 영어로 안내한다', (tester) async {
       final value = booking(const Duration(minutes: 10));
       await pump(tester, const BookingDetailScreen(bookingId: 'b1'),
           overrides: [bookingDetailProvider.overrideWith((ref, id) async => value)]);
       expect(find.byType(CheckInButton), findsOneWidget);
-      expect(find.text('Check in'), findsWidgets);
+      expect(find.text('QR check-in'), findsOneWidget);
       expect(
-        find.textContaining('check in and start your workout on treadmill T-03.'),
+        find.textContaining("scan the QR code on the treadmill you'll use to check in."),
         findsOneWidget,
       );
+      expect(find.text('Checked in'), findsWidgets, reason: '진행 단계');
     });
 
     testWidgets('이용권 화면', (tester) async {

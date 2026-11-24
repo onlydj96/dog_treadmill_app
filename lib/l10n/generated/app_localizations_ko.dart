@@ -1,5 +1,5 @@
+// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -101,7 +101,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get configMissingBody =>
-      '프로젝트 루트의 .env에 SUPABASE_URL과 SUPABASE_PUBLISHABLE_KEY를 넣고 아래와 같이 실행해 주세요.';
+      'config/supabase.env 파일에 SUPABASE_URL과 SUPABASE_PUBLISHABLE_KEY를 넣고 앱을 다시 실행해 주세요. config/supabase.env.example을 복사해 쓰면 돼요.';
 
   @override
   String get fmtPatternDate => 'M월 d일 (E)';
@@ -301,6 +301,20 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get errorCheckInClosed => '예약 시간이 지나 체크인할 수 없어요.';
+
+  @override
+  String get errorQrInvalid => 'PawFit 트레드밀 QR이 아니에요. 트레드밀에 붙은 QR을 스캔해 주세요.';
+
+  @override
+  String get errorQrOtherBranch => '다른 지점의 트레드밀이에요. 예약한 지점의 트레드밀 QR을 스캔해 주세요.';
+
+  @override
+  String get errorTreadmillUnavailable =>
+      '점검 중인 트레드밀이에요. 다른 트레드밀의 QR을 스캔해 주세요.';
+
+  @override
+  String get errorTreadmillBusy =>
+      '이 시간에 다른 예약이 있는 트레드밀이에요. 배정된 트레드밀이나 비어 있는 다른 트레드밀의 QR을 스캔해 주세요.';
 
   @override
   String get errorNicknameInvalid => '닉네임은 2~12자의 한글·영문·숫자·밑줄(_)로 입력해 주세요.';
@@ -1117,26 +1131,33 @@ class AppLocalizationsKo extends AppLocalizations {
   String get bookingNewWorkout => '새 운동 예약';
 
   @override
-  String get bookingCheckInTitle => '체크인할까요?';
+  String get bookingCheckInAction => 'QR 체크인';
 
   @override
-  String get bookingCheckInMessage => '매장에 도착했을 때 체크인해 주세요.';
-
-  @override
-  String bookingCheckInMessageWithMachine(String machine) {
-    return '매장에 도착했을 때 체크인해 주세요.\n배정된 트레드밀: $machine';
-  }
-
-  @override
-  String get bookingCheckInAction => '체크인';
-
-  @override
-  String get bookingCheckedIn => '체크인했어요.';
+  String get bookingCheckedIn => '체크인했어요. 트레드밀의 시작 버튼을 눌러 운동을 시작해 주세요.';
 
   @override
   String bookingCheckedInWithMachine(String machine) {
-    return '체크인했어요. 트레드밀 $machine에서 운동을 시작해 주세요.';
+    return '트레드밀 $machine에 체크인했어요. 기기의 시작 버튼을 눌러 운동을 시작해 주세요.';
   }
+
+  @override
+  String get bookingQrScanTitle => '트레드밀 QR 스캔';
+
+  @override
+  String get bookingQrScanHint => '운동할 트레드밀에 붙은 QR을 네모 안에 맞춰 주세요.';
+
+  @override
+  String bookingQrScanAssigned(String machine) {
+    return '배정된 트레드밀은 $machine이에요. 다른 트레드밀이 비어 있으면 그 기기의 QR을 스캔해도 돼요.';
+  }
+
+  @override
+  String get bookingQrCameraDenied =>
+      'QR을 스캔하려면 카메라 권한이 필요해요. 설정에서 카메라 접근을 허용해 주세요.';
+
+  @override
+  String get bookingQrCameraError => '카메라를 열 수 없어요. 잠시 후 다시 시도해 주세요.';
 
   @override
   String get bookingDefaultProgramName => '트레드밀 운동';
@@ -1197,10 +1218,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get bookingNoteNoShow => '방문하지 않아 미방문 처리된 예약이에요.';
 
   @override
-  String get bookingStepReceived => '접수';
-
-  @override
-  String get bookingStepConfirmed => '확정';
+  String get bookingStepConfirmed => '예약 확정';
 
   @override
   String get bookingStepCheckedIn => '체크인';
@@ -1262,30 +1280,30 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String bookingGuideCheckedIn(String atMachine, String payOnSite) {
-    return '체크인했어요. $atMachine 운동을 시작하고, 운동하는 동안 반려견 곁을 지켜 주세요. 운동이 시작되면 운동 탭에서 실시간으로 볼 수 있어요.$payOnSite';
+    return '체크인했어요. $atMachine 시작 버튼을 눌러 운동을 시작하고, 운동하는 동안 반려견 곁을 지켜 주세요. 운동이 시작되면 운동 탭에서 실시간으로 볼 수 있어요.$payOnSite';
   }
 
   @override
   String get bookingGuideEnded => '예약 시간이 지나 체크인할 수 없어요.';
 
   @override
-  String bookingGuideCheckInOpen(String atMachine, String payOnSite) {
-    return '매장에 도착하면 체크인하고 $atMachine 운동을 시작해 주세요.$payOnSite';
+  String bookingGuideCheckInOpen(String payOnSite) {
+    return '매장에 도착하면 운동할 트레드밀의 QR을 스캔해 체크인해 주세요. 배정된 트레드밀이 아니어도 비어 있으면 괜찮아요. 체크인한 뒤 기기의 시작 버튼으로 운동을 시작해요.$payOnSite';
   }
 
   @override
   String bookingGuideModifiable(String time) {
-    return '예약 시작 1시간 전까지 변경·취소할 수 있어요.\n이용 당일 $time부터 앱에서 체크인할 수 있어요.';
+    return '예약 시작 1시간 전까지 변경·취소할 수 있어요.\n이용 당일 $time부터 매장에서 트레드밀 QR을 스캔해 체크인할 수 있어요.';
   }
 
   @override
   String bookingGuideModifiableWithPass(String time) {
-    return '예약 시작 1시간 전까지 변경·취소할 수 있어요. 취소하면 이용권 횟수가 복구돼요.\n이용 당일 $time부터 앱에서 체크인할 수 있어요.';
+    return '예약 시작 1시간 전까지 변경·취소할 수 있어요. 취소하면 이용권 횟수가 복구돼요.\n이용 당일 $time부터 매장에서 트레드밀 QR을 스캔해 체크인할 수 있어요.';
   }
 
   @override
   String bookingGuideLocked(String time) {
-    return '$time부터 앱에서 체크인할 수 있어요.\n예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요.';
+    return '$time부터 매장에서 트레드밀 QR을 스캔해 체크인할 수 있어요.\n예약 시작 1시간 전부터는 앱에서 변경·취소할 수 없어요.';
   }
 
   @override
@@ -1388,14 +1406,14 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get bookingPayOnSiteBody => '예약 대기로 접수되고, 이용 당일 매장에서 결제해요.';
+  String get bookingPayOnSiteBody => '예약은 바로 확정되고, 이용 당일 매장에서 결제해요.';
 
   @override
   String get bookingNoteHint => '반려견에 대해 남겨 둘 내용을 적어 주세요. (예: 낯선 소리에 예민해요)';
 
   @override
   String get bookingSelfServiceHint =>
-      '무인 매장이에요. 이용 당일 예약 시작 15분 전부터 앱에서 체크인하고, 배정된 트레드밀에서 운동을 시작해 주세요.\n예약 시작 1시간 전까지 앱에서 변경·취소할 수 있어요. 이용권으로 예약한 경우 취소하면 횟수가 복구돼요.';
+      '무인 매장이에요. 이용 당일 예약 시작 15분 전부터 매장에서 트레드밀의 QR을 앱으로 스캔해 체크인하고, 기기의 시작 버튼으로 운동을 시작해 주세요.\n예약 시작 1시간 전까지 앱에서 변경·취소할 수 있어요. 이용권으로 예약한 경우 취소하면 횟수가 복구돼요.';
 
   @override
   String get bookingSummaryIncomplete => '반려견, 지점, 프로그램, 시간을 선택해 주세요.';
@@ -2804,6 +2822,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get demoNoPending => '대기 중인 분석 없음';
 
   @override
+  String get demoQrPickerTitle => 'QR 스캔 (데모)';
+
+  @override
+  String get demoQrPickerBody =>
+      '데모에서는 카메라 대신 스캔할 트레드밀을 골라요. 배정된 트레드밀이 아니어도 비어 있으면 그 기기로 체크인돼요.';
+
+  @override
+  String get demoQrAssigned => '배정됨';
+
+  @override
+  String get demoQrBusy => '이 시간 예약 있음';
+
+  @override
   String get demoSectionOwners => '다른 보호자';
 
   @override
@@ -2968,11 +2999,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get analysisReportTitle => 'AI 분석 리포트';
 
   @override
-  String analysisModelVersion(String version) {
-    return '모델 $version';
-  }
-
-  @override
   String get analysisStatDuration => '운동 시간';
 
   @override
@@ -3016,7 +3042,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get analysisScaleDifferent => '차이 큼';
 
   @override
-  String get analysisNoAnomaly => '평소와 다른 관절 패턴이 발견되지 않았어요.';
+  String get analysisNoAnomaly => '평소와 다른 움직임이 발견되지 않았어요.';
 
   @override
   String analysisVsBaseline(String value) {

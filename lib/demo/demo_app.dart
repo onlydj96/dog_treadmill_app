@@ -7,6 +7,7 @@ import '../app.dart';
 import '../core/router/app_router.dart';
 import '../core/supabase/supabase_providers.dart';
 import '../features/auth/data/auth_repository.dart';
+import '../features/booking/presentation/treadmill_qr_scanner.dart';
 import '../features/booking/providers.dart';
 import '../features/consents/data/consent_repository.dart';
 import '../features/dogs/providers.dart';
@@ -20,6 +21,7 @@ import '../features/support/data/support_repository.dart';
 import '../l10n/app_language.dart';
 import 'demo_auth.dart';
 import 'demo_overlay.dart';
+import 'demo_qr_picker.dart';
 import 'demo_repositories.dart';
 import 'mock_server/mock_server.dart';
 
@@ -83,6 +85,8 @@ List<Override> demoOverrides({
     consentRepositoryProvider.overrideWithValue(DemoConsentRepository(server)),
     rankingRepositoryProvider.overrideWith((ref) => DemoRankingRepository(_inLanguage(ref, server))),
     supportRepositoryProvider.overrideWith((ref) => DemoSupportRepository(_inLanguage(ref, server))),
+    // 카메라 대신 트레드밀을 골라 QR을 스캔한 것으로 친다
+    treadmillQrScannerProvider.overrideWithValue((context, booking) => pickDemoTreadmillQr(context, server, booking)),
   ];
 }
 

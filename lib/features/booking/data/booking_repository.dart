@@ -91,9 +91,14 @@ class BookingRepository {
     });
   }
 
-  /// 무인 매장 셀프 체크인 (본인 예약, 시작 15분 전부터 종료 전까지)
-  Future<void> checkIn(String bookingId) async {
-    await _client.rpc<Json>('self_check_in_booking', params: {'p_booking_id': bookingId});
+  /// 무인 매장 QR 체크인 (본인 예약, 시작 15분 전부터 종료 전까지).
+  /// 스캔한 트레드밀이 배정된 기기와 다르면 서버가 예약을 그 기기로 옮긴다. 옮긴 결과를 다시 불러와 돌려준다.
+  Future<Booking> checkInWithQr(String bookingId, String qrToken) async {
+    await _client.rpc<Json>('check_in_with_treadmill_qr', params: {
+      'p_booking_id': bookingId,
+      'p_qr_token': qrToken,
+    });
+    return fetchBooking(bookingId);
   }
 
   Future<void> rescheduleBooking(String bookingId, DateTime newStartAt) async {

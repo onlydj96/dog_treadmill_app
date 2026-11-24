@@ -26,6 +26,9 @@ abstract final class MockCatalog {
     return 'a1000000-0000-4000-8000-${(branchNo * 100 + number).toString().padLeft(12, '0')}';
   }
 
+  /// 데모 트레드밀의 QR 토큰 (실제로는 서버가 무작위로 만든다)
+  static String treadmillQrToken(String treadmillId) => treadmillId.replaceAll('-', '');
+
   static List<Json> branches() => [
         _branch(yongsan, '용산 아이파크몰점', '서울특별시 용산구 한강대로23길 55 (용산 아이파크몰)', '10:30:00', '20:30:00'),
         _branch(goyang, '고양 스타필드점', '경기도 고양시 덕양구 고양대로 1955 (스타필드 고양)', '10:00:00', '22:00:00'),
@@ -219,17 +222,17 @@ abstract final class MockCatalog {
           (
             '예약',
             '체크인은 어떻게 하나요?',
-            '모든 매장은 무인으로 운영됩니다. 매장에 도착하면 앱의 예약 상세 화면이나 홈에서 "체크인"을 눌러 주세요. 예약 시작 15분 전부터 예약 종료 전까지 체크인할 수 있습니다.'
+            '모든 매장은 무인으로 운영됩니다. 매장에 도착하면 앱의 예약 상세 화면이나 홈에서 "QR 체크인"을 누르고, 운동할 트레드밀에 붙은 QR을 스캔해 주세요. 배정된 트레드밀이 아니어도 그 시간에 비어 있으면 그 기기로 체크인됩니다. 예약 시작 15분 전부터 예약 종료 전까지 체크인할 수 있습니다.'
           ),
           (
             '예약',
             '이용권 없이도 예약할 수 있나요?',
-            '네. 결제 방법에서 "현장 결제"를 고르면 "예약 대기" 상태로 접수되며, 이용 당일 매장에서 결제한 뒤 이용할 수 있습니다. 앱 결제는 준비 중입니다.'
+            '네. 결제 방법에서 "현장 결제"를 고르면 예약이 바로 확정되고, 이용 당일 매장에서 결제한 뒤 이용할 수 있습니다. 앱 결제는 준비 중입니다.'
           ),
           (
             '운동',
             '운동 중에는 누가 트레드밀을 조작하나요?',
-            '매장에 직원이 없어 보호자가 직접 조작합니다. 체크인한 뒤 배정된 트레드밀에서 운동을 시작하고, 운동하는 동안 반려견 곁을 지켜 주세요. 이상이 있으면 트레드밀의 비상정지 버튼을 눌러 주세요. 앱에서는 운동 현황을 실시간으로 확인할 수 있습니다.'
+            '매장에 직원이 없어 보호자가 직접 조작합니다. QR로 체크인한 트레드밀에서 시작 버튼을 눌러 운동을 시작하고, 운동하는 동안 반려견 곁을 지켜 주세요. 이상이 있으면 트레드밀의 비상정지 버튼을 눌러 주세요. 앱에서는 운동 현황을 실시간으로 확인할 수 있습니다.'
           ),
           (
             'AI 분석',
@@ -406,17 +409,17 @@ abstract final class CatalogEn {
     (
       'Booking',
       'How do I check in?',
-      'All stores are self-service. When you arrive, tap "Check in" on the booking details screen or on Home. You can check in from 15 minutes before the booking starts until it ends.'
+      'All stores are self-service. When you arrive, tap "QR check-in" on the booking details screen or on Home and scan the QR code on the treadmill you\'ll use. It doesn\'t have to be your assigned treadmill as long as it\'s free at that time. You can check in from 15 minutes before the booking starts until it ends.'
     ),
     (
       'Booking',
       'Can I book without a pass?',
-      'Yes. Choose "Pay at store" as the payment method and your booking will be received as "Pending". Pay at the store on the day of your visit. In-app payment is coming soon.'
+      'Yes. Choose "Pay at store" as the payment method and your booking is confirmed right away. Pay at the store on the day of your visit. In-app payment is coming soon.'
     ),
     (
       'Workout',
       'Who operates the treadmill during a workout?',
-      'There are no staff in the store, so owners operate it themselves. After checking in, start the workout on your assigned treadmill and stay beside your dog the whole time. If anything seems wrong, press the treadmill\'s emergency stop button. You can follow your workout live in the app.'
+      'There are no staff in the store, so owners operate it themselves. Press Start on the treadmill you checked in on with the QR code, and stay beside your dog the whole time. If anything seems wrong, press the treadmill\'s emergency stop button. You can follow your workout live in the app.'
     ),
     (
       'AI analysis',

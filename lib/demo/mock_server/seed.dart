@@ -263,6 +263,11 @@ class MockSeed {
   void _catalog() {
     MockCatalog.branches().forEach((r) => db.insert('branches', r));
     MockCatalog.treadmills().forEach((r) => db.insert('treadmills', r));
+    // private.treadmill_qr_codes (트레드밀 QR 토큰). 샘플 데이터의 난수 순서가 바뀌지 않게 newId 없이 넣는다.
+    db.table('treadmill_qr_codes').addAll([
+      for (final t in MockCatalog.treadmills())
+        {'treadmill_id': t['id'], 'token': MockCatalog.treadmillQrToken(t['id'] as String)},
+    ]);
     MockCatalog.programs().forEach((r) => db.insert('exercise_programs', r));
     MockCatalog.membershipPlans().forEach((r) => db.insert('membership_plans', r));
     MockCatalog.breeds().forEach((r) => db.insert('breeds', r));
@@ -732,7 +737,7 @@ class MockSeed {
     }
   }
 
-  /// 데모 보호자의 예약: 곧 시작하는 예약(지금 체크인 가능), 현장 결제 대기, 다음 주 예약, 지난 취소·미방문
+  /// 데모 보호자의 예약: 곧 시작하는 예약(지금 체크인 가능), 현장 결제 예약, 다음 주 예약, 지난 취소·미방문
   void _demoBookings() {
     final soon = DateTime.fromMillisecondsSinceEpoch(
       (_now.add(const Duration(minutes: 10)).millisecondsSinceEpoch ~/ 300000 + 1) * 300000,
@@ -742,7 +747,7 @@ class MockSeed {
         status: 'confirmed', membershipId: _membershipCurrentTen);
     _insertDemoBooking(DemoAccount.mangoId, MockCatalog.goyang, MockCatalog.interval,
         Kst.at(_today.add(const Duration(days: 2)), 14 * 60),
-        status: 'pending', note: '처음 가 보는 지점이에요', noteEn: 'First time at this location');
+        status: 'confirmed', note: '처음 가 보는 지점이에요', noteEn: 'First time at this location');
     _insertDemoBooking(DemoAccount.tofuId, MockCatalog.yongsan, MockCatalog.jointCare,
         Kst.at(_today.add(const Duration(days: 6)), 11 * 60),
         status: 'confirmed', membershipId: _membershipCurrentTen);

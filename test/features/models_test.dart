@@ -1,4 +1,5 @@
 import 'package:dog_treadmill_app/features/booking/data/booking_models.dart';
+import 'package:dog_treadmill_app/features/booking/data/treadmill_qr.dart';
 import 'package:dog_treadmill_app/features/dogs/data/dog.dart';
 import 'package:dog_treadmill_app/features/exercise/data/exercise_session.dart';
 import 'package:dog_treadmill_app/features/health/data/analysis_models.dart';
@@ -219,13 +220,13 @@ void main() {
       );
     });
 
-    test('셀프 체크인은 예약 대기·확정 상태에서 시작 15분 전부터 종료 전까지만 할 수 있다', () {
+    test('QR 체크인은 예약 확정(또는 결제 진행 중) 상태에서 시작 15분 전부터 종료 전까지만 할 수 있다', () {
       final start = DateTime(2026, 11, 10, 10); // 종료 10:30
       Booking booking([String status = 'confirmed']) => Booking.fromJson(bookingJson(start: start, status: status));
 
       expect(booking().canCheckIn(DateTime(2026, 11, 10, 9, 44)), isFalse, reason: '16분 전');
       expect(booking().canCheckIn(DateTime(2026, 11, 10, 9, 45)), isTrue, reason: '15분 전');
-      expect(booking('pending').canCheckIn(DateTime(2026, 11, 10, 10, 10)), isTrue, reason: '현장 결제 예약');
+      expect(booking('pending').canCheckIn(DateTime(2026, 11, 10, 10, 10)), isTrue, reason: '결제 진행 중');
       expect(booking().canCheckIn(DateTime(2026, 11, 10, 10, 30)), isFalse, reason: '종료 시각');
       expect(booking('checked_in').canCheckIn(DateTime(2026, 11, 10, 10)), isFalse, reason: '이미 체크인');
       expect(booking('cancelled').canCheckIn(DateTime(2026, 11, 10, 10)), isFalse, reason: '취소');
@@ -239,6 +240,19 @@ void main() {
         isFalse,
       );
       expect(Booking.fromJson(bookingJson(start: DateTime(2026, 11, 9, 12))).isUpcoming(now), isFalse);
+    });
+  });
+
+  group('TreadmillQr', () {
+    test('PawFit 트레드밀 QR에서만 토큰을 꺼낸다 (서버 private.treadmill_qr_payload와 같은 형식)', () {
+      expect(TreadmillQr.payload('abc123'), 'pawfit://treadmill?code=abc123');
+      expect(TreadmillQr.tokenOf('pawfit://treadmill?code=abc123'), 'abc123');
+      expect(TreadmillQr.tokenOf('  pawfit://treadmill?code=abc123\n'), 'abc123', reason: '앞뒤 공백');
+      expect(TreadmillQr.tokenOf('pawfit://treadmill?code='), isNull);
+      expect(TreadmillQr.tokenOf('pawfit://other?code=abc123'), isNull);
+      expect(TreadmillQr.tokenOf('https://treadmill?code=abc123'), isNull);
+      expect(TreadmillQr.tokenOf('abc123'), isNull);
+      expect(TreadmillQr.tokenOf(''), isNull);
     });
   });
 
